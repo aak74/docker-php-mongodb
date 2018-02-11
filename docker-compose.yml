@@ -1,0 +1,28 @@
+nginx:
+  dockerfile: ./Dockerfile
+  build: ./containers/nginx
+  ports:
+    - 80:80
+  volumes:
+    - ./logs:/var/log/nginx
+  volumes_from:
+    - fpm:rw
+  environment:
+    - NGINX_HOST=localhost
+    - NGINX_PORT=80
+  command: nginx -g "daemon off;"
+  links:
+    - fpm
+fpm:
+  dockerfile: ./Dockerfile
+  build: ./containers/php-fpm
+  volumes:
+    - ./html:/var/www:rw
+  links:
+    - mongo
+mongo:
+  image: mongo
+  ports:
+    - 27017:27017
+  volumes:
+    - ./database/mongo:/data/db
