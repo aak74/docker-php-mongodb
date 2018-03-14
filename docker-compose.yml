@@ -21,6 +21,7 @@ fpm:
   links:
     - mongo
 mongo:
+  hostname: "projects-mongo"
   image: mongo
   ports:
     - 27017:27017
