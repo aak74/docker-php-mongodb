@@ -1,29 +1,50 @@
-nginx:
-  dockerfile: ./Dockerfile
-  build: ./containers/nginx
-  ports:
-    - 80:80
-  volumes:
-    - ./logs:/var/log/nginx
-  volumes_from:
-    - fpm:rw
-  environment:
-    - NGINX_HOST=localhost
-    - NGINX_PORT=80
-  command: nginx -g "daemon off;"
-  links:
-    - fpm
-fpm:
-  dockerfile: ./Dockerfile
-  build: ./containers/php-fpm
-  volumes:
-    - ./html:/var/www:rw
-  links:
-    - mongo
-mongo:
-  hostname: "projects-mongo"
-  image: mongo
-  ports:
-    - 27017:27017
-  volumes:
-    - ./database/mongo:/data/db
+version: '2'
+
+services:
+  nginx:
+    build: ./containers/nginx
+    container_name: projects-nginx
+    ports:
+      - 80:80
+    volumes_from:
+      - projects-source
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    command: nginx -g "daemon off;"
+    restart: always
+  fpm:
+    build: ./containers/php-fpm
+    container_name: projects-webserver
+    volumes_from:
+      - projects-source
+    restart: always
+  mongo:
+    image: mongo
+    container_name: projects-mongodb
+    hostname: projects-mongodb
+    ports:
+      - 27017:27017
+    volumes_from:
+      - projects-source
+    restart: always
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: projects-rabbitmq
+    container_name: projects-rabbitmq
+    ports:
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+      RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
+    restart: always
+  "projects-source":
+    image: alpine:latest
+    container_name: projects-source
+    volumes:
+      - /etc/localtime:/etc/localtime/:ro
+      - ./html:/var/www
+      - ./logs:/var/log/nginx
+      - ./data/mongo:/data/db
+      - ./data/rabbitmq:/var/lib/rabbitmq
