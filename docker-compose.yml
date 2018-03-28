@@ -19,6 +19,14 @@ services:
     volumes_from:
       - projects-source
     restart: always
+  php-cli:
+    build: ./containers/php-cli
+    container_name: projects-bservice
+    volumes:
+      - ./src/backup:/app/service
+      - ./src/backup-runner/:/app/runner
+      - ./logs:/var/log/php
+    restart: always
   mongo:
     image: mongo
     container_name: projects-mongodb
@@ -44,7 +52,7 @@ services:
     container_name: projects-source
     volumes:
       - /etc/localtime:/etc/localtime/:ro
-      - ./html:/var/www
+      - ./src/frontend:/var/www
       - ./logs:/var/log/nginx
       - ./data/mongo:/data/db
       - ./data/rabbitmq:/var/lib/rabbitmq

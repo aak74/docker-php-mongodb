@@ -1,5 +1,6 @@
 FROM php:7.1-fpm
-MAINTAINER Andrew Kopylov <aa74ko@gmail.com>
+
+LABEL maintainer="Andrew Kopylov <aa74ko@gmail.com>"
 
 RUN apt-get update && apt-get install -y \
         libmcrypt-dev \
