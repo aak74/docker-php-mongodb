@@ -26,6 +26,7 @@ services:
       - ./src/backup:/app/service
       - ./src/backup-runner/:/app/runner
       - ./logs:/var/log/php
+      - /mnt/b/backup:/mnt/b/backup
     restart: always
   mongo:
     image: mongo
