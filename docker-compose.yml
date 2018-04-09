@@ -23,6 +23,9 @@ services:
     build: ./containers/php-cli
     container_name: projects-bservice
     volumes:
+      - /etc/localtime:/etc/localtime/:ro
+      - /etc/passwd:/etc/passwd/:ro
+      - /etc/group:/etc/group/:ro
       - ./src/backup:/app/service
       - ./src/backup-runner/:/app/runner
       - ./logs:/var/log/php

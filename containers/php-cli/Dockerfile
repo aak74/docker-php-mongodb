@@ -14,4 +14,6 @@ WORKDIR /app/
 
 COPY ./rootfs/ /
 
+USER 1000:1000
+
 CMD ["php", "/app/runner/run.php"]
