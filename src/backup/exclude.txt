@@ -1,0 +1,10 @@
+.git
+bitrix/backup/*
+bitrix/cache/*
+bitrix/managed_cache/*
+bitrix/stack_cache/*
+bitrix/local_cache/*
+bitrix/tmp/*
+upload/tmp/*
+upload/resize_cache/*
+*.gz

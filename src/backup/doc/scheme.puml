@@ -1,0 +1,13 @@
+@startuml
+title Backup
+partition Runner {
+  :get config;
+  :calculate destination path;
+  :copy last backup into
+  new path with hardlinks;
+  :calculate source path;
+  :rsync source into
+  destination path;
+  :remove wasted copy;
+}
+@enduml

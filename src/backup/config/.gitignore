@@ -1,0 +1,4 @@
+*.php
+!default.php
+!example.php
+!example-localhost.php

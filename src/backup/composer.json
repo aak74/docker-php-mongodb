@@ -1,0 +1,33 @@
+{
+    "name": "aak74/backup",
+    "version": "0.1.0",
+    "description": "Backup for local and remote files and MySQL",
+    "license": "MIT",
+    "keywords": ["backup", "mysql", "remote"],
+    "authors": [
+        {
+            "name": "Andrew Kopylov",
+            "email": "aa74ko@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "nesbot/carbon": "^1.22",
+        "phpseclib/phpseclib": "~2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "6.*",
+        "mikey179/vfsStream": "^1.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Backup\\": "src"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/aak74/backup"
+        }
+    ]
+}

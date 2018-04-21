@@ -1,0 +1,23 @@
+<?php
+
+namespace Backup;
+
+class Status
+{
+    const BACKUP_START = 0;
+    const BACKUP_DB_START = 100;
+    const BACKUP_DB_CREDENTIALS_START = 200;
+    const BACKUP_DB_CREDENTIALS_FINISH = 220;
+    const BACKUP_DB_DUMP_START = 250;
+    const BACKUP_DB_DUMP_FINISH = 300;
+    const BACKUP_DB_DUMP_COPY_START = 400;
+    const BACKUP_DB_DUMP_COPY_FINISH = 500;
+    const BACKUP_DB_FINISH = 600;
+    const BACKUP_FILES_START = 700;
+    const BACKUP_FILES_HLCOPY_START = 800;
+    const BACKUP_FILES_HLCOPY_FINISH = 900;
+    const BACKUP_FILES_RSYNC_START = 1000;
+    const BACKUP_FILES_RSYNC_FINISH = 1100;
+    const BACKUP_FILES_FINISH = 1200;
+    const BACKUP_FINISH = 2000;
+}
