@@ -6,57 +6,88 @@ services:
     container_name: projects-nginx
     ports:
       - 80:80
-    volumes_from:
-      - projects-source
+    volumes:
+      - /etc/localtime:/etc/localtime/:ro
+      - ./logs:/var/log/nginx
+      - ./src/frontend:/var/www
     environment:
       - NGINX_HOST=localhost
       - NGINX_PORT=80
+    networks:
+      - projects-net
     command: nginx -g "daemon off;"
     restart: always
-  fpm:
-    build: ./containers/php-fpm
-    container_name: projects-webserver
-    volumes_from:
-      - projects-source
-    restart: always
-  php-cli:
-    build: ./containers/php-cli
-    container_name: projects-bservice
+  frontend:
+    build: ./src/frontend
+    container_name: projects-frontend
+    ports:
+      - 9000:9000
     volumes:
-      - /etc/localtime:/etc/localtime/:ro
+      - ./src/frontend:/var/www
+      - ./logs:/var/log/fpm
       - /etc/passwd:/etc/passwd/:ro
       - /etc/group:/etc/group/:ro
+    # volumes_from:
+    #   - projects-source
+    links:
+      - "mongo:mongo"    
+    networks:
+      - projects-net
+    restart: always
+  backup:
+    build: ./src/backup-runner/
+    container_name: projects-bservice
+    volumes:
       - ./src/backup:/app/service
       - ./src/backup-runner/:/app/runner
       - ./logs:/var/log/php
       - /mnt/b/backup:/mnt/b/backup
+    volumes_from:
+      - projects-source
+    networks:
+      - projects-net
     restart: always
   mongo:
-    image: mongo
+    image: mongo:jessie
     container_name: projects-mongodb
     hostname: projects-mongodb
     ports:
       - 27017:27017
+    volumes:
+      - ./data/mongo:/data/db
     volumes_from:
       - projects-source
+    networks:
+      - projects-net
     restart: always
+    entrypoint:
+      mongod --bind_ip_all
   rabbitmq:
     image: rabbitmq:3-management
     hostname: projects-rabbitmq
     container_name: projects-rabbitmq
     ports:
       - 15672:15672
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
       RABBITMQ_DEFAULT_VHOST: ${RABBITMQ_VHOST}
+    networks:
+      - projects-net
     restart: always
   "projects-source":
     image: alpine:latest
     container_name: projects-source
     volumes:
       - /etc/localtime:/etc/localtime/:ro
-      - ./src/frontend:/var/www
-      - ./logs:/var/log/nginx
-      - ./data/mongo:/data/db
-      - ./data/rabbitmq:/var/lib/rabbitmq
+    networks:
+      - projects-net
+networks:
+  "projects-net":
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.0.0.1/24

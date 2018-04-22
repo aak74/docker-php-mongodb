@@ -364,7 +364,7 @@
         },
         {
             "name": "illuminate/container",
-            "version": "v5.5.34",
+            "version": "v5.5.40",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/container.git",
@@ -408,16 +408,16 @@
         },
         {
             "name": "illuminate/contracts",
-            "version": "v5.5.34",
+            "version": "v5.5.40",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/contracts.git",
-                "reference": "eb9a0171866fca0669c9acab6c7441e19b4694ca"
+                "reference": "04fbae936ed14e673dddd18a39662f49e7d199f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/contracts/zipball/eb9a0171866fca0669c9acab6c7441e19b4694ca",
-                "reference": "eb9a0171866fca0669c9acab6c7441e19b4694ca",
+                "url": "https://api.github.com/repos/illuminate/contracts/zipball/04fbae936ed14e673dddd18a39662f49e7d199f5",
+                "reference": "04fbae936ed14e673dddd18a39662f49e7d199f5",
                 "shasum": ""
             },
             "require": {
@@ -448,7 +448,7 @@
             ],
             "description": "The Illuminate Contracts package.",
             "homepage": "https://laravel.com",
-            "time": "2018-01-19T17:59:58+00:00"
+            "time": "2018-03-20T15:34:35+00:00"
         },
         {
             "name": "illuminate/database",
@@ -1711,16 +1711,16 @@
         },
         {
             "name": "psr/simple-cache",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/simple-cache.git",
-                "reference": "753fa598e8f3b9966c886fe13f370baa45ef0e24"
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/753fa598e8f3b9966c886fe13f370baa45ef0e24",
-                "reference": "753fa598e8f3b9966c886fe13f370baa45ef0e24",
+                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
                 "shasum": ""
             },
             "require": {
@@ -1755,7 +1755,7 @@
                 "psr-16",
                 "simple-cache"
             ],
-            "time": "2017-01-02T13:31:39+00:00"
+            "time": "2017-10-23T01:57:42+00:00"
         },
         {
             "name": "symfony/console",

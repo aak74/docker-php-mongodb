@@ -1,6 +1,9 @@
 <?php
-require_once('vendor/autoload.php');
 
+// while (true) {
+//     sleep(30);
+// }
+require_once('vendor/autoload.php');
 use \Bunny\Client;
 use \Bunny\Channel;
 use \Bunny\Message;
