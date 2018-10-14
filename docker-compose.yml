@@ -12,6 +12,7 @@ services:
       - ./src/front/dist:/app
     command: nginx -g "daemon off;"
     restart: always
+
   back:
     build: ./src/back
     container_name: pr-back
@@ -19,6 +20,7 @@ services:
       - ./src/back/src:/app
       - ./logs:/var/log/node
     restart: always
+
   backup:
     build: ./src/backup-runner/
     container_name: pr-backup
@@ -28,15 +30,19 @@ services:
       - ./logs:/var/log/php
       - /mnt/b/backup:/mnt/b/backup
     restart: always
+
   mongo:
     image: mongo:3-stretch
     container_name: pr-mongodb
     hostname: pr-mongodb
+    ports:
+      - 27017:27017
     volumes:
       - ./data/mongo:/data/db
     restart: always
     entrypoint:
       mongod --bind_ip_all
+
   rabbitmq:
     image: rabbitmq:3-management
     hostname: pr-rabbitmq
