@@ -16,7 +16,7 @@ const projects = require('../models/Projects');
  */
 class Main {
 
-  constructor (logger) {
+  constructor () {
     this.logger = logger;
   }
 

@@ -7,6 +7,14 @@ const loadStatus = ({ commit }) => {
     });
 };
 
+const loadProjects = ({ commit }) => {
+  api.getData('get', 'projects/')
+    .then(data => {
+      commit('LOADED_PROJECTS', data);
+    });
+};
+
 export default {
   loadStatus,
+  loadProjects,
 };

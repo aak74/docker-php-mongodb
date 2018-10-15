@@ -13,6 +13,12 @@ export default [
         link: '/services/',
         description: null,
       },
+      {
+        icon: 'list',
+        title: 'Проекты',
+        link: '/projects/',
+        description: null,
+      },
     ],
   },
   {

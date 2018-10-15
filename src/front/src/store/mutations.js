@@ -3,8 +3,6 @@ export default {
     // console.log('STATUS_LOADED', payload);
 
     state.appStatus = payload;
-    // eslint-disable-next-line
-    state.appStatus.docker.services = state.appStatus.docker.services.sort((a, b) => (b.created - a.created));
   },
 
   TOTAL_HISTORY_LOADED(state, payload) {
@@ -27,5 +25,9 @@ export default {
   SET_ERROR(state, error) {
     console.log('SET_ERROR', error);
     state.error = error;
+  },
+
+  LOADED_PROJECTS(state, data) {
+    console.log('LOADED_PROJECTS', data);
   },
 };
