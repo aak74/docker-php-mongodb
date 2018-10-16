@@ -14,7 +14,21 @@ const loadProjects = ({ commit }) => {
     });
 };
 
+const addProject = ({ commit }, data) => {
+  api.request('post', 'projects/', data)
+    .then(
+      commit('ADDED_PROJECT', data));
+};
+
+const deleteProject = ({ commit }, id) => {
+  api.request('post', 'projects/', id)
+    .then(
+      commit('DELETED_PROJECT', id));
+};
+
 export default {
   loadStatus,
   loadProjects,
+  addProject,
+  deleteProject,
 };

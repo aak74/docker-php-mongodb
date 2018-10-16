@@ -3,6 +3,7 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
+const bodyParser = require('body-parser');
 
 const config = require('../config');
 const logger = require('../utils/log');
@@ -21,17 +22,28 @@ class Main {
   }
 
   async run () {
-    
+
+    app.use(bodyParser.json());
+
     router.use('/status', (req, res, next) => {
       res.status(200).send('OK');
     });
 
     router.use('/projects', (req, res) => {
-      projects.find({}, (err, items) => {
-        res.send(items);
+      projects.find({}, (err, data) => {
+        res.send({
+          status: 'ok',
+          data
+        });
       });
     });
-    
+
+    app.post('/projects', (req, res) => {
+      projects.create(req.body);
+      // projects.findByIdAndRemove(req);
+      res.send('object created');
+    });
+
     router.all('*', function (req, res) {
       logger.error('Bad request', req.params);
       res.status(400).send('Bad request');

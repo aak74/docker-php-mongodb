@@ -1,1 +1,5 @@
-export default {};
+export default {
+  projects(state) {
+    return state.projects;
+  },
+};

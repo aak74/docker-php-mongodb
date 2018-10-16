@@ -29,5 +29,14 @@ export default {
 
   LOADED_PROJECTS(state, data) {
     console.log('LOADED_PROJECTS', data);
+    state.projects = data;
+  },
+
+  ADDED_PROJECT(state, data) {
+    console.log('ADDED PROJECT - ', data);
+  },
+
+  DELETED_PROJECT(state, data) {
+    console.log('DELETED PROJECT - ', data);
   },
 };
