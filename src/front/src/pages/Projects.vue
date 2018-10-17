@@ -2,6 +2,9 @@
   <div>
     <v-container>
       <h2>Проекты</h2>
+      <!-- <areal-modal :value='value' :max-width="750" @click='closeModal'>
+      <span>ArealModal</span>
+      </areal-modal> -->
       <v-layout row align-end>
         <v-flex xs6>
           <v-dialog
@@ -77,6 +80,7 @@
 </template>
 
 <script>
+/* eslint no-underscore-dangle: ["error",{"allow":["_id"]}] */
 
 import DataTable from '../components/admin/DataTable';
 import ArealButton from '../components/elements/ArealButton';
@@ -116,9 +120,8 @@ export default {
     },
     deleteItem(item) {
       console.log('Data deleteItem', item._id);
-      let id = item._id;
-      // const index = this.items.indexOf(item);
-      confirm('Are you sure you want to delete this item?') && this.$store.dispatch('deleteProject', id);
+      const id = item._id;
+      this.$store.dispatch('deleteProject', id);
     },
   },
   computed: {

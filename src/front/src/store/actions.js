@@ -15,13 +15,15 @@ const loadProjects = ({ commit }) => {
 };
 
 const addProject = ({ commit }, data) => {
-  api.request('post', 'projects/', data)
+  const req = ['add', data];
+  api.request('post', 'projects/', req)
     .then(
       commit('ADDED_PROJECT', data));
 };
 
 const deleteProject = ({ commit }, id) => {
-  api.request('post', 'projects/', id)
+  const req = ['delete', id];
+  api.request('post', 'projects/', req)
     .then(
       commit('DELETED_PROJECT', id));
 };

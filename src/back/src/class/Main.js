@@ -39,9 +39,18 @@ class Main {
     });
 
     app.post('/projects', (req, res) => {
-      projects.create(req.body);
-      // projects.findByIdAndRemove(req);
-      res.send('object created');
+      let action = req.body[0];
+      let data = req.body[1];
+      switch(action) {
+        case 'add':
+        projects.create(data);
+        res.send('object created');
+        break;
+        case 'delete':
+        projects.find({ _id: data }).remove().exec();
+        res.send('object deleted');
+        break;
+      }
     });
 
     router.all('*', function (req, res) {
