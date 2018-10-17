@@ -28,9 +28,17 @@ const deleteProject = ({ commit }, id) => {
       commit('DELETED_PROJECT', id));
 };
 
+const editProject = ({ commit }, data) => {
+  const req = ['edit', data];
+  api.request('post', 'projects/', req)
+    .then(
+      commit('EDITED_PROJECT', data));
+};
+
 export default {
   loadStatus,
   loadProjects,
   addProject,
   deleteProject,
+  editProject,
 };

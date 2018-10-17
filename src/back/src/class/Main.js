@@ -43,14 +43,18 @@ class Main {
       let data = req.body[1];
       switch(action) {
         case 'add':
-        projects.create(data);
-        res.send('object created');
-        break;
+          projects.create(data);
+          res.send('object created');
+          break;
         case 'delete':
-        projects.find({ _id: data }).remove().exec();
-        res.send('object deleted');
-        break;
-      }
+          projects.find({ _id: data }).remove().exec();
+          res.send('object deleted');
+          break;
+        case 'edit':
+          projects.find({ _id: data }).update({ name: data.name, url: data.url }).exec();
+          res.send('object edited');
+          break;
+      };
     });
 
     router.all('*', function (req, res) {

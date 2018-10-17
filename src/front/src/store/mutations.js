@@ -39,4 +39,8 @@ export default {
   DELETED_PROJECT(state, data) {
     console.log('DELETED PROJECT - ', data);
   },
+
+  EDITED_PROJECT(state, data) {
+    console.log('EDITED PROJECT - ', data);
+  },
 };
