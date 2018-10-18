@@ -1,6 +1,6 @@
 'use strict';
 
-require('express-group-routes');
+//const expressGroup = require('express-group-routes');
 const express = require('express');
 const app = express();
 const router = express.Router();
@@ -39,6 +39,15 @@ class Main {
       });
     });
 
+    // app.get('/projects', (req, res) => {
+    //   projects.find({}, (err, data) => {
+    //     res.send({
+    //       status: 'ok',
+    //       data
+    //     });
+    //   });
+    // });
+
     app.post('/projects', (req, res) => {
       const data = req.body;
       projects.create(data);
@@ -58,6 +67,18 @@ class Main {
       //     break;
       // };
     });
+
+    app.delete('/projects/:id', (req, res) => {
+      const data = req.params;
+      // console.log(req);
+      console.log(data);
+      projects.find({ _id: data.id }).remove().exec();
+      res.send('deleted');
+    });
+
+    // app.group("/projects", (router) => {
+    //   router.delete("/login", loginController.store); // /api/v1/login 
+    // });
 
     router.all('*', function (req, res) {
       logger.error('Bad request', req.params);

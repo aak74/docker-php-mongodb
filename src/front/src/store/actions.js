@@ -21,7 +21,7 @@ const addProject = ({ commit }, data) => {
 };
 
 const deleteProject = ({ commit }, id) => {
-  api.request('delete', `projects/${id}`, id)
+  api.request('delete', `projects/${id}`)
     .then(
       commit('DELETED_PROJECT', id));
 };
