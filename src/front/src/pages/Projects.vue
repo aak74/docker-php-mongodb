@@ -5,7 +5,7 @@
       <v-layout row align-end>
         <v-flex xs6>
           <v-dialog
-            v-model="ProjectDialog"
+            v-model="showDialog"
             width="500"
           >
             <v-btn
@@ -15,7 +15,7 @@
               class="mb15"
               dark
             >
-              Add project
+              Добавить
             </v-btn>
             <v-card>
               <v-card-title
@@ -28,7 +28,7 @@
                 <v-form v-model="formValid">
                   <v-text-field
                     v-model="name"
-                    label="Name"
+                    label="Название"
                     :rules="nameRules"
                     :disabled="disableInput"
                     required
@@ -48,9 +48,9 @@
                 <v-btn
                   color="red"
                   flat
-                  @click="ProjectDialog = false"
+                  @click="showDialog = false"
                 >
-                  Cancel
+                  Отмена
                 </v-btn>
                 <v-btn
                   color="green"
@@ -58,7 +58,7 @@
                   @click="confirmModalAction"
                   :disabled="!formValid"
                 >
-                  {{ modalAction }}
+                  {{ modalSubmitButton }}
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -69,7 +69,15 @@
             class="mb15"
             dark
           >
-            Refresh
+            Обновить
+          </v-btn>
+          <v-btn
+            color="red lighten-2"
+            @click="sendBackup"
+            class="mb15"
+            dark
+          >
+            Бэкап
           </v-btn>
         </v-flex>
       </v-layout>
@@ -97,19 +105,20 @@ export default {
   name: 'Projects',
   data() {
     return {
-      ProjectDialog: false,
+      showDialog: false,
       formValid: false,
       id: '',
       name: '',
       nameRules: [
-        v => !!v || 'Name is required',
+        v => !!v || 'Название обязательно',
       ],
       url: '',
       urlRules: [
-        v => !!v || 'Url is required',
+        v => !!v || 'URL адрес обязятелен',
       ],
       disableInput: false,
-      modalTitle: 'Add new project',
+      modalTitle: 'Добавить новый проект',
+      modalSubmitButton: 'Добавить',
       modalAction: '',
     };
   },
@@ -118,38 +127,38 @@ export default {
   },
   methods: {
     sendRequest() {
-      console.log('sendRequest');
       this.$store.dispatch('loadProjects');
     },
     addItem() {
-      this.modalTitle = 'Add new project';
+      this.modalTitle = 'Добавить новый проект';
+      this.modalSubmitButton = 'Добавить';
       this.modalAction = 'Add';
       this.name = '';
       this.url = '';
       this.disableInput = false;
-      this.ProjectDialog = true;
+      this.showDialog = true;
     },
     editItem(item) {
-      console.log('Data editItem', item);
-      this.modalTitle = 'Edit project';
+      this.modalTitle = 'Редактировать проект';
+      this.modalSubmitButton = 'Сохранить';
       this.modalAction = 'Edit';
       this.id = item._id;
       this.name = item.name;
       this.url = item.url;
       this.disableInput = false;
-      this.ProjectDialog = true;
+      this.showDialog = true;
     },
     deleteItem(item) {
+      this.modalTitle = 'Удалить проект';
+      this.modalSubmitButton = 'Удалить';
       this.modalAction = 'Delete';
-      this.modalTitle = 'Delete project';
       this.id = item._id;
       this.name = item.name;
       this.url = item.url;
       this.disableInput = true;
-      this.ProjectDialog = true;
+      this.showDialog = true;
     },
     confirmModalAction() {
-      console.log('confirm modal action', this.modalAction);
       const action = this.modalAction;
       switch (action) {
         default:
@@ -158,7 +167,7 @@ export default {
           this.addProject();
           break;
         case 'Edit':
-          this.editProject();
+          this.saveProject();
           break;
         case 'Delete':
           this.deleteProject();
@@ -166,22 +175,25 @@ export default {
       }
     },
     addProject() {
-      console.log('Project added', this.name, this.url);
+      console.log('Проект добавлен', this.name, this.url);
       this.$store.dispatch('addProject', { name: this.name, url: this.url });
-      this.ProjectDialog = false;
+      this.showDialog = false;
       this.sendRequest();
     },
     deleteProject() {
-      console.log('Project deleted', this.name, this.url, this.id);
+      console.log('Проект удалён', this.name, this.url, this.id);
       this.$store.dispatch('deleteProject', this.id);
-      this.ProjectDialog = false;
+      this.showDialog = false;
       this.sendRequest();
     },
-    editProject() {
-      console.log('Project edited', this.id, this.name, this.url);
-      this.$store.dispatch('editProject', { name: this.name, url: this.url, _id: this.id });
-      this.ProjectDialog = false;
+    saveProject() {
+      console.log('Проект сохранен', this.id, this.name, this.url);
+      this.$store.dispatch('saveProject', { name: this.name, url: this.url, id: this.id });
+      this.showDialog = false;
       this.sendRequest();
+    },
+    sendBackup() {
+      console.log('Запрос на создание бэкапа добавлен в очередь');
     },
   },
   computed: {
@@ -198,7 +210,7 @@ export default {
       return this.$store.getters.projects;
     },
     headers() {
-      return [{ text: 'Name', value: 'name' }, { text: 'URL', value: 'url', sortable: false }];
+      return [{ text: 'Название', value: 'name' }, { text: 'URL', value: 'url', sortable: false }];
     },
     /**
      * преобразует значение по ключу заголовка (headers)
@@ -217,9 +229,9 @@ export default {
   },
   mounted() {
     document.addEventListener('keydown', e => {
-      if (this.ProjectDialog === true && e.keyCode === 27) {
-        this.ProjectDialog = false;
-      } else if (this.ProjectDialog === true && this.formValid === true && e.keyCode === 13) {
+      if (this.showDialog === true && e.keyCode === 27) {
+        this.showDialog = false;
+      } else if (this.showDialog === true && this.formValid === true && e.keyCode === 13) {
         this.confirmModalAction();
       }
     });

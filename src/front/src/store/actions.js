@@ -15,22 +15,19 @@ const loadProjects = ({ commit }) => {
 };
 
 const addProject = ({ commit }, data) => {
-  const req = ['add', data];
-  api.request('post', 'projects/', req)
+  api.request('post', 'projects/', data)
     .then(
       commit('ADDED_PROJECT', data));
 };
 
 const deleteProject = ({ commit }, id) => {
-  const req = ['delete', id];
-  api.request('post', 'projects/', req)
+  api.request('delete', `projects/${id}`, id)
     .then(
       commit('DELETED_PROJECT', id));
 };
 
-const editProject = ({ commit }, data) => {
-  const req = ['edit', data];
-  api.request('post', 'projects/', req)
+const saveProject = ({ commit }, data) => {
+  api.request('post', `projects/${data.id}`, data)
     .then(
       commit('EDITED_PROJECT', data));
 };
@@ -40,5 +37,5 @@ export default {
   loadProjects,
   addProject,
   deleteProject,
-  editProject,
+  saveProject,
 };
