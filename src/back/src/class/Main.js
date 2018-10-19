@@ -12,6 +12,7 @@ const logger = require('../utils/log');
 const Db = require('./Db');
 const db = Db.connect();
 const projects = require('../models/Projects');
+const Queue = require('./Queue');
 
 /**
  * Точка входа в сервис
@@ -39,46 +40,31 @@ class Main {
       });
     });
 
-    // app.get('/projects', (req, res) => {
-    //   projects.find({}, (err, data) => {
-    //     res.send({
-    //       status: 'ok',
-    //       data
-    //     });
-    //   });
-    // });
-
     app.post('/projects', (req, res) => {
       const data = req.body;
+      console.log(req);
       projects.create(data);
       res.send('ok');
-      // switch(action) {
-      //   case 'add':
-      //     projects.create(data);
-      //     res.send('object created');
-      //     break;
-      //   case 'delete':
-      //     projects.find({ _id: data }).remove().exec();
-      //     res.send('object deleted');
-      //     break;
-      //   case 'edit':
-      //     projects.find({ _id: data }).update({ name: data.name, url: data.url }).exec();
-      //     res.send('object edited');
-      //     break;
-      // };
+    });
+
+    app.post('/projects/backup', (req, res) => {
+      console.log('backup req');
+      res.send('backup saved');
     });
 
     app.delete('/projects/:id', (req, res) => {
       const data = req.params;
-      // console.log(req);
       console.log(data);
-      projects.find({ _id: data.id }).remove().exec();
+      projects.deleteOne({ _id: data.id }).exec();
       res.send('deleted');
     });
 
-    // app.group("/projects", (router) => {
-    //   router.delete("/login", loginController.store); // /api/v1/login 
-    // });
+    app.post('/projects/:id', (req, res) => {
+      const data = req.body;
+      // console.log(data);
+      projects.find({ _id: data.id }).updateOne({ name: data.name, url: data.url }).exec();
+      res.send('object saved');
+    });
 
     router.all('*', function (req, res) {
       logger.error('Bad request', req.params);

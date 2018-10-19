@@ -194,6 +194,7 @@ export default {
     },
     sendBackup() {
       console.log('Запрос на создание бэкапа добавлен в очередь');
+      this.$store.dispatch('backupProjects');
     },
   },
   computed: {

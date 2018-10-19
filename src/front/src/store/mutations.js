@@ -40,7 +40,11 @@ export default {
     console.log('DELETED PROJECT - ', data);
   },
 
-  EDITED_PROJECT(state, data) {
-    console.log('EDITED PROJECT - ', data);
+  SAVED_PROJECT(state, data) {
+    console.log('SAVED PROJECT - ', data);
+  },
+
+  BACKUP_TASK_SENDED() {
+    console.log('BACKUP TASK SENDED TO QUEUE');
   },
 };

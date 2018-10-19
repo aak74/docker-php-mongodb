@@ -29,7 +29,13 @@ const deleteProject = ({ commit }, id) => {
 const saveProject = ({ commit }, data) => {
   api.request('post', `projects/${data.id}`, data)
     .then(
-      commit('EDITED_PROJECT', data));
+      commit('SAVED_PROJECT', data));
+};
+
+const backupProjects = ({ commit }) => {
+  api.request('post', 'projects/backup')
+    .then(
+      commit('BACKUP_TASK_SENDED'));
 };
 
 export default {
@@ -38,4 +44,5 @@ export default {
   addProject,
   deleteProject,
   saveProject,
+  backupProjects,
 };
