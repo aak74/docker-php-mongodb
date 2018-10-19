@@ -5,6 +5,7 @@ import Dashboard from '../pages/Dashboard';
 import Services from '../pages/Services';
 import Settings from '../pages/Settings';
 import Projects from '../pages/Projects';
+import Project from '../pages/Project';
 
 Vue.use(Router);
 
@@ -28,6 +29,11 @@ const routes = [
     path: '/projects',
     name: 'Projects',
     component: Projects,
+  },
+  {
+    path: '/projects/:id',
+    name: 'Project',
+    component: Project,
   },
 ];
 

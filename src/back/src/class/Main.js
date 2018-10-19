@@ -14,6 +14,8 @@ const db = Db.connect();
 const projects = require('../models/Projects');
 const Queue = require('./Queue');
 
+const queue = new Queue(logger, 'backup');
+
 /**
  * Точка входа в сервис
  */
@@ -47,9 +49,22 @@ class Main {
       res.send('ok');
     });
 
-    app.post('/projects/backup', (req, res) => {
-      console.log('backup req');
-      res.send('backup saved');
+    app.get('/projects/:id/backup', (req, res) => {
+      const data = req.params;
+      console.log('backup this -', data);
+      queue.connect();
+      queue.publish(`_id:${data}`, 'backup');
+      res.send('ok');
+    });
+
+    app.get('/projects/:id', (req, res) => {
+      projects.findOne({ _id: req.params.id }, (err, data) => {
+        console.log(data);
+        res.send({
+          status: 'ok',
+          data
+        });
+      });
     });
 
     app.delete('/projects/:id', (req, res) => {

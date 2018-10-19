@@ -32,6 +32,11 @@ export default {
     state.projects = data;
   },
 
+  OPENED_PROJECT(state, data) {
+    console.log('OPENED_PROJECT', data);
+    state.currentProject = data;
+  },
+
   ADDED_PROJECT(state, data) {
     console.log('ADDED PROJECT - ', data);
   },
@@ -44,7 +49,7 @@ export default {
     console.log('SAVED PROJECT - ', data);
   },
 
-  BACKUP_TASK_SENDED() {
-    console.log('BACKUP TASK SENDED TO QUEUE');
+  BACKUP_TASK_SENDED(state, data) {
+    console.log('BACKUP TASK SENDED TO QUEUE - ', data);
   },
 };

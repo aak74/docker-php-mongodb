@@ -14,6 +14,13 @@ const loadProjects = ({ commit }) => {
     });
 };
 
+const openProject = ({ commit }, id) => {
+  api.getData('get', `projects/${id}`)
+    .then(data => {
+      commit('OPENED_PROJECT', data);
+    });
+};
+
 const addProject = ({ commit }, data) => {
   api.request('post', 'projects/', data)
     .then(
@@ -32,10 +39,10 @@ const saveProject = ({ commit }, data) => {
       commit('SAVED_PROJECT', data));
 };
 
-const backupProjects = ({ commit }) => {
-  api.request('post', 'projects/backup')
+const backupProject = ({ commit }, id) => {
+  api.request('get', `projects/${id}/backup`)
     .then(
-      commit('BACKUP_TASK_SENDED'));
+      commit('BACKUP_TASK_SENDED', id));
 };
 
 export default {
@@ -44,5 +51,6 @@ export default {
   addProject,
   deleteProject,
   saveProject,
-  backupProjects,
+  backupProject,
+  openProject,
 };

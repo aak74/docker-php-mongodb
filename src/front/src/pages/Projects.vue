@@ -71,14 +71,6 @@
           >
             Обновить
           </v-btn>
-          <v-btn
-            color="red lighten-2"
-            @click="sendBackup"
-            class="mb15"
-            dark
-          >
-            Бэкап
-          </v-btn>
         </v-flex>
       </v-layout>
       <data-table
@@ -89,8 +81,10 @@
       :transforms="transforms"
       :hide-actions="false"
       :controls="controls"
+      @click="clickItem"
       @editItem="editItem"
       @deleteItem="deleteItem"
+      @backupItem="backupItem"
       />
     </v-container>
   </div>
@@ -129,6 +123,11 @@ export default {
     sendRequest() {
       this.$store.dispatch('loadProjects');
     },
+    clickItem(item) {
+      console.log('clicked on', item);
+      this.$store.dispatch('openProject', item._id);
+      document.location.href = `projects/${item._id}`;
+    },
     addItem() {
       this.modalTitle = 'Добавить новый проект';
       this.modalSubmitButton = 'Добавить';
@@ -158,6 +157,16 @@ export default {
       this.disableInput = true;
       this.showDialog = true;
     },
+    backupItem(item) {
+      this.modalTitle = 'Сделать бэкап проекта';
+      this.modalSubmitButton = 'OK';
+      this.modalAction = 'Backup';
+      this.id = item._id;
+      this.name = item.name;
+      this.url = item.url;
+      this.disableInput = true;
+      this.showDialog = true;
+    },
     confirmModalAction() {
       const action = this.modalAction;
       switch (action) {
@@ -171,6 +180,9 @@ export default {
           break;
         case 'Delete':
           this.deleteProject();
+          break;
+        case 'Backup':
+          this.backupProject();
           break;
       }
     },
@@ -192,9 +204,10 @@ export default {
       this.showDialog = false;
       this.sendRequest();
     },
-    sendBackup() {
+    backupProject() {
       console.log('Запрос на создание бэкапа добавлен в очередь');
-      this.$store.dispatch('backupProjects');
+      this.$store.dispatch('backupProject', this.id);
+      this.showDialog = false;
     },
   },
   computed: {
