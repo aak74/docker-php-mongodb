@@ -125,8 +125,8 @@ export default {
     },
     clickItem(item) {
       console.log('clicked on', item);
-      this.$store.dispatch('openProject', item._id);
-      document.location.href = `projects/${item._id}`;
+      // this.$store.dispatch('openProject', item._id);
+      document.location.href = `/projects/${item._id}`;
     },
     addItem() {
       this.modalTitle = 'Добавить новый проект';
