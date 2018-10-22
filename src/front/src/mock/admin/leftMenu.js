@@ -14,9 +14,15 @@ export default [
         description: null,
       },
       {
-        icon: 'list',
+        icon: 'ballot',
         title: 'Проекты',
         link: '/projects/',
+        description: null,
+      },
+      {
+        icon: 'bar_chart',
+        title: 'Состояние серверов',
+        link: '/server-status/',
         description: null,
       },
     ],

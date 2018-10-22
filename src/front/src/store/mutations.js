@@ -52,4 +52,8 @@ export default {
   BACKUP_TASK_SENDED(state, data) {
     console.log('BACKUP TASK SENDED TO QUEUE - ', data);
   },
+
+  SERVERS_STATUS_LOADED(state, data) {
+    console.log('SERVERS STATUSE LOADED - ', data);
+  },
 };

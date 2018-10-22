@@ -6,6 +6,7 @@ import Services from '../pages/Services';
 import Settings from '../pages/Settings';
 import Projects from '../pages/Projects';
 import Project from '../pages/Project';
+import ServerStatus from '../pages/ServerStatus';
 
 Vue.use(Router);
 
@@ -34,6 +35,11 @@ const routes = [
     path: '/projects/:id',
     name: 'Project',
     component: Project,
+  },
+  {
+    path: '/server-status',
+    name: 'Server status',
+    component: ServerStatus,
   },
 ];
 
