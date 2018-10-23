@@ -34,7 +34,11 @@
             </v-list-tile>
             <v-list-tile>
               <v-list-tile-content>Статус:</v-list-tile-content>
-              <v-list-tile-content class="align-end">{{ props.item.status }}</v-list-tile-content>
+              <v-list-tile-content class="align-end">
+                <span :class="statusCircle(props.item.status.code)">
+                {{ props.item.status.code }} {{ props.item.status.text }}
+                </span>
+              </v-list-tile-content>
             </v-list-tile>
           </v-list>
         </v-card>
@@ -57,6 +61,12 @@ export default {
       this.$store.dispatch('getServersStatus');
       this.$store.dispatch('loadProjects');
     },
+    statusCircle(code) {
+      if (code === 200) {
+        return 'status-circle green-circle';
+      }
+      return 'status-circle red-circle';
+    },
   },
   computed: {
     items() {
@@ -78,5 +88,20 @@ export default {
 <style>
 .mb15 {
   margin-bottom: 15px;
+}
+.status-circle::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+.green-circle::before {
+  background-color: lightseagreen;
+}
+.red-circle::before {
+  background-color: crimson;
 }
 </style>

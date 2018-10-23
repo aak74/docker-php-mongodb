@@ -188,7 +188,7 @@ export default {
     },
     addProject() {
       console.log('Проект добавлен', this.name, this.url);
-      this.$store.dispatch('addProject', { name: this.name, url: this.url });
+      this.$store.dispatch('addProject', { name: this.name, url: this.url, status: { code: 'NOT UPDATED' } });
       this.showDialog = false;
       this.sendRequest();
     },

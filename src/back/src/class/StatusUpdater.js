@@ -12,31 +12,22 @@ class StatusUpdater extends EventEmitter {
 
     this.id = project._id;
     this.name = project.name;
-    this.url = project.url;
+    this.url = 'https://' + project.url;
     this.status = project.status;
     this.updateTime = null;
   }
 
   async updateStatus() {
     console.log('status before:', this.url);
-    axios.get('https://google.com')
+    axios.get(this.url)
       .then(response => {
-        projects.find({ _id: this.id }).updateOne({ status: response.status }).exec();
+        projects.find({ _id: this.id }).updateOne({ status: { code: response.status, text: response.statusText } }).exec();
         console.log(response.status);
       })
       .catch(error => {
-        console.log(error);
+        projects.find({ _id: this.id }).updateOne({ status: { code: error.code } }).exec();
       });
     }
 }
-
-const projectToUpdate = new StatusUpdater({
-    _id:"5bc9b9ee3cfa8f6b8a975d19",
-    name:"VR",
-    url:"vr.com",
-    status:"300 OK"
-});
-
-projectToUpdate.updateStatus();
 
 module.exports = StatusUpdater;

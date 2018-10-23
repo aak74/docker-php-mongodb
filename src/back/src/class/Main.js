@@ -13,7 +13,7 @@ const Db = require('./Db');
 const db = Db.connect();
 const projects = require('../models/Projects');
 const Queue = require('./Queue');
-const StatusUpdater = require('./Status');
+const StatusUpdater = require('./StatusUpdater');
 
 const queue = new Queue(logger, 'backup');
 
@@ -85,11 +85,11 @@ class Main {
     app.get('/server-status/', (req, res) =>{
       projects.find({}, (err, data) => {
         data.forEach(el => {
-          el.updateOne({ status: "300 OK" }).exec();
-          console.log(el);
-        });
+          const updating = new StatusUpdater(el);
+          updating.updateStatus();
+        })
       });
-      res.send('kkkk');
+      res.send('status updated');
     });
 
     router.all('*', function (req, res) {
