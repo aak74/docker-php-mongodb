@@ -62,10 +62,15 @@ export default {
       this.$store.dispatch('loadProjects');
     },
     statusCircle(code) {
-      if (code === 200) {
-        return 'status-circle green-circle';
+      const divider = Math.floor(code / 100);
+      switch (divider) {
+        default:
+          return 'status-circle red-circle';
+        case 2:
+          return 'status-circle green-circle';
+        case 3:
+          return 'status-circle orange-circle';
       }
-      return 'status-circle red-circle';
     },
   },
   computed: {
@@ -103,5 +108,8 @@ export default {
 }
 .red-circle::before {
   background-color: crimson;
+}
+.orange-circle::before {
+  background-color: darkorange;
 }
 </style>
