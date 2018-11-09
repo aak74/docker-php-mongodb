@@ -13,7 +13,7 @@ class Queue extends EventEmitter {
     this.queueName = queueName;
     this.isListen = isListen;
 
-    this.url = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASSWORD}@${process.env.RABBITMQ_HOST}:${process.env.RABBITMQ_PORT}`;
+    this.url = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASS}@${process.env.RABBITMQ_HOST}`;
     this.log = log;
   }
 
@@ -26,7 +26,7 @@ class Queue extends EventEmitter {
         await this.subscribeOnQueues();
       }
     } catch (err) {
-      this.error('connect', err.toString());
+      this.error(this.url, err.toString());
     }
   }
 

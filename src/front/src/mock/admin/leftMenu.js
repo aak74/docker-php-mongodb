@@ -13,6 +13,18 @@ export default [
         link: '/services/',
         description: null,
       },
+      {
+        icon: 'ballot',
+        title: 'Проекты',
+        link: '/projects/',
+        description: null,
+      },
+      {
+        icon: 'bar_chart',
+        title: 'Состояние серверов',
+        link: '/server-status/',
+        description: null,
+      },
     ],
   },
   {

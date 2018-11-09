@@ -4,4 +4,10 @@ module.exports = {
   db: {
     url: 'mongodb://pr-mongodb:27017/projects',
   },
+  rabbit: {
+    queues: {
+      'backup': {},
+      'backuped': {},
+    },
+  },
 }

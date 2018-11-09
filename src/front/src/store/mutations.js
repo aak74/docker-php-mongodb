@@ -3,8 +3,6 @@ export default {
     // console.log('STATUS_LOADED', payload);
 
     state.appStatus = payload;
-    // eslint-disable-next-line
-    state.appStatus.docker.services = state.appStatus.docker.services.sort((a, b) => (b.created - a.created));
   },
 
   TOTAL_HISTORY_LOADED(state, payload) {
@@ -27,5 +25,35 @@ export default {
   SET_ERROR(state, error) {
     console.log('SET_ERROR', error);
     state.error = error;
+  },
+
+  LOADED_PROJECTS(state, data) {
+    console.log('LOADED_PROJECTS', data);
+    state.projects = data;
+  },
+
+  OPENED_PROJECT(state, data) {
+    console.log('OPENED_PROJECT', data);
+    state.currentProject = data;
+  },
+
+  ADDED_PROJECT(state, data) {
+    console.log('ADDED PROJECT - ', data);
+  },
+
+  DELETED_PROJECT(state, data) {
+    console.log('DELETED PROJECT - ', data);
+  },
+
+  SAVED_PROJECT(state, data) {
+    console.log('SAVED PROJECT - ', data);
+  },
+
+  BACKUP_TASK_SENDED(state, data) {
+    console.log('BACKUP TASK SENDED TO QUEUE - ', data);
+  },
+
+  SERVERS_STATUS_LOADED(state, data) {
+    console.log('SERVERS STATUSE LOADED - ', data);
   },
 };

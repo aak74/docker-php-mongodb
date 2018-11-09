@@ -24,4 +24,4 @@ new Vue({
 });
 
 store.dispatch('admin/loadAll');
-store.dispatch('socket/connect');
+// store.dispatch('socket/connect');
