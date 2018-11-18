@@ -39,12 +39,12 @@ services:
 
   mongo:
     image: mongo:3-stretch
-    container_name: pr-mongodb
-    hostname: pr-mongodb
+    container_name: ${MONGODB_CONTAINER_NAME}
     ports:
       - 27017:27017
     volumes:
       - ./data/mongo:/data/db
+      - ./data/backup/mongo:/backup
     restart: always
     entrypoint:
       mongod --bind_ip_all
