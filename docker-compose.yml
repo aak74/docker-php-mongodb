@@ -3,7 +3,6 @@ version: '2'
 services:
   nginx:
     build: ./containers/nginx
-    container_name: pr-nginx
     ports:
       - 80:80
     volumes:
@@ -15,10 +14,10 @@ services:
 
   back:
     build: ./src/back
-    container_name: pr-back
     volumes:
-      - ./src/back/src:/app
-      - ./logs:/var/log/node
+      - ./src/back:/app
+      - ./src/back/node_modules:/node_modules
+      - ./logs/back:/var/log/node
     environment:
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}
@@ -29,12 +28,19 @@ services:
 
   backup:
     build: ./src/backup-runner/
-    container_name: pr-backup
     volumes:
       - ./src/backup:/app/service
       - ./src/backup-runner/:/app/runner
       - ./logs:/var/log/php
       - /mnt/b/backup:/mnt/b/backup
+    environment:
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASS: ${RABBITMQ_PASS}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    # links:
+    #   - rabbitmq      
     restart: always
 
   mongo:
@@ -51,8 +57,6 @@ services:
 
   rabbitmq:
     image: rabbitmq:3-management
-    hostname: pr-rabbitmq
-    container_name: pr-rabbitmq
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
     environment:

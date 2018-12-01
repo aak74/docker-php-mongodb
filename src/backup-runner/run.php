@@ -3,24 +3,29 @@
 // while (true) {
 //     sleep(30);
 // }
+
 require_once('vendor/autoload.php');
 use \Bunny\Client;
 use \Bunny\Channel;
 use \Bunny\Message;
 
 $connection = [
-    'host' => 'projects-rabbitmq',
-    'vhost' => '/',    // The default vhost is /
-    'user' => 'guest', // The default user is guest
-    'password' => 'guest', // The default password is guest
+    'host' => $ipaddr,
+    'host' => trim(getenv('RABBITMQ_HOST')),
+    'vhost' => trim(getenv('RABBITMQ_VHOST')),
+    'user' => trim(getenv('RABBITMQ_USER')),
+    'password' => trim(getenv('RABBITMQ_PASS')),
 ];
+
+var_dump($connection);
 
 $client = (new Client($connection))->connect();
 $channel = $client->channel();
+echo 'Start backup runner' . PHP_EOL;
 $channel->exchangeDeclare('backup', 'fanout');
 $queue = $channel->queueDeclare('', false, false, true, false);
 $channel->queueBind($queue->queue, 'backup');
-echo ' [*] Waiting for backup jobs. To exit press CTRL+C', "\n";
+echo 'Queue created' . PHP_EOL;
 
 $channel->qos(0, 1);
 
