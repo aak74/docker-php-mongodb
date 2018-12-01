@@ -1,6 +1,2 @@
 .vscode
-/data/*
-!/data/.gitkeep
-/logs/*
-!/logs/.gitkeep
 .env

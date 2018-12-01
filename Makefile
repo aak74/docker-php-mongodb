@@ -55,8 +55,13 @@ build-front: ## build front scripts from source
 
 build-all: build-front ## build all scripts from source
 
-composer:
+composer: composer-backup composer-runner
+
+composer-backup:
 	@cd ./src/backup && composer install
+
+composer-runner:
+	@cd ./src/backup-runner && composer install
 
 dev-front: ## run dev server
 	@cd ./src/front && npm run dev

@@ -6,8 +6,8 @@ RUN npm install -g nodemon
 
 RUN apk add --no-cache curl
 
-COPY src/package*.json /app/
-RUN npm install
+# COPY src/package*.json /app/
+# RUN npm install
 
 EXPOSE 3000
 
