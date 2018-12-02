@@ -39,8 +39,6 @@ services:
       RABBITMQ_VHOST: ${RABBITMQ_VHOST}
       RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
-    # links:
-    #   - rabbitmq      
     restart: always
 
   mongo:

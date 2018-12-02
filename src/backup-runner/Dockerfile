@@ -4,7 +4,6 @@ LABEL maintainer="Andrew Kopylov <aa74ko@gmail.com>"
 
 RUN apt-get update \
     && apt-get install -y \
-    # tini \
     wget \
     unzip \
     rsync \
@@ -14,7 +13,6 @@ WORKDIR /app/
 
 COPY ./rootfs/ /
 
-RUN apt-get install -y iputils-ping
-# USER 1000:1000
+USER 1000:1000
 
 CMD ["php", "/app/runner/run.php"]
