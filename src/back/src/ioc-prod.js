@@ -22,6 +22,7 @@ const container = ioc.loadModules([
   'db/model/*.js',
   'controller/*.js',
   'query/*.js',
+  'command/*.js',
 ], {
   resolverOptions: {
     lifetime: Lifetime.SINGLETON

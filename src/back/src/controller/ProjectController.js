@@ -1,10 +1,16 @@
 'use strict';
 
 class  ProjectModel {
-  constructor({ getPage, getProjects, getProject }) {
+  constructor({
+    getPage,
+    getProjects,
+    getProject,
+    updateProject,
+  }) {
     this.getPageQuery = getPage;
     this.getProjectsQuery = getProjects;
     this.getProjectQuery = getProject;
+    this.updateProjectQuery = updateProject;
   }
 
   getPage(params) {
@@ -20,6 +26,12 @@ class  ProjectModel {
     console.log('getProject', params);
     
     return await this.getProjectQuery.get(params);
+  }
+
+  async updateProject(filter, update) {
+    console.log('updateProject', filter, update);
+    
+    return await this.updateProjectQuery.execute(filter, update);
   }
 }
 

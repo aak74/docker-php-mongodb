@@ -22,6 +22,24 @@ class Model {
     const result = await this.db.get().collection(this.collectionName).findOne(params);
     return result;
   }
+
+  async findOneAndUpdate(filter, update, params) {
+    if (filter && filter['_id']) {
+      filter['_id'] = this.db.objectId(filter['_id']);
+    }
+    
+    console.log('findOneAndUpdate', filter, update);
+    
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .findOneAndUpdate(filter, {$set: update})
+      .catch(err => {
+        console.log(err);
+        
+      });
+
+    return result;
+  }
 }
 
 module.exports = Model;
