@@ -28,7 +28,7 @@ const loadEntitiesFromBackend = store => {
  * @param {store} store
  */
 const loadAll = store => {
-  // console.log('loadAll', store, store.state.loadFromBackend);
+  console.log('loadAll', store, store.state.loadFromBackend);
   if (!store.state.loadFromBackend) {
     loadEntitiesFromMock(store);
   } else {
@@ -41,11 +41,8 @@ const loadAll = store => {
  * @param {Object} store
  * @param {Object} payload
  */
-const loadEntity = (store, payload) => {
+const loadEntity = (store, { entityName }) => {
   // console.log('loadEntity', store.state, payload);
-  // return;
-  // api.getData('get', route.meta.path, {}, 'LOADED_ENTITY')
-  const entityName = payload.entityName;
   api.getData('get', entity.getApiPathByEntityName(store.state, entityName))
     .then(data => {
       // console.log('resolve', data);

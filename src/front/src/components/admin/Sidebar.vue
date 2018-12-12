@@ -55,7 +55,7 @@ export default {
     };
   },
   created() {
-    // console.log('created', this.$store);
+    console.log('created', this.$store);
   },
 };
 </script>

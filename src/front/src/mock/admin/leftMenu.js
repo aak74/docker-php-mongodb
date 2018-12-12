@@ -8,12 +8,6 @@ export default [
         link: '/',
       },
       {
-        icon: 'list',
-        title: 'Сервисы',
-        link: '/services/',
-        description: null,
-      },
-      {
         icon: 'ballot',
         title: 'Проекты',
         link: '/projects/',
@@ -24,17 +18,6 @@ export default [
         title: 'Состояние серверов',
         link: '/server-status/',
         description: null,
-      },
-    ],
-  },
-  {
-    title: 'Тестирование',
-    items: [
-      {
-        icon: 'settings',
-        title: 'Настройки',
-        link: '/settings/',
-        description: 'Список настроек',
       },
     ],
   },
