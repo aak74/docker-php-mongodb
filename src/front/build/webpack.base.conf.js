@@ -40,8 +40,6 @@ module.exports = {
       '@admin_mock': '../../../common/',
       '@app_common': '../../common/',
       '@': resolve('src'),
-      'jquery': 'jquery/src/jquery.js',
-      'jQuery': 'jquery/src/jquery.js',
     }
   },
   module: {
