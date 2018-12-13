@@ -8,6 +8,6 @@ const db = container.resolve('db');
 db.connect().then(() => {
   const router = container.resolve('router');
   router.run();
-  // const main = container.resolve('main');
-  // main.run();
+  const main = container.resolve('main');
+  main.run();
 })

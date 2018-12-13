@@ -6,9 +6,9 @@ class GetProjects {
     this.projectModel = projectModel;
   }
 
-  async get() {
-    // console.log('this.projectModel', this.projectModel);
-    const result = await this.projectModel.find();
+  async get(filter, projection) {
+    // console.log('get', filter, projection);
+    const result = await this.projectModel.find(filter, projection);
     return result;
   }
 }

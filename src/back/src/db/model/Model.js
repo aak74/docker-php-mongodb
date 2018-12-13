@@ -6,17 +6,18 @@ class Model {
     this.collectionName = collectionName;
   }
 
-  async find(filter) {
+  async find(filter, projection) {
+    console.log('Model find', filter, projection);
     const result = await this.db.get()
       .collection(this.collectionName)
-      .find(this.getFilter(filter)).toArray();
+      .find(this.getFilter(filter)).project(projection).toArray();
     return result;
   }
 
-  async findOne(filter) {
+  async findOne(filter, projection) {
     const result = await this.db.get()
       .collection(this.collectionName)
-      .findOne(this.getFilter(filter));
+      .findOne(this.getFilter(filter)).project(projection);
     return result;
   }
 
