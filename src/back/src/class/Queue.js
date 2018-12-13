@@ -4,17 +4,17 @@ const {EventEmitter} = require('events');
 const config = require('../config');
 
 class Queue extends EventEmitter {
-  constructor(log, queueName, isListen = false) {
+  constructor({ logger }) {
     super();
 
     this.connection = null;
     this.channel = null;
     this.lastResult = null;
-    this.queueName = queueName;
-    this.isListen = isListen;
+    // this.queueName = queueName;
+    this.isListen = false;
 
     this.url = `amqp://${process.env.RABBITMQ_USER}:${process.env.RABBITMQ_PASS}@${process.env.RABBITMQ_HOST}`;
-    this.log = log;
+    this.logger = logger;
   }
 
   async connect() {
@@ -26,7 +26,7 @@ class Queue extends EventEmitter {
         await this.subscribeOnQueues();
       }
     } catch (err) {
-      this.error(this.url, err.toString());
+      this.error(this.url, err);
     }
   }
 
@@ -42,12 +42,15 @@ class Queue extends EventEmitter {
         durable: true,
       }, config.rabbit.queues[queueName] || {}));
     } catch (err) {
-      this.error('assert', err.toString());
+      this.error('assert', err);
     }
   }
 
   error(type, err) {
-    this.log.error(`#RABBIT# ${type} error %j`, err.toString());
+    console.log('err', err);
+    // console.log('err', err.stack());
+    
+    this.logger.error(`#RABBIT# ${type} error %j`, err.toString());
   }
 
   async ack(msg) {
@@ -58,14 +61,14 @@ class Queue extends EventEmitter {
     }
   }
 
-  async subscribeOnQueues() {
+  async subscribeOnQueues(queueName) {
     try {
-      await this.assertQueue(this.queueName);
-      await this.channel.consume(this.queueName, async (msg) => {
+      await this.assertQueue(queueName);
+      await this.channel.consume(queueName, async (msg) => {
         this.emitConsume(msg);
       }, {noAck: false});
     } catch (err) {
-      this.error('subscribe', err.toString());
+      this.error('subscribe', err);
     }
   }
 
@@ -77,7 +80,7 @@ class Queue extends EventEmitter {
     return this.lastResult;
   }
 
-  async publish(msg, queue = null) {
+  async publish(msg, queue) {
     try {
       if (!this.connection) {
         await this.connect(this.url);
@@ -87,16 +90,16 @@ class Queue extends EventEmitter {
       }
 
       const message = JSON.stringify(msg);
-      await this.assertQueue(queue || this.queueName);
-      this.lastResult = await this.channel.sendToQueue(queue || this.queueName, Buffer.from(message), {
+      await this.assertQueue(queue);
+      this.lastResult = await this.channel.sendToQueue(queue, Buffer.from(message), {
         persistent: true,
       });
       this.emit('publish', this.getLastResult());
-      if (this.queueName !== 'log') {
-        this.log.debug(`#RABBIT# Sent to ${this.queueName} %j`, message);
+      if (queue !== 'log') {
+        this.logger.debug(`#RABBIT# Sent to ${queue} %j`, message);
       }
     } catch (err) {
-      this.error('publish', err.toString());
+      this.error('publish', err);
     }
   }
 }

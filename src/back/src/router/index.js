@@ -8,13 +8,11 @@ class Routes {
     logger,
     httpServer,
     config,
-    // projectModel,
     projectController
   }) {
     this.logger = logger;
     this.httpServer = httpServer;
     this.config = config;
-    // this.projects = projectModel;
     this.projectController = projectController;
   }
 
@@ -26,7 +24,7 @@ class Routes {
     });
 
     this.httpServer.get('/projects/:id', async (req, res) => {
-      const data = await this.projectController.getProject({
+      const data = await this.projectController.get({
         '_id': req.params.id
       });
       res.send({
@@ -36,7 +34,7 @@ class Routes {
     });
 
     this.httpServer.get('/projects', async (_, res) => {
-      const data = await this.projectController.getProjects();
+      const data = await this.projectController.getList();
       res.send({
         status: 'ok',
         data
@@ -44,36 +42,28 @@ class Routes {
     });
 
     this.httpServer.post('/projects/:id', bodyParser.json(), async(req, res) => {
-      console.log('post 0', req);
-      console.log('post 1', req.body);
-      // console.log('post 2', JSON.parse(req.body));
-      
-      const data = await this.projectController.updateProject({
+      const _ = await this.projectController.update({
         '_id': req.params.id
       }, req.body);
-      // }, JSON.parse(req.body));
       res.send({ status: 'ok' });
     });
 
     this.httpServer.delete('/projects/:id', async (req, res) => {
-      const data = await this.projectController.deleteProject({
+      const _ = await this.projectController.delete({
         '_id': req.params.id
       });
       res.send({ status: 'ok' });
     });
 
-    // this.httpServer.post('/projects', async (req, res) => {
-    //   const data = await this.projectController.createProject(JSON.parse(req.body));
-    //   res.send({ status: 'ok' });
-    // });
+    this.httpServer.post('/projects', bodyParser.json(), async (req, res) => {
+      const _ = await this.projectController.create(req.body);
+      res.send({ status: 'ok' });
+    });
 
-    // this.httpServer.get('/projects/:id/backup', (req, res) => {
-    //   const data = req.params;
-    //   console.log('backup this -', data);
-    //   queue.connect();
-    //   queue.publish(`_id:${data}`, 'backup');
-    //   res.send('ok');
-    // });
+    this.httpServer.get('/projects/:id/backup', async (req, res) => {
+      const _ = await this.projectController.backup(req.params.id);
+      res.send({ status: 'ok' });
+    });
 
     // this.httpServer.get('/server-status/', async (_, res) =>{
     //   self.logger.debug('server-status');
@@ -85,8 +75,6 @@ class Routes {
       self.logger.error('Bad request', req.params);
       res.status(400).send('Bad request');
     });
-
-    // this.httpServer.use('/', this.httpServer);
 
     this.httpServer.listen(this.config.port, (err) => {
       if (err) {

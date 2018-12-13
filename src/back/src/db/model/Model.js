@@ -6,39 +6,55 @@ class Model {
     this.collectionName = collectionName;
   }
 
-  async find(params) {
-    // console.log({params});
-    
-    const result = await this.db.get().collection(this.collectionName).find(params).toArray();
+  async find(filter) {
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .find(this.getFilter(filter)).toArray();
     return result;
   }
 
-  async findOne(params) {
-    console.log({params});
-    if (params && params['_id']) {
-      params['_id'] = this.db.objectId(params['_id']);
-    }
-    
-    const result = await this.db.get().collection(this.collectionName).findOne(params);
+  async findOne(filter) {
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .findOne(this.getFilter(filter));
     return result;
   }
 
   async findOneAndUpdate(filter, update, params) {
+    console.log('findOneAndUpdate', filter, update);
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .findOneAndUpdate(
+        this.getFilter(filter), {
+          $set: update
+        }, 
+        params
+      )
+      .catch(err => {
+        console.log(err);
+      });
+    return result;
+  }
+
+  async insertOne(params) {
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .insertOne(params);
+    return result;
+  }
+
+  async deleteOne(filter) {
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .deleteOne(this.getFilter(filter));
+    return result;
+  }
+
+  getFilter(filter) {
     if (filter && filter['_id']) {
       filter['_id'] = this.db.objectId(filter['_id']);
     }
-    
-    console.log('findOneAndUpdate', filter, update);
-    
-    const result = await this.db.get()
-      .collection(this.collectionName)
-      .findOneAndUpdate(filter, {$set: update})
-      .catch(err => {
-        console.log(err);
-        
-      });
-
-    return result;
+    return filter;
   }
 }
 

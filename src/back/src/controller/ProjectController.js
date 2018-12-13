@@ -6,32 +6,50 @@ class  ProjectModel {
     getProjects,
     getProject,
     updateProject,
+    createProject,
+    deleteProject,
+    backupProject,
   }) {
-    this.getPageQuery = getPage;
-    this.getProjectsQuery = getProjects;
-    this.getProjectQuery = getProject;
-    this.updateProjectQuery = updateProject;
+    this.getPage = getPage;
+    this.getProjects = getProjects;
+    this.getProject = getProject;
+    this.updateProject = updateProject;
+    this.createProject = createProject;
+    this.deleteProject = deleteProject;
+    this.backupProject = backupProject;
   }
 
-  getPage(params) {
-    return this.getProjectsQuery.get(params);
-    // return this.getPageQuery.get(params);
+  getMainPage(params) {
+    return this.getPage.get(params);
+    // return this.getPage.get(params);
   }
 
-  async getProjects() {
-    return await this.getProjectsQuery.get();
+  async getList() {
+    return await this.getProjects.get();
   }
 
-  async getProject(params) {
+  async get(params) {
     console.log('getProject', params);
     
-    return await this.getProjectQuery.get(params);
+    return await this.getProject.get(params);
   }
 
-  async updateProject(filter, update) {
+  async update(filter, update) {
     console.log('updateProject', filter, update);
     
-    return await this.updateProjectQuery.execute(filter, update);
+    return await this.updateProject.execute(filter, update);
+  }
+
+  async create(params) {
+    return await this.createProject.execute(params);
+  }
+
+  async delete(params) {
+    return await this.deleteProject.execute(params);
+  }
+
+  async backup(id) {
+    return await this.backupProject.execute(id);
   }
 }
 
