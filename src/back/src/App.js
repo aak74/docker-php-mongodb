@@ -1,46 +1,19 @@
 'use strict';
 
 class App {
-  constructor({ logger, db, router, getProjects, getPage, updateStatus }) {
+  constructor({ logger, db, router, updateStatuses }) {
     this.logger = logger;
     this.db = db;
     this.router = router;
-    this.getProjects = getProjects;
-    this.updateStatus = updateStatus;
-    this.getPage = getPage;
+    this.updateStatuses = updateStatuses;
   }
 
   run() {
     this.db.connect().then(() => {
       this.logger.info(`Server started`);
       this.router.run();
-      this.main();
+      this.updateStatuses.execute();
     })
-  }
-
-  async main() {
-    const projects = await this.getProjectList();
-    projects.forEach(async (elem) => {
-      // if (elem.url === 'google.com') {
-
-      // }
-      let result = await this.getPage.get(elem.url);
-      result = Object.assign(elem, result)
-      console.log('gp', result);
-      this.updateStatus.execute(result);
-    });
-    console.log('run', projects);
-  }
-
-  async getProjectList() {
-    const result = await this.getProjects.get(
-      {},
-      {
-        _id: 1,
-        url: 1
-      }
-    );
-    return result;
   }
 }
 
