@@ -17,8 +17,8 @@ ioc.register({
 });
 
 const container = ioc.loadModules([
-  'utils/Logger.js',
-  'class/*.js',
+  'App.js',
+  'utils/*.js',
   'db/Db.js',
   'db/model/*.js',
   'controller/*.js',
