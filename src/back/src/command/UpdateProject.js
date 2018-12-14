@@ -7,7 +7,7 @@ class UpdateProject {
   }
 
   async execute(filter, update) {
-    console.log('UpdateProject', filter, update);
+    // console.log('UpdateProject', filter, update);
     await this.projectModel.findOneAndUpdate(filter, update);
     return true;
   }

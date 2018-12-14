@@ -12,12 +12,10 @@ class GetPage {
    * @todo Сделать фильтр на допустимое доменное имя
    */
   async get(url) {
-    console.log(url);
-    
     const start = Date.now();
     const result = await this.httpClient.get(this.getUrl(url))
       .then(res => {
-        // console.log('GetPage res', res);
+        console.log(url, res.status, Date.now() - start);
         return {
           status: res.status,
           statusText: res.statusText,
@@ -29,7 +27,7 @@ class GetPage {
         console.log('err', err);
         this.logger.debug('err', err);
       });
-    console.log('GetPage result', result);
+    // console.log('GetPage result', result);
     return result;
     
   }

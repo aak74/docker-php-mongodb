@@ -7,7 +7,7 @@ class Model {
   }
 
   async find(filter, projection) {
-    console.log('Model find', filter, projection);
+    // console.log('Model find', filter, projection);
     const result = await this.db.get()
       .collection(this.collectionName)
       .find(this.getFilter(filter)).project(projection).toArray();
@@ -23,7 +23,7 @@ class Model {
   }
 
   async findOneAndUpdate(filter, update, params) {
-    console.log('findOneAndUpdate', filter, update);
+    // console.log('findOneAndUpdate', filter, update);
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
