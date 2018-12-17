@@ -23,10 +23,13 @@ class UpdateStatues extends EventEmitter {
       setTimeout(async () => {
         try {
           let result = await this.getPage.get(project.url);
+          this.logger.info(project.url, result);
           result = Object.assign(project, result)
+          // this.logger.info();
+          // this.logger.info(`${project.url} | status=${result.status} | time=${result.time} | contentLength=${result.contentLength}`);
           this.update(result);
         } catch (error) {
-          console.log('err', error);
+          this.logger.error('err', error);
         }
       }, project.toExec - Date.now());
     });
@@ -39,9 +42,9 @@ class UpdateStatues extends EventEmitter {
     }
     
     // const pause = getRandomInt(1, 6) * 1000;
-    const pause = getRandomInt(30, 60) * 1000;
+    const pause = getRandomInt(30, 600) * 1000;
     project.toExec = Date.now() + pause;
-    console.log('--------------------------------', project.url, project.count, pause / 1000);
+    this.logger.debug(`-------------------------------- next ----> | counter=${project.count} | pause=${pause / 1000}s | ${project.url}`);
     this.updateStatus.execute(project);
     this.putProjectToQueue(project);
   }

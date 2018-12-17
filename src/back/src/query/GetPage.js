@@ -15,7 +15,7 @@ class GetPage {
     const start = Date.now();
     const result = await this.httpClient.get(this.getUrl(url))
       .then(res => {
-        console.log(url, res.status, Date.now() - start);
+        // this.logger.debug(`${url} | ${res.status} | ${Date.now() - start}`);
         return {
           status: res.status,
           statusText: res.statusText,
