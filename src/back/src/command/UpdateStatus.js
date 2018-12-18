@@ -8,7 +8,7 @@ class UpdateStatus {
   }
 
   async execute(params) {
-    // console.log('UpdateStatus', params);
+    this.logger.debug('UpdateStatus', params);
     const filter = {
       _id: params._id
     };

@@ -18,7 +18,7 @@ class UpdateStatuses extends EventEmitter {
     this.queue = new Map;
     this.timers = new Map;
     this.minPause = 10000;
-    this.minPause = 10;
+    // this.minPause = 10;
   }
 
   execute() {
@@ -37,6 +37,8 @@ class UpdateStatuses extends EventEmitter {
           this.timers.delete(projectId)
           this.update(result);
         } catch (error) {
+          console.log('err', error);
+          
           this.logger.error('err', error);
         }
       }, this.queue.get(projectId).toExec - Date.now());

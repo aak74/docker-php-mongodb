@@ -19,12 +19,12 @@ ioc.register({
 const container = ioc.loadModules([
   'App.js',
   'utils/*.js',
-  // 'db/Db.js',
   'model/*.js',
   'controller/*.js',
   'query/*.js',
   'command/*.js',
-  'query/__mocks__/*.js',
+  // 'model/__mocks__/*.js',
+  // 'query/__mocks__/*.js',
   // 'command/__mocks__/*.js',
 ], {
   resolverOptions: {

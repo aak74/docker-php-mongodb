@@ -18,6 +18,8 @@ services:
       - ./src/back:/app
       - ./src/back/node_modules:/node_modules
       - ./logs/back:/var/log/node
+    ports:
+      - 5858:5858      
     environment:
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}

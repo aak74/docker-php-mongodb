@@ -19,7 +19,7 @@ class Routes {
   async run () {
 
     const self = this;
-    this.httpServer.use('/status', (req, res, next) => {
+    this.httpServer.use('/status', (_, res) => {
       res.status(200).send('OK');
     });
 

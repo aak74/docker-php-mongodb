@@ -10,6 +10,7 @@ RUN apk add --no-cache curl
 # RUN npm install
 
 EXPOSE 3000
+EXPOSE 5858
 
 HEALTHCHECK --interval=5s --timeout=3s \
   CMD curl -f http://localhost:3000/status || exit 1

@@ -3,6 +3,6 @@ if [[ $PRODUCTION = true ]]; then
   node ./src/index.js
 else
   echo "DEVELOPMENT"
-  # node --debug=9229 index.js
+  # node --inspect-brk=0.0.0.0:5858 ./src/index.js
   nodemon ./src/index.js
 fi

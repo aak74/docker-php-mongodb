@@ -6,12 +6,19 @@ class Model {
     this.collectionName = collectionName;
   }
 
-  async find(filter, projection) {
+  async getList(filter, projection) {
+    return this.find(filter, projection).toArray();
+  }
+
+  async getObject(filter, projection) {
+    return await this.findOne(filter, projection);
+  }
+
+  find(filter, projection) {
     // console.log('Model find', filter, projection);
-    const result = await this.db.get()
+    return this.db.get()
       .collection(this.collectionName)
-      .find(this.getFilter(filter)).project(projection).toArray();
-    return result;
+      .find(this.getFilter(filter)).project(projection);
   }
 
   async findOne(filter, projection) {

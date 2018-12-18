@@ -1,42 +1,18 @@
 'use strict';
 
 class GetPage {
-  constructor({ logger, httpClient }) {
+  constructor({ logger, pageModel }) {
     this.logger = logger;
-    this.httpClient = httpClient;
+    this.pageModel = pageModel;
   }
 
   /**
-   * Загружает страницу и возвращает информацию о загруженной странице
+   * Возвращает информацию о загруженной странице
    * @param {String} url 
-   * @todo Сделать фильтр на допустимое доменное имя
    */
-  async get(url) {
-    const start = Date.now();
-    const result = await this.httpClient.get(this.getUrl(url))
-      .then(res => {
-        // this.logger.debug(`${url} | ${res.status} | ${Date.now() - start}`);
-        return {
-          status: res.status,
-          statusText: res.statusText,
-          contentLength: res.headers['content-length'] || res.data.length,
-          time: Date.now() - start,
-        };
-      })
-      .catch(err => {
-        console.log('err', err);
-        this.logger.debug('err', err);
-      });
-    // console.log('GetPage result', result);
-    return result;
-    
-  }
-
-  getUrl(url) {
-    if (url && url.substr(0, 4) === 'http') {
-      return url;
-    }
-    return `http://${url}`;
+  get(url) {
+    // console.log('GetPage get', url);
+    return this.pageModel.getObject(url);
   }
 }
 
