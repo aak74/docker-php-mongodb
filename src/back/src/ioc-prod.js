@@ -24,7 +24,7 @@ const container = ioc.loadModules([
   'controller/*.js',
   'query/*.js',
   'command/*.js',
-  // 'query/__mocks__/*.js',
+  'query/__mocks__/*.js',
   // 'command/__mocks__/*.js',
 ], {
   resolverOptions: {

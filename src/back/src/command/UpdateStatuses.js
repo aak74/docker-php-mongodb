@@ -2,7 +2,7 @@
 
 const { EventEmitter } = require('events');
 
-class UpdateStatues extends EventEmitter {
+class UpdateStatuses extends EventEmitter {
   constructor({
     logger,
     getProjects,
@@ -15,23 +15,32 @@ class UpdateStatues extends EventEmitter {
     this.getProjects = getProjects;
     this.updateStatus = updateStatus;
     this.getPage = getPage;
-    this.queue = [];
+    this.queue = new Map;
+    this.timers = new Map;
+    this.minPause = 10000;
+    this.minPause = 10;
   }
 
   execute() {
-    this.on('itemPushed', (project) => {
-      setTimeout(async () => {
+    this.on('itemPushed', (projectId) => {
+      if (this.timers.has(projectId)) {
+        return;
+      }
+      const timerId = setTimeout(async () => {
         try {
+          const project = this.queue.get(projectId)
           let result = await this.getPage.get(project.url);
+          // let result = project;
           this.logger.info(project.url, result);
           result = Object.assign(project, result)
-          // this.logger.info();
           // this.logger.info(`${project.url} | status=${result.status} | time=${result.time} | contentLength=${result.contentLength}`);
+          this.timers.delete(projectId)
           this.update(result);
         } catch (error) {
           this.logger.error('err', error);
         }
-      }, project.toExec - Date.now());
+      }, this.queue.get(projectId).toExec - Date.now());
+      this.timers.set(projectId, timerId);
     });
     this.putProjectsToQueue();
   }
@@ -42,16 +51,19 @@ class UpdateStatues extends EventEmitter {
     }
     
     // const pause = getRandomInt(1, 6) * 1000;
-    const pause = getRandomInt(30, 600) * 1000;
+    const pause = this.minPause * 1000;
+    // const pause = getRandomInt(this.minPause, this.minPause * 2) * 1000;
     project.toExec = Date.now() + pause;
-    this.logger.debug(`-------------------------------- next ----> | counter=${project.count} | pause=${pause / 1000}s | ${project.url}`);
+    this.logger.debug(`-------------------------------- next ----> | count=${project.count} | pause=${pause / 1000}s | ${project.url}`);
     this.updateStatus.execute(project);
     this.putProjectToQueue(project);
   }
 
   async putProjectToQueue(project) {
-    project.count++;
-    this.emit('itemPushed', project);
+    project.count = project.count ? project.count + 1 : 1;
+    this.logger.debug(`putProjectToQueue 1 ${project._id}`, project.count);
+    this.queue.set(project._id, project);
+    this.emit('itemPushed', project._id);
   }
   
   async putProjectsToQueue() {
@@ -68,4 +80,4 @@ class UpdateStatues extends EventEmitter {
   }
 }
 
-module.exports = UpdateStatues;
+module.exports = UpdateStatuses;
