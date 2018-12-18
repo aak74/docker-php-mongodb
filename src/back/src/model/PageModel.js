@@ -15,23 +15,34 @@ class PageModel {
    * @todo Сделать фильтр на допустимое доменное имя
    */
   async getObject(url) {
-    console.log('get', url);
+    // console.log('get', url);
     
     const start = Date.now();
-    const result = await this.httpClient.get(this.getUrl(url))
-      .then(res => {
-        // this.logger.debug(`${url} | ${res.status} | ${Date.now() - start}`);
-        return {
-          status: res.status,
-          statusText: res.statusText,
-          contentLength: res.headers['content-length'] || res.data.length,
-          time: Date.now() - start,
-        };
-      })
-      .catch(err => {
-        console.log('err', err);
-        this.logger.debug('err', err);
-      });
+    try {
+      var result = await this.httpClient.get(this.getUrl(url))
+        .then(res => {
+          // this.logger.debug(`${url} | ${res.status} | ${Date.now() - start}`);
+          return {
+            status: res.status,
+            statusText: res.statusText,
+            contentLength: res.headers['content-length'] || res.data.length,
+            time: Date.now() - start,
+          };
+        // })
+        // .catch(err => {
+        });
+    } catch (err) {
+      // console.log('catch err', err);
+      // this.logger.debug('err', err);
+     return {
+        status: err.errno,
+        statusText: err.code,
+        contentLength: 0,
+        time: Date.now() - start,
+      }
+    }
+    // console.log('eeeeeeee', result);
+    
     return result;
   }
 

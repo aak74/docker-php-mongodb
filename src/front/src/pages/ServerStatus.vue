@@ -30,13 +30,29 @@
           <v-list dense>
             <v-list-tile>
               <v-list-tile-content>URL:</v-list-tile-content>
-              <v-list-tile-content class="align-end">{{ props.item.url }}</v-list-tile-content>
+              <v-list-tile-content class="align-end"><a :href="getUrl(props.item.url)" target="_blank">{{ props.item.url }}</a></v-list-tile-content>
             </v-list-tile>
             <v-list-tile>
-              <v-list-tile-content>Статус:</v-list-tile-content>
+              <v-list-tile-content>Status:</v-list-tile-content>
               <v-list-tile-content class="align-end">
-                <span :class="statusCircle(props.item.status.code)">
-                {{ props.item.status.code }} {{ props.item.status.text }}
+                <span :class="statusCircle(props.item.status.status)">
+                {{ props.item.status.status }} {{ props.item.status.text }}
+                </span>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-content>Response time:</v-list-tile-content>
+              <v-list-tile-content class="align-end">
+                <span>
+                {{ props.item.status.time }}ms
+                </span>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-content>Content length:</v-list-tile-content>
+              <v-list-tile-content class="align-end">
+                <span>
+                {{ props.item.status.contentLength }}
                 </span>
               </v-list-tile-content>
             </v-list-tile>
@@ -54,12 +70,17 @@ export default {
     };
   },
   methods: {
-    sendRequest() {
-      this.$store.dispatch('loadProjects');
+    getUrl(url) {
+      if (url.substr(0, 4) === 'http') {
+        return url;
+      }
+      return `http://${url}`;
     },
     updateServersStatus() {
-      this.$store.dispatch('getServersStatus');
       this.$store.dispatch('loadProjects');
+      this.timerId = setTimeout(() => {
+        this.updateServersStatus();
+      }, 5000);
     },
     statusCircle(code) {
       const divider = Math.floor(code / 100);
@@ -85,7 +106,10 @@ export default {
     },
   },
   created() {
-    this.sendRequest();
+    this.updateServersStatus();
+  },
+  beforeDestroy() {
+    clearTimeout(this.timerId);
   },
 };
 </script>

@@ -200,7 +200,7 @@ export default {
     },
     saveProject() {
       console.log('Проект сохранен', this.id, this.name, this.url);
-      this.$store.dispatch('saveProject', { name: this.name, url: this.url });
+      this.$store.dispatch('saveProject', { name: this.name, url: this.url, id: this.id });
       this.showDialog = false;
       this.sendRequest();
     },

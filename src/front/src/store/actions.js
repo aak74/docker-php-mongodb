@@ -45,12 +45,6 @@ const backupProject = ({ commit }, id) => {
       commit('BACKUP_TASK_SENDED', id));
 };
 
-const getServersStatus = ({ commit }, data) => {
-  api.request('get', 'server-status/', data)
-    .then(
-      commit('SERVERS_STATUS_LOADED', data));
-};
-
 export default {
   loadStatus,
   loadProjects,
@@ -59,5 +53,4 @@ export default {
   saveProject,
   backupProject,
   openProject,
-  getServersStatus,
 };

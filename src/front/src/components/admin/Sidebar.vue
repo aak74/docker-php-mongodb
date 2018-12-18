@@ -22,7 +22,6 @@
 
 <script>
 import MenuItems from './MenuItems';
-import MenuItem from './MenuItem';
 import ExtraMenuItem from './ExtraMenuItem';
 import SidebarToggler from './SidebarToggler';
 
@@ -30,14 +29,13 @@ export default {
   name: 'Sidebar',
   components: {
     MenuItems,
-    MenuItem,
     ExtraMenuItem,
     SidebarToggler,
   },
   // mixins: [status],
   computed: {
     status() {
-      return this.$store.state['admin'].status;
+      return this.$store.state.admin.status;
     },
     extraMenuItem() {
       return this.$store.state['admin/extraMenuItem'];
