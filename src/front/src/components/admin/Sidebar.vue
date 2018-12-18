@@ -25,7 +25,6 @@ import MenuItems from './MenuItems';
 import MenuItem from './MenuItem';
 import ExtraMenuItem from './ExtraMenuItem';
 import SidebarToggler from './SidebarToggler';
-import status from '../../mixins/adminStatus';
 
 export default {
   name: 'Sidebar',
@@ -35,8 +34,11 @@ export default {
     ExtraMenuItem,
     SidebarToggler,
   },
-  mixins: [status],
+  // mixins: [status],
   computed: {
+    status() {
+      return this.$store.state['admin'].status;
+    },
     extraMenuItem() {
       return this.$store.state['admin/extraMenuItem'];
     },

@@ -17,8 +17,8 @@ class UpdateStatuses extends EventEmitter {
     this.getPage = getPage;
     this.queue = new Map;
     this.timers = new Map;
-    this.minPause = 10000;
-    // this.minPause = 10;
+    // this.minPause = 10000;
+    this.minPause = 60;
   }
 
   execute() {
