@@ -1,3 +1,7 @@
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
+
 export default {
   STATUS_LOADED(state, payload) {
     // console.log('STATUS_LOADED', payload);
@@ -29,7 +33,10 @@ export default {
 
   LOADED_PROJECTS(state, data) {
     // console.log('LOADED_PROJECTS', data);
-    state.projects = data.sort((a, b) => ((a.name > b.name) ? 1 : -1));
+    state.projects = data.map(elem => {
+      elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();;
+      return elem;
+    }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
   },
 
   OPENED_PROJECT(state, data) {

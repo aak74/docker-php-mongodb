@@ -30,7 +30,9 @@
           <v-list dense>
             <v-list-tile>
               <v-list-tile-content>URL:</v-list-tile-content>
-              <v-list-tile-content class="align-end"><a :href="getUrl(props.item.url)" target="_blank">{{ props.item.url }}</a></v-list-tile-content>
+              <v-list-tile-content class="align-end">
+                <a :href="getUrl(props.item.url)" target="_blank">{{ props.item.url }}</a>
+              </v-list-tile-content>
             </v-list-tile>
             <v-list-tile>
               <v-list-tile-content>Status:</v-list-tile-content>
@@ -44,7 +46,15 @@
               <v-list-tile-content>Response time:</v-list-tile-content>
               <v-list-tile-content class="align-end">
                 <span>
-                {{ props.item.status.time }}ms
+                {{ props.item.status.time }} ms
+                </span>
+              </v-list-tile-content>
+            </v-list-tile>
+            <v-list-tile>
+              <v-list-tile-content>Last update:</v-list-tile-content>
+              <v-list-tile-content class="align-end">
+                <span>
+                {{ props.item.status.lastUpdate }}
                 </span>
               </v-list-tile-content>
             </v-list-tile>

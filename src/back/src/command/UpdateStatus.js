@@ -17,6 +17,7 @@ class UpdateStatus {
       status: params.status,
       statusText: params.statusText,
       contentLength: params.contentLength,
+      lastUpdate: Date.now(),
     }
     await this.projectModel.findOneAndUpdate(filter, { status });
     return true;

@@ -32,14 +32,24 @@ class PageModel {
         // .catch(err => {
         });
     } catch (err) {
-      // console.log('catch err', err);
+      console.log('catch err', err);
       // this.logger.debug('err', err);
-     return {
-        status: err.errno,
-        statusText: err.code,
-        contentLength: 0,
-        time: Date.now() - start,
+      const time = Date.now() - start;
+      const contentLength = 0;
+      if (err.errno) {
+        return {
+          status: err.errno,
+          statusText: err.code,
+          contentLength,
+          time
+        };
       }
+      return {
+        status: err.response.status,
+        statusText: err.response.statusText,
+        contentLength,
+        time
+      };
     }
     // console.log('eeeeeeee', result);
     
