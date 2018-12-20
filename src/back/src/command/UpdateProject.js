@@ -4,11 +4,11 @@ class UpdateProject {
   constructor({
     logger,
     projectModel,
-    updateStatuses,
+    publishMessage,
   }) {
     this.logger = logger;
     this.projectModel = projectModel;
-    this.updateStatuses = updateStatuses;
+    this.publishMessage = publishMessage;
   }
 
   async execute(filter, update) {
@@ -17,7 +17,7 @@ class UpdateProject {
     delete(update.id);
     await this.projectModel.findOneAndUpdate(filter, update);
     update._id = id;
-    this.updateStatuses.putProjectToQueue(update);
+    this.publishMessage.execute({ queue: 'projectUpdated', msg: update });
     return true;
   }
 }

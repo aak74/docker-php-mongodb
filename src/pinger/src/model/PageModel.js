@@ -32,7 +32,7 @@ class PageModel {
         // .catch(err => {
         });
     } catch (err) {
-      console.log('catch err', err);
+      // console.log('catch err', err);
       // this.logger.debug('err', err);
       const time = Date.now() - start;
       const contentLength = 0;

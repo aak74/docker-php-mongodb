@@ -4,18 +4,18 @@ class CreateProject {
   constructor({
     logger,
     projectModel,
-    updateStatuses,
+    publishMessage,
   }) {
     this.logger = logger;
     this.projectModel = projectModel;
-    this.updateStatuses = updateStatuses;
+    this.publishMessage = publishMessage;
   }
 
   async execute(params) {
     this.logger.debug('CreateProject', params);
     const result = await this.projectModel.insertOne(params);
     this.logger.debug('CreateProject 2', result);
-    this.updateStatuses.putProjectToQueue(params);
+    this.publishMessage.execute({ queue: 'projectCreated', msg: params });
     return true;
   }
 }

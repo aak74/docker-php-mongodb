@@ -2,26 +2,21 @@
 
 class  ProjectModel {
   constructor({
-    getPage,
     getProjects,
     getProject,
     updateProject,
     createProject,
     deleteProject,
     backupProject,
+    updateStatus,
   }) {
-    this.getPage = getPage;
     this.getProjects = getProjects;
     this.getProject = getProject;
     this.updateProject = updateProject;
     this.createProject = createProject;
     this.deleteProject = deleteProject;
     this.backupProject = backupProject;
-  }
-
-  getMainPage(params) {
-    return this.getPage.get(params);
-    // return this.getPage.get(params);
+    this.updateStatusCommand = updateStatus;
   }
 
   async getList() {
@@ -50,6 +45,10 @@ class  ProjectModel {
 
   async backup(id) {
     return await this.backupProject.execute(id);
+  }
+
+  async updateStatus(params) {
+    return await this.updateStatusCommand.execute(params);
   }
 }
 

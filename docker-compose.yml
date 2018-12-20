@@ -28,13 +28,29 @@ services:
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     restart: always
 
+  pinger:
+    build: ./src/pinger
+    volumes:
+      - ./src/pinger:/app
+      - ./src/pinger/node_modules:/node_modules
+      - ./logs/pinger:/var/log/node
+    # ports:
+    #   - 5858:5858      
+    environment:
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASS: ${RABBITMQ_PASS}
+      RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
+      RABBITMQ_PORT: ${RABBITMQ_PORT}
+    restart: always
+
   backup:
     build: ./src/backup-runner/
     volumes:
       - ./src/backup:/app/service
       - ./src/backup-runner/:/app/runner
       - ./logs:/var/log/php
-      - /mnt/b/backup:/mnt/b/backup
+      - ${BACKUP_FOLDER}:/backup
     environment:
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}

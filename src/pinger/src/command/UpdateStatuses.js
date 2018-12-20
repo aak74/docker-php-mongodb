@@ -18,7 +18,7 @@ class UpdateStatuses extends EventEmitter {
     this.queue = new Map;
     this.timers = new Map;
     this.minPause = 10000;
-    this.minPause = 60;
+    // this.minPause = 60;
   }
 
   execute() {
@@ -63,7 +63,7 @@ class UpdateStatuses extends EventEmitter {
 
   async putProjectToQueue(project) {
     project.count = project.count ? project.count + 1 : 1;
-    this.logger.debug(`putProjectToQueue 1 ${project._id}`, project.count);
+    this.logger.debug(`putProjectToQueue ${project._id}`, project.count);
     this.queue.set(project._id, project);
     this.emit('itemPushed', project._id);
   }

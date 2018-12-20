@@ -65,6 +65,13 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
+    this.httpServer.post('/projects/:id/status', bodyParser.json(), async (req, res) => {
+      console.log('update status', req.params, req.body);
+      
+      const _ = await this.projectController.updateStatus(req.body);
+      res.send({ status: 'ok' });
+    });
+
     // this.httpServer.get('/server-status/', async (_, res) =>{
     //   self.logger.debug('server-status');
     //   const result = await this.projectController.getPage({name: 'arealidea'});
