@@ -89,7 +89,6 @@ class UpdateStatuses extends EventEmitter {
       }, 1000);
       return;
     }
-
   }
 }
 
