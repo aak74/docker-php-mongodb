@@ -18,7 +18,7 @@ class UpdateStatuses extends EventEmitter {
     this.queue = new Map;
     this.timers = new Map;
     this.minPause = 10000;
-    // this.minPause = 60;
+    this.minPause = 60;
   }
 
   execute() {
@@ -48,9 +48,9 @@ class UpdateStatuses extends EventEmitter {
   }
   
   update(project) {
-    function getRandomInt(min, max) {
-      return Math.floor(Math.random() * (max - min)) + min;
-    }
+    // function getRandomInt(min, max) {
+    //   return Math.floor(Math.random() * (max - min)) + min;
+    // }
     
     // const pause = getRandomInt(1, 6) * 1000;
     const pause = this.minPause * 1000;
@@ -69,16 +69,27 @@ class UpdateStatuses extends EventEmitter {
   }
   
   async putProjectsToQueue() {
-    const projects = await this.getProjects.get({}, {
-      _id: 1,
-      url: 1
-    });
-    for (let index = 0; index < projects.length; index++) {
-      const project = projects[index];
-      project.toExec = Date.now();
-      project.count = 0;
-      this.putProjectToQueue(project);
+    try {
+      const projects = await this.getProjects.get({}, {
+        _id: 1,
+        url: 1
+      });
+      for (let index = 0; index < projects.length; index++) {
+        const project = projects[index];
+        project.toExec = Date.now();
+        project.count = 0;
+        await this.putProjectToQueue(project);
+      }
+
+    } catch (err) {
+      console.log('putProjectsToQueue catch', err);
+      // retry
+      setTimeout(() => {
+        this.putProjectsToQueue();
+      }, 1000);
+      return;
     }
+
   }
 }
 
