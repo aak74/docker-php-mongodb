@@ -18,8 +18,7 @@
     />
     <template slot="items" slot-scope="props">
       <td
-        v-for="(field, index) in headers"
-        v-if="!field.invisible"
+        v-for="(field, index) in visibleHeaders"
         :key="props.index + '_' + index"
         :data-key="props.index + '_' + index"
         :class="getClassName(field)"
@@ -44,13 +43,23 @@
 
 <script>
 export default {
-  name: 'DataTableWithControls',
+  name: 'DataTable',
   props: ['headers', 'items', 'loading', 'controls', 'pagination', 'transforms',
     'totalItems', 'disableInitialSort', 'hideActions'],
   computed: {
     showControls() {
       return this.$props.controls && this.$props.controls.length;
     },
+
+    visibleHeaders() {
+      return this.headers.reduce((carry, item) => {
+        if (!item.invisible) {
+          carry.push(item);
+        }
+        return carry;
+      }, []);
+    },
+
     defaultPagination() {
       return this.$store.state.admin.ui.defaultPagination;
     },
@@ -62,10 +71,12 @@ export default {
       }
       return `text-xs-${header.align}`;
     },
+
     emit(emit, item) {
       // console.log('emit', emit, item);
       this.$emit(emit, item);
     },
+
     // преобразует значение по ключу заголовка (headers)
     // используется для корректной сортировки (например по дате)
     getTransformedValue(filter, value) {
@@ -74,6 +85,7 @@ export default {
       }
       return value;
     },
+
     click(props) {
       this.$emit('click', props.item, props.index);
     },

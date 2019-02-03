@@ -13,7 +13,7 @@ CURRENT_TIME := $(shell date --iso=seconds)
 docker_bin := $(shell command -v docker 2> /dev/null)
 docker_compose_bin := $(shell command -v docker-compose 2> /dev/null)
 
-.PHONY : help init backup restore up down build stop
+# .PHONY : help init backup restore up down build stop
 
 .DEFAULT_GOAL := help
 

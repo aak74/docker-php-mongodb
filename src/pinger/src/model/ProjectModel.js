@@ -33,6 +33,9 @@ class ProjectModel {
           console.log('getList', res.data.data);
           
           return res.data.data;
+        })
+        .catch((err) => {
+          console.log('http catch err', err);
         });
     } catch (err) {
       console.log('catch err', err);

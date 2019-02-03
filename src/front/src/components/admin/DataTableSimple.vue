@@ -5,15 +5,15 @@
     :loading="true"
     class="elevation-1"
   >
-    <v-progress-linear 
-      slot="progress" 
-      color="blue" 
+    <v-progress-linear
+      slot="progress"
+      color="blue"
       indeterminate
       :active="loading"
     />
     <template slot="items" slot-scope="props">
-      <td 
-        v-for="(field, index) in headers" 
+      <td
+        v-for="(field, index) in headers"
         v-if="!field.invisible"
         :key="props.index + '_' + index"
         :data-key="props.index + '_' + index"
@@ -27,7 +27,7 @@
 <script>
 // This component should be deleted if DataTable will be universal enough
 export default {
-  name: 'DataTable',
+  name: 'DataTableSimple',
   props: ['headers', 'items', 'loading'],
 }
 </script>
