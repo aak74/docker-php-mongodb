@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
 dayjs.extend(relativeTime);
 
 export default {
@@ -34,7 +35,17 @@ export default {
   LOADED_PROJECTS(state, data) {
     // console.log('LOADED_PROJECTS', data);
     state.projects = data.map(elem => {
-      elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();;
+      if (elem.status && elem.status.lastUpdate) {
+        elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();
+      } else {
+        elem.status = {
+          contentLength: 0,
+          lastUpdate: 'Unknown',
+          status: 'Unknown',
+          statusText: 'Unknown',
+          time: 0,
+        };
+      }
       return elem;
     }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
   },
