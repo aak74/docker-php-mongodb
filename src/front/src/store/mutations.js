@@ -50,9 +50,9 @@ export default {
     }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
   },
 
-  OPENED_PROJECT(state, data) {
-    // console.log('OPENED_PROJECT', data);
-    state.currentProject = data;
+  LOADED_PROJECT(state, data) {
+    // console.log('LOADED_PROJECT', data);
+    state.project.current = data;
   },
 
   ADDED_PROJECT(_, data) {
