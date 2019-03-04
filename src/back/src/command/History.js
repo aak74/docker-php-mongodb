@@ -1,18 +1,21 @@
+
 'use strict';
 
-class UpdateStatus {
-  constructor({ logger, projectModel }) {
+class history {
+  constructor({ logger, historyModel }) {
     this.logger = logger;
-    this.projectModel = projectModel;
-    // this.addToHistory = addToHistory;
+    this.historyModel = historyModel
   }
-
-  async execute(params) {   
+  async executeGet(params) {
+    const result = await this.historyModel.get(params);
+    return result;
+  }
+  async executeSend(params) {
     this.logger.debug('UpdateStatus', params);
 
     let date_time =new Date();
     const filter = {
-      _id: params._id,
+      ProjectID: params._id,
     };
     if (params.statusText=='OK') params.statusText='online';
     else params.statusText='offline';
@@ -21,11 +24,11 @@ class UpdateStatus {
       ping:params.time,
       lastUpdate: date_time
     }
-    this.projectModel.findOneAndInsert(filter,status,params);
+    this.historyModel.send(filter,status,params);
     //this.logger.debug('UpdateStatus',filter);
     //await this.projectModel.findOneAndUpdate(filter, { status });
     return true;
   }
 }
 
-module.exports = UpdateStatus;
+module.exports = history;

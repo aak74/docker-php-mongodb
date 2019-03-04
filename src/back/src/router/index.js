@@ -24,12 +24,14 @@ class Routes {
     config,
     projectController,
     userController,
+    historyController,
   }) {
     this.logger = logger;
     this.httpServer = httpServer;
     this.config = config;
     this.projectController = projectController;
     this.userController = userController;
+    this.historyController = historyController;
   }
 
 
@@ -96,7 +98,7 @@ class Routes {
     this.httpServer.get('/projects/:id',passport.authenticate('jwt', { session: false }), async (req, res) => {
       console.log('пользователь', req.user.id);
       const data = await this.projectController.get({
-        _id: req.params.id,
+//        _id: req.params.id,
         id:req.user.id
       });
       res.send({
@@ -146,7 +148,7 @@ class Routes {
     this.httpServer.post('/projects/:id/status', bodyParser.json(), async (req, res) => {
       // console.log('update status', req.params, req.body);
 
-      const _ = await this.projectController.updateStatus(req.body, 'nice');
+      const _ = await this.historyController.sendHistory(req.body);
       // console.log('result',result);
       res.send({ status: 'ok' });
     });
