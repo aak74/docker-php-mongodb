@@ -7,19 +7,21 @@ class UpdateStatus {
     // this.addToHistory = addToHistory;
   }
 
-  async execute(params) {
-    this.logger.debug('UpdateStatus', params);
+  async execute(params) {   
+    let date_time =new Date();
     const filter = {
-      _id: params._id
+      _id: params._id,
     };
+    if (params.statusText=='OK') params.statusText='online';
+    else params.statusText='offline';
     const status = {
-      time: params.time,
-      status: params.status,
       statusText: params.statusText,
-      contentLength: params.contentLength,
-      lastUpdate: Date.now(),
+      ping:params.time,
+      lastUpdate: date_time
     }
-    await this.projectModel.findOneAndUpdate(filter, { status });
+    this.projectModel.findOneAndInsert(filter,status,params);
+    //this.logger.debug('UpdateStatus',filter);
+    //await this.projectModel.findOneAndUpdate(filter, { status });
     return true;
   }
 }

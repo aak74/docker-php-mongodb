@@ -28,7 +28,7 @@ const loadEntitiesFromBackend = store => {
  * @param {store} store
  */
 const loadAll = store => {
-  console.log('loadAll', store, store.state.loadFromBackend);
+  //console.log('loadAll', store, store.state.loadFromBackend);
   if (!store.state.loadFromBackend) {
     loadEntitiesFromMock(store);
   } else {

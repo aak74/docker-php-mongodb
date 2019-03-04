@@ -26,7 +26,9 @@
 
 <script>
 // This component should be deleted if DataTable will be universal enough
+console.log('reade');
 export default {
+  
   name: 'DataTableSimple',
   props: ['headers', 'items', 'loading'],
 }

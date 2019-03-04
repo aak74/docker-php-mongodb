@@ -40,6 +40,20 @@
                     :disabled="disableInput"
                     required
                   ></v-text-field>
+                  <v-text-field
+                    v-model="text"
+                    label="text"
+
+                    :disabled="disableInput"
+
+                  ></v-text-field>
+                    <v-text-field
+                    v-model="password"
+                    label="Пароль"
+                    :rules="passwordRules"
+                    
+                    required
+                  ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-divider></v-divider>
@@ -110,6 +124,11 @@ export default {
       urlRules: [
         v => !!v || 'URL адрес обязятелен',
       ],
+      text: '',
+      password: '',
+      passwordRules: [
+        v => !!v || 'Пароль обязятелен',
+      ],
       disableInput: false,
       modalTitle: 'Добавить новый проект',
       modalSubmitButton: 'Добавить',
@@ -134,6 +153,8 @@ export default {
       this.modalAction = 'Add';
       this.name = '';
       this.url = '';
+      this.text = '';
+      this.password = '';
       this.disableInput = false;
       this.showDialog = true;
     },
@@ -144,6 +165,8 @@ export default {
       this.id = item._id;
       this.name = item.name;
       this.url = item.url;
+      this.text = item.text;
+      this.password = item.password;
       this.disableInput = false;
       this.showDialog = true;
     },
@@ -154,6 +177,8 @@ export default {
       this.id = item._id;
       this.name = item.name;
       this.url = item.url;
+      this.text = item.text;
+      this.password = '';
       this.disableInput = true;
       this.showDialog = true;
     },
@@ -164,6 +189,8 @@ export default {
       this.id = item._id;
       this.name = item.name;
       this.url = item.url;
+      this.text = item.text;
+      this.password = item.password;
       this.disableInput = true;
       this.showDialog = true;
     },
@@ -188,19 +215,19 @@ export default {
     },
     addProject() {
       console.log('Проект добавлен', this.name, this.url);
-      this.$store.dispatch('addProject', { name: this.name, url: this.url });
+      this.$store.dispatch('addProject', { name: this.name, url: this.url, text: this.text, password: this.password });
       this.showDialog = false;
       this.sendRequest();
     },
     deleteProject() {
-      console.log('Проект удалён', this.name, this.url, this.id);
-      this.$store.dispatch('deleteProject', this.id);
+      //console.log('Проект удалён', this.name, this.url, this.id, this.password);
+      this.$store.dispatch('deleteProject', { name: this.name, url: this.url, id: this.id, text: this.text, password: this.password });
       this.showDialog = false;
       this.sendRequest();
     },
     saveProject() {
-      console.log('Проект сохранен', this.id, this.name, this.url);
-      this.$store.dispatch('saveProject', { name: this.name, url: this.url, id: this.id });
+      console.log('Проект сохранен', this.id, this.name, this.url , this.text, this.password);
+      this.$store.dispatch('saveProject', { name: this.name, url: this.url, id: this.id, text: this.text, password: this.password });
       this.showDialog = false;
       this.sendRequest();
     },
@@ -224,7 +251,7 @@ export default {
       return this.$store.getters.projects;
     },
     headers() {
-      return [{ text: 'Название', value: 'name' }, { text: 'URL', value: 'url', sortable: false }];
+      return [{ text: 'Название', value: 'name' }, { text: 'URL', value: 'url', sortable: false },];
     },
     /**
      * преобразует значение по ключу заголовка (headers)

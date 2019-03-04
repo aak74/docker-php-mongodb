@@ -63,6 +63,7 @@ class Db {
   }
 
   async addToCollection(collection, data) {
+    console.log(collection,'====', data);
     const status = await this.check();
     if (!status) {
       return false;

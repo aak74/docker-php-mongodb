@@ -31,15 +31,15 @@ class UpdateStatuses extends EventEmitter {
           const project = this.queue.get(projectId)
           let result = await this.getPage.get(project.url);
           // let result = project;
-          this.logger.info(project.url, result);
+          //this.logger.info(project.url, result);
           result = Object.assign(project, result)
           // this.logger.info(`${project.url} | status=${result.status} | time=${result.time} | contentLength=${result.contentLength}`);
           this.timers.delete(projectId)
           this.update(result);
         } catch (error) {
-          console.log('err', error);
+         // console.log('err', error);
           
-          this.logger.error('err', error);
+         // this.logger.error('err', error);
         }
       }, this.queue.get(projectId).toExec - Date.now());
       this.timers.set(projectId, timerId);
@@ -53,17 +53,19 @@ class UpdateStatuses extends EventEmitter {
     // }
     
     // const pause = getRandomInt(1, 6) * 1000;
-    const pause = this.minPause * 1000;
+    const pause = this.minPause * 200;
     // const pause = getRandomInt(this.minPause, this.minPause * 2) * 1000;
     project.toExec = Date.now() + pause;
-    this.logger.debug(`-------------------------------- next ----> | count=${project.count} | pause=${pause / 1000}s | ${project.url}`);
+    //this.logger.debug(`-------------------------------- next ----> | count=${project.count} | pause=${pause / 1000}s | ${project.url}`);
+   // this.logger.debug(`-------------------------------- next ----> | ${project.url}`);
     this.updateStatus.execute(project);
     this.putProjectToQueue(project);
+    //this.logger.debug('debug>>>',this.putProjectToQueue(project));
   }
 
   async putProjectToQueue(project) {
     project.count = project.count ? project.count + 1 : 1;
-    this.logger.debug(`putProjectToQueue ${project._id}`, project.count);
+    //this.logger.debug(`putProjectToQueue ${project._id}`, project.count);
     this.queue.set(project._id, project);
     this.emit('itemPushed', project._id);
   }
@@ -82,7 +84,7 @@ class UpdateStatuses extends EventEmitter {
       }
 
     } catch (err) {
-      console.log('putProjectsToQueue catch', err);
+     // console.log('putProjectsToQueue catch', err);
       // retry
       setTimeout(() => {
         this.putProjectsToQueue();
