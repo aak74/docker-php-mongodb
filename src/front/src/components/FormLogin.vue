@@ -1,21 +1,19 @@
 <template>
-  <div  class="info_block">  
-    <div  class="info_card"> 
-        <div class="text_tag_div">        
-            <input v-model="user.login" class="text_tag_p text_edit"/>   
-        </div>  
-        <div  class="text_edit">
-            <input v-model="user.password" type="password" class="text_tag_p text_edit"/> 
+  <div  class="info_block">
+    <div  class="info_card">
+        <div class="text_tag_div">
+            <input v-model="user.login" class="text_tag_p text_edit"/>
         </div>
-        <div  class="login">
+        <div >
+            <input v-model="user.password" type="password" class="text_tag_p text_edit"/>
+        </div>
             <button @click="register" class="btn"> Регистрация   </button>
             <button @click="signIn" class="btn"> Войти </button>
             <button @click="auth" class="btn"> Проверка</button>
-            <p>{{answer}}</p>
-        </div>
-    </div> 
+
+    </div>
   </div>
-  
+
 </template>
 <script>
 import FormLogin from '../components/FormLogin';
@@ -26,7 +24,7 @@ export default {
     data: {
       type: Object
     },
-    
+
   },
   data(){
       return{
@@ -35,11 +33,11 @@ export default {
               password:'',
           },
           answer:localStorage.getItem('token'),
-          
+
       }
   },
   components: {
-   
+
   },
   watch:{
     data(){
@@ -48,16 +46,16 @@ export default {
   },
   methods:{
       signIn(){
-      this.$store.dispatch('signIn', this.user);  
-          
+      this.$store.dispatch('signIn', this.user);
+
       },
       auth(){
-      this.$store.dispatch('auth', this.user);  
-          
+      this.$store.dispatch('auth', this.user);
+
       },
       register(){
           let packet=[localStorage.getItem('token'),]
-          this.$store.dispatch('register', this.user);   
+          this.$store.dispatch('register', this.user);
       }
   },
 };
@@ -65,7 +63,7 @@ export default {
 <style>
 .info_block{
   text-align: center;
-  align-items:center; 
+  align-items:center;
   width:100%;
 }
 .info_card{
@@ -91,7 +89,7 @@ export default {
 .text_tag_p{
   font-size: 26px;
 }
-.login{ 
+.login{
   justify-content: center;
   font-size: 27px;
 }

@@ -58,9 +58,10 @@ export default {
     state.login = data;
     // console.log(state.login.data.token, 'this.data');
     const JWTtoken = `jwt ${state.login.data.token}`;
-    
+    const name = `${state.login.data.name}`;
+
     localStorage.setItem('token', JWTtoken);
-    console.log('jwtToken  ', localStorage.getItem('token'));
+    localStorage.setItem('UserName', name);
   },
   AUTH(state, data) {
     console.log('AUTH',data);

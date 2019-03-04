@@ -19,6 +19,13 @@ export default [
         link: '/server-status/',
         description: null,
       },
+      {
+        icon: 'ballot',
+        title: localStorage.getItem('UserName'),
+        link: '/login',
+        description: null,
+      },
     ],
+
   },
 ];

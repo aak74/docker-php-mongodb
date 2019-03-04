@@ -63,7 +63,7 @@ class Routes {
           verifyKey: verifyKey,    
         };
         const token = jwt.sign(payload, auth.jwtOptions.secretOrKey);
-        res.json({ message: 'ok', token });
+        res.json({ message: 'ok', name: user.login ,token });
       } else {
         console.log(user, 'notpassword');
         res.status(401).json({ message: 'passwords did not match' });
