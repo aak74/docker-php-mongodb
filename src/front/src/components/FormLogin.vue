@@ -10,7 +10,6 @@
             <button @click="register" class="btn"> Регистрация   </button>
             <button @click="signIn" class="btn"> Войти </button>
             <button @click="auth" class="btn"> Проверка</button>
-
     </div>
   </div>
 
