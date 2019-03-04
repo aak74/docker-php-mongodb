@@ -20,7 +20,7 @@ class Model {
   }
 
   findOneAndUpdate() {
-    this.logger.debug('findOneAndUpdate mock', arguments);
+   //this.logger.debug('findOneAndUpdate mock', arguments);
     return true;
   }
 

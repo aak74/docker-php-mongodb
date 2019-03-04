@@ -8,6 +8,7 @@ class  ProjectModel {
     createProject,
     deleteProject,
     backupProject,
+    userAuth,
     updateStatus,
   }) {
     this.getProjects = getProjects;
@@ -16,6 +17,7 @@ class  ProjectModel {
     this.createProject = createProject;
     this.deleteProject = deleteProject;
     this.backupProject = backupProject;
+    this.userAuth = userAuth;
     this.updateStatusCommand = updateStatus;
   }
 
@@ -23,21 +25,18 @@ class  ProjectModel {
     return await this.getProjects.get();
   }
 
-  async get(params) {
-    console.log('getProject', params);
-    
+  async get(params) { 
     return await this.getProject.get(params);
   }
 
   async update(filter, update) {
-    console.log('updateProject', filter, update);
-    
     return await this.updateProject.execute(filter, update);
   }
 
   async create(params) {
     return await this.createProject.execute(params);
   }
+
 
   async delete(params) {
     return await this.deleteProject.execute(params);

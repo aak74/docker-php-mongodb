@@ -8,7 +8,7 @@ class BackupProject {
   }
 
   async execute(id) {
-    console.log('BackupProject', id);
+    //console.log('BackupProject', id);
     const data = await this.projectModel.findOne({ '_id': id });
     // console.log('BackupProject data', data);
     //TODO: Передавать только необходимые для бэкапа данные

@@ -25,12 +25,17 @@ class Model {
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOne(this.getFilter(filter));
-      // .project(projection);
+       delete result.password;
+      //console.log('result=>',result);
     return result;
   }
 
   async findOneAndUpdate(filter, update, params) {
-    // console.log('findOneAndUpdate', filter, update);
+    filter={
+      _id: filter._id,
+      password:update.password
+      }
+     //console.log('findOneAndUpdate', filter, update);
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
@@ -44,18 +49,45 @@ class Model {
       });
     return result;
   }
+  async findOneAndInsert(filter, update, params) {
+    filter={
+      _id: filter._id
+      }
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .findOneAndUpdate(
+        this.getFilter(filter), {
+          $push: {
+            history: {
+             ...update
+            },
+          },
+        }, 
+        params
+      )
+      .catch(err => {
+        console.log(err);
+      });
+    return result;
+  }
 
   async insertOne(params) {
     const result = await this.db.get()
       .collection(this.collectionName)
-      .insertOne(params);
+      .insertOne(params)
+      .catch(err => {
+        console.log(err);
+      });
     return result;
   }
 
   async deleteOne(filter) {
     const result = await this.db.get()
       .collection(this.collectionName)
-      .deleteOne(this.getFilter(filter));
+      .deleteOne(filter)
+      .catch(err => {
+        console.log(err);
+      });
     return result;
   }
 

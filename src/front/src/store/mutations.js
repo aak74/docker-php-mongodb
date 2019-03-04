@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
 dayjs.extend(relativeTime);
 
 export default {
@@ -34,14 +35,39 @@ export default {
   LOADED_PROJECTS(state, data) {
     // console.log('LOADED_PROJECTS', data);
     state.projects = data.map(elem => {
-      elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();;
+      if (elem.status && elem.status.lastUpdate) {
+        elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();
+      } else {
+        elem.status = {
+          contentLength: 0,
+          lastUpdate: 'Unknown',
+          status: 'Unknown',
+          statusText: 'Unknown',
+          time: 0,
+        };
+      }
       return elem;
     }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
   },
 
-  OPENED_PROJECT(state, data) {
-    // console.log('OPENED_PROJECT', data);
-    state.currentProject = data;
+  LOADED_PROJECT(state, data) {
+    // console.log('LOADED_PROJECT', data);
+    state.project.current = data;
+  },
+  SIGN_IN(state, data) {
+    state.login = data;
+    // console.log(state.login.data.token, 'this.data');
+    const JWTtoken = `jwt ${state.login.data.token}`;
+    
+    localStorage.setItem('token', JWTtoken);
+    console.log('jwtToken  ', localStorage.getItem('token'));
+  },
+  AUTH(state, data) {
+    console.log('AUTH',data);
+  },
+
+  REGISTER(result, data) {
+    // console.log('REGISTER',data);
   },
 
   ADDED_PROJECT(_, data) {

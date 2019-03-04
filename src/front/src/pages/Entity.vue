@@ -45,6 +45,7 @@ export default {
     },
 
     controls() {
+    
       return this.$store.state.ui.defaultControls;
     },
 

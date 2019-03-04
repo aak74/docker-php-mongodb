@@ -13,33 +13,34 @@ class ProjectModel {
     try {
       var result = await this.httpClient.get(`http://back:3000/projects`)
         .then(res => {
-          console.log('getList', res.data.data);
+         // console.log('getList', res.data.data);
           
           return res.data.data;
         });
     } catch (err) {
-      console.log('catch err', err);
+     // console.log('catch err', err);
     }
     return result;
   }
 
   async update(status) {
-    console.log(status);
+    //console.log('staty',status);
     
     // return;
     try {
       var result = await this.httpClient.post(`http://back:3000/projects/${status._id}/status`, status)
         .then(res => {
-          console.log('getList', res.data.data);
+          //console.log('getList', res.data.data);
           
           return res.data.data;
         })
         .catch((err) => {
-          console.log('http catch err', err);
+         // console.log('http catch err', err);
         });
     } catch (err) {
-      console.log('catch err', err);
+     // console.log('catch err', err);
     }
+   // console.log('resuld=>',result);
     return result;
   }
 }

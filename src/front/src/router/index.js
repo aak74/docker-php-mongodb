@@ -5,6 +5,7 @@ import Dashboard from '../pages/Dashboard';
 import Projects from '../pages/Projects';
 import Project from '../pages/Project';
 import ServerStatus from '../pages/ServerStatus';
+import Login from '../pages/LoginPage';
 
 Vue.use(Router);
 
@@ -28,6 +29,11 @@ const routes = [
     path: '/server-status',
     name: 'Server status',
     component: ServerStatus,
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login,
   },
 ];
 

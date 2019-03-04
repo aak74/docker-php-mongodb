@@ -12,7 +12,7 @@ class DeleteProject {
   }
 
   async execute(filter) {
-    console.log('DeleteProject', filter);
+    
     await this.projectModel.deleteOne(filter);
     this.publishMessage.execute({ queue: 'projectDeleted', msg: filter });
     return true;

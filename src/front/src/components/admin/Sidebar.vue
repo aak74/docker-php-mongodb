@@ -54,9 +54,6 @@ export default {
       tabs: null,
     };
   },
-  created() {
-    console.log('created', this.$store);
-  },
 };
 </script>
 

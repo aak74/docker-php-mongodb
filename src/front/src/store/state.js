@@ -1,4 +1,7 @@
 export default {
+  login:{
+
+  },
   status: {
     loading: true,
   },
@@ -42,13 +45,73 @@ export default {
   ],
   queuesAvailable: ['backup', 'backuped'],
   projects: [],
-  currentProject: {},
+  project: {
+    current: {},
+    schema: {
+      fields: [
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'ID',
+          model: '_id',
+          readonly: true,
+          disabled: true,
+        },
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'Name',
+          model: 'name',
+          placeholder: 'Project name',
+          required: true,
+        },
+        {
+          type: 'input',
+          inputType: 'text',
+          label: 'Url',
+          model: 'url',
+          placeholder: 'Enter url',
+          required: true,
+        },
+        {
+          type: 'input',
+          inputType: 'textarea',
+          label: 'Описание',
+          model: 'text',
+          placeholder: 'Enter url',
+          required: true,
+        },
+        /*{
+          type: 'input',
+          inputType: 'password',
+          label: 'Password',
+          model: 'password',
+          min: 6,
+          required: true,
+          hint: 'Minimum 6 characters',
+          // validator: VueFormGenerator.validators.string
+        },
+        {
+          type: 'checkbox',
+          label: 'isActive',
+          model: 'isActive',
+          default: true,
+        },*/
+      ],
+    },
+  },
   ui: {
     defaultPagination: [20, 50, { text: 'All', value: -1 }],
     defaultControls: [
-      { name: 'Edit', icon: 'edit', color: 'teal lighten-1', emit: 'editItem' },
-      { name: 'Delete', icon: 'delete', color: 'pink lighten-2', emit: 'deleteItem' },
-      { name: 'Backup', icon: 'backup', color: 'indigo lighten-2', emit: 'backupItem' },
+      {
+ name: 'Edit', icon: 'edit', color: 'teal lighten-1', emit: 'editItem'
+},
+      {
+ name: 'Delete', icon: 'delete', color: 'pink lighten-2', emit: 'deleteItem'
+},
+      {
+ name: 'Backup', icon: 'backup', color: 'indigo lighten-2', emit: 'backupItem'
+},
     ],
   },
 };
