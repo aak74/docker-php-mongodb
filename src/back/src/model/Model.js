@@ -15,7 +15,8 @@ class Model {
   }
 
   find(filter, projection) {
-    // console.log('Model find', filter, projection);
+    console.log('Model find', filter, projection);
+    filter = {id: filter};
     return this.db.get()
       .collection(this.collectionName)
       .find(this.getFilter(filter)).project(projection);

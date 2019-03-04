@@ -15,6 +15,8 @@ const passport = require('passport');
 
 const auth = require('../auth/authorize');
 
+const verifyKey = auth.verifyKey;
+
 class Routes {
   constructor({
     logger,
@@ -58,7 +60,7 @@ class Routes {
         { id: user._id,
           login: user.login,
           password: user.password,
-         
+          verifyKey: verifyKey,    
         };
         const token = jwt.sign(payload, auth.jwtOptions.secretOrKey);
         res.json({ message: 'ok', token });
@@ -78,7 +80,7 @@ class Routes {
   
 
     this.httpServer.get('/secret', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-      console.log('next=====>', next);
+      console.log('пользователь', req.user.login);
       res.send({ message: 'Success! You can not see this without a token' });
     });
     this.httpServer.post('/user/register', bodyParser.json(), async (req, res) => {
@@ -91,9 +93,11 @@ class Routes {
       res.status(200).send('OK');
     });
 
-    this.httpServer.get('/projects/:id', async (req, res) => {
+    this.httpServer.get('/projects/:id',passport.authenticate('jwt', { session: false }), async (req, res) => {
+      console.log('пользователь', req.user.id);
       const data = await this.projectController.get({
         _id: req.params.id,
+        id:req.user.id
       });
       res.send({
         status: 'ok',
@@ -101,8 +105,8 @@ class Routes {
       });
     });
 
-    this.httpServer.get('/projects', async (_, res) => {
-      const data = await this.projectController.getList();
+    this.httpServer.get('/projects',passport.authenticate('jwt', { session: false }), async (req, res) => {
+      const data = await this.projectController.getList(req.user.id);
       res.send({
         status: 'ok',
         data,
@@ -125,7 +129,11 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.post('/projects', bodyParser.json(), async (req, res) => {
+    this.httpServer.post('/projects', bodyParser.json(),passport.authenticate('jwt', { session: false }), async (req, res) => {
+      console.log('запущено==>',req.user);
+      const dataProject= req.body;
+      dataProject.id=req.user.id;
+      console.log('ProjectData',dataProject);
       const _ = await this.projectController.create(req.body);
       res.send({ status: 'ok' });
     });

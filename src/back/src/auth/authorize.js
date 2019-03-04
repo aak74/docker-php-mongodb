@@ -10,29 +10,19 @@ const users = [{
 }];
 const jwtOptions = {};
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme('jwt');
-jwtOptions.secretOrKey = 'tasmanianDevil';
-
-const controller = require('../controller/UserController');
-const auth = require('../model/User');
-
+jwtOptions.secretOrKey = 'ArealJWTkey';
+const verifyKey = 'ArealGroup'
 
 
 const strategy = new JwtStrategy(jwtOptions, ((jwt_payload, next) => {
-  console.log('payload received', jwt_payload);
   // usually this would be a database call:
-  const data = {
-    _id: jwt_payload.id,
-  };
-  const userLogin = users[lodash.findIndex(users, { id: jwt_payload.id })];
-  const g = jwt_payload;
-  if (g) {
-    console.log('запустил');
-    next(null, g);
+  if (jwt_payload.verifyKey === verifyKey) {
+    next(null, jwt_payload);
   } else {
-    console.log('не запустил');
     next(null, false);
   }
 }));
 
 module.exports = strategy;
+module.exports.verifyKey = verifyKey;
 module.exports.jwtOptions = jwtOptions;
