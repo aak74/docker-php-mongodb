@@ -1,21 +1,22 @@
-
 'use strict';
 
-class history {
-  constructor({ logger, historyModel }) {
+class HistoryAdd {
+  constructor({
+    logger,
+    historyModel,
+    publishMessage,
+  }) {
     this.logger = logger;
-    this.historyModel = historyModel
+    this.historyModel = historyModel;
+    this.publishMessage = publishMessage;
   }
-  async executeGet(params) {
-    const result = await this.historyModel.get(params);
-    return result;
-  }
-  async executeSend(params) {
+
+  async execute(params) {   
     this.logger.debug('UpdateStatus', params);
 
     let date_time =new Date();
     const filter = {
-      ProjectID: params._id,
+      _id: params._id,
     };
     if (params.statusText=='OK') params.statusText='online';
     else params.statusText='offline';
@@ -24,11 +25,11 @@ class history {
       ping:params.time,
       lastUpdate: date_time
     }
-    this.historyModel.send(filter,status,params);
+   // this.historyModel.findOneAndInsert(filter,status,params);
     //this.logger.debug('UpdateStatus',filter);
     //await this.projectModel.findOneAndUpdate(filter, { status });
     return true;
   }
 }
 
-module.exports = history;
+module.exports = HistoryAdd;

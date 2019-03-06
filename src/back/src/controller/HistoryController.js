@@ -1,17 +1,12 @@
+'use strict';
 
-class HistoryModel {
+class  HistoryModel {
   constructor({
-    history,
+  historyAdd,
   }) {
-    this.history = history;
+    this.historyAdd = historyAdd;
   }
 
-  async getHistory(params) {
-    return await this.history.executeGet(params);
-  }
-  async sendHistory(params) {
-    return await this.history.executeSend(params);
-  }
 
 }
 
