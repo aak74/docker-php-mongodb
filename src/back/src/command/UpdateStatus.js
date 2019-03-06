@@ -8,8 +8,6 @@ class UpdateStatus {
   }
 
   async execute(params) {   
-    this.logger.debug('UpdateStatus', params);
-
     let date_time =new Date();
     const filter = {
       _id: params._id,

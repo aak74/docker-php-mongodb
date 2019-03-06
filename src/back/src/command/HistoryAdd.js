@@ -12,11 +12,9 @@ class HistoryAdd {
   }
 
   async execute(params) {   
-    this.logger.debug('UpdateStatus', params);
-
     let date_time =new Date();
     const filter = {
-      _id: params._id,
+      id: params._id,
     };
     if (params.statusText=='OK') params.statusText='online';
     else params.statusText='offline';
@@ -25,8 +23,8 @@ class HistoryAdd {
       ping:params.time,
       lastUpdate: date_time
     }
-   // this.historyModel.findOneAndInsert(filter,status,params);
-    //this.logger.debug('UpdateStatus',filter);
+    this.historyModel.Insert(filter,status,params);
+    this.logger.debug('UpdateStatus',filter);
     //await this.projectModel.findOneAndUpdate(filter, { status });
     return true;
   }

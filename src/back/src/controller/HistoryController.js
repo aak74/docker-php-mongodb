@@ -6,9 +6,9 @@ class  HistoryModel {
   }) {
     this.historyAdd = historyAdd;
   }
-  async historySend(user) {
-    //return await this.getProjects.get(user);
-    console.log('tyt');
+  async sendHistory(history) {
+    return await this.historyAdd.execute(history);
+    //console.log('tyt',history);
   }
 
 }

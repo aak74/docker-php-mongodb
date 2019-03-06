@@ -117,7 +117,7 @@ class Routes {
     });
     this.httpServer.get('/historyprojects', async (req, res) => {
       const data = await this.projectController.getList();
-      console.log('data',data);
+      //console.log('data',data);
       res.send({
         status: 'ok',
         data,
@@ -141,10 +141,8 @@ class Routes {
     });
 
     this.httpServer.post('/projects', bodyParser.json(),passport.authenticate('jwt', { session: false }), async (req, res) => {
-      console.log('запущено==>',req.user);
       const dataProject= req.body;
       dataProject.id=req.user.id;
-      console.log('ProjectData',dataProject);
       const _ = await this.projectController.create(req.body);
       res.send({ status: 'ok' });
     });
@@ -155,10 +153,10 @@ class Routes {
     });
 
     this.httpServer.post('/projects/:id/status', bodyParser.json(), async (req, res) => {
-       console.log('update status', req.params, req.body);
+       //console.log('update status', req.params, req.body);
 
-      //const _ = await this.historyController.sendHistory(req.body);
-      // console.log('result',result);
+      const result = await this.historyController.sendHistory(req.body);
+       //console.log('result',result);
       res.send({ status: 'ok' });
     });
 

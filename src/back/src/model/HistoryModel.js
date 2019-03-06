@@ -4,7 +4,7 @@ const History = require('./History')
 
 class HistoryModel extends History {
   constructor({ db }) {
-    super({ db, collectionName: 'projects' })
+    super({ db, collectionName: 'history' })
   }
 }
 
