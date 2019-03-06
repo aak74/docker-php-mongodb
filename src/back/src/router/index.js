@@ -82,7 +82,7 @@ class Routes {
   
 
     this.httpServer.get('/secret', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-      console.log('пользователь', req.user.login);
+      //console.log('пользователь', req.user.login);
       res.send({ message: 'Success! You can not see this without a token' });
     });
     this.httpServer.post('/user/register', bodyParser.json(), async (req, res) => {
@@ -96,7 +96,7 @@ class Routes {
     });
 
     this.httpServer.get('/projects/:id',passport.authenticate('jwt', { session: false }), async (req, res) => {
-      console.log('пользователь', req.user.id);
+     // console.log('пользователь', req.user.id);
       const data = await this.projectController.get({
 //        _id: req.params.id,
         id:req.user.id
@@ -109,6 +109,15 @@ class Routes {
 
     this.httpServer.get('/projects',passport.authenticate('jwt', { session: false }), async (req, res) => {
       const data = await this.projectController.getList(req.user.id);
+      res.send({
+        status: 'ok',
+        data,
+
+      });
+    });
+    this.httpServer.get('/historyprojects', async (req, res) => {
+      const data = await this.projectController.getList();
+      console.log('data',data);
       res.send({
         status: 'ok',
         data,
@@ -146,9 +155,9 @@ class Routes {
     });
 
     this.httpServer.post('/projects/:id/status', bodyParser.json(), async (req, res) => {
-      // console.log('update status', req.params, req.body);
+       console.log('update status', req.params, req.body);
 
-      const _ = await this.historyController.sendHistory(req.body);
+      //const _ = await this.historyController.sendHistory(req.body);
       // console.log('result',result);
       res.send({ status: 'ok' });
     });

@@ -10,8 +10,9 @@ class ProjectModel {
   }
 
   async getList() {
+    console.log('ping');
     try {
-      var result = await this.httpClient.get(`http://back:3000/projects`)
+      var result = await this.httpClient.get(`http://back:3000/historyprojects`)
         .then(res => {
          // console.log('getList', res.data.data);
           
