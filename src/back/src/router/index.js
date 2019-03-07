@@ -96,11 +96,16 @@ class Routes {
     });
 
     this.httpServer.get('/projects/:id',passport.authenticate('jwt', { session: false }), async (req, res) => {
-     // console.log('пользователь', req.user.id);
+      console.log('пользователь', req.params.id);
       const data = await this.projectController.get({
-//        _id: req.params.id,
+        _id:req.params.id,
         id:req.user.id
       });
+      const History = await this.historyController.getHistory({
+//        _id: req.params.id,
+        id:req.params.id
+      });
+      data.history = History.history;
       res.send({
         status: 'ok',
         data,
@@ -148,7 +153,12 @@ class Routes {
     });
 
     this.httpServer.get('/projects/:id/backup', async (req, res) => {
-      const _ = await this.projectController.backup(req.params.id);
+      console.log( req.body)
+     /* const data = await this.projectController.get({
+        _id:req.body.id,
+        id:req.user.id
+      });
+      const _ = await this.projectController.backup(req.params.id);*/
       res.send({ status: 'ok' });
     });
 

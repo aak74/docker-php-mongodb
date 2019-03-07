@@ -46,7 +46,7 @@ const register = ({ commit }, data) => {
 
 const addProject = ({ commit }, data) => {
   api.request('post', 'projects/', data)
-    .then( 
+    .then(
       commit('ADDED_PROJECT', data)
 );
 };
@@ -65,10 +65,11 @@ const saveProject = ({ commit }, data) => {
 );
 };
 
-const backupProject = ({ commit }, id) => {
-  api.request('get', `projects/${id}/backup`)
+const backupProject = ({ commit }, data) => {
+
+  api.request('get', `projects/${data.id}/backup`, data)
     .then(
-      commit('BACKUP_TASK_SENDED', id)
+      commit('BACKUP_TASK_SENDED', data)
 );
 };
 

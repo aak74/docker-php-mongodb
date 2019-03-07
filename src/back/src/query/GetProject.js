@@ -9,7 +9,6 @@ class GetProject {
   async get(params) {
     //console.log('GetProject', params);
     const result = await this.projectModel.getObject(params);
-    result.history=result.history.slice(result.history.length-21);
     return result;
   }
 }

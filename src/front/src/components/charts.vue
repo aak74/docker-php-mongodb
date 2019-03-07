@@ -6,7 +6,7 @@ extends: Line,
 props: {
   chartData: {
     type: Array,
-  },
+  }
 },
 name:'charts',
 
@@ -29,24 +29,25 @@ name:'charts',
   },
 computed: {
   fillData () {
-      const EnterDate = this.chartData;      
+      const EnterDate = this.chartData;
+      console.log(EnterDate) ;
       let i=0;
       let y=0;//кол во удаленных
       EnterDate.forEach(item => {
           if (this.dataChartsTime[i]!== item.lastUpdate){
             if(this.dataChartsTime[i]!== undefined){
               this.dataChartsTime.shift();
-            } 
+            }
             this.dataChartsTime.push(new Date(item.lastUpdate));
-          } 
+          }
           if (this.dataChartsPing[i+y]!== item.ping){
             if(this.dataChartsPing[i-y]!== undefined){
               this.dataChartsPing.shift();
               y++;
               this.status=true;
-            } 
+            }
             this.dataChartsPing.push(item.ping);
-          }    
+          }
           i++
       });
       const datacollection = {
@@ -63,7 +64,7 @@ computed: {
   },
   fillOptions () {
     const GOptions= {
-    showLines: true, // disable for all datasets' 
+    showLines: true, // disable for all datasets'
     animation: false,
     scales:
     {

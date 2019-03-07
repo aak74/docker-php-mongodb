@@ -38,6 +38,14 @@ class History {
       }
     return result;
   }
+  async get(filter, projection) {
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .findOne(filter);
+       delete result.password;
+      //console.log('result=>',result);
+    return result;
+  }
 }
 
 module.exports = History;

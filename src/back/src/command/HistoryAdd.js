@@ -24,7 +24,7 @@ class HistoryAdd {
       lastUpdate: date_time
     }
     this.historyModel.Insert(filter,status,params);
-    this.logger.debug('UpdateStatus',filter);
+    //this.logger.debug('UpdateStatus',filter);
     //await this.projectModel.findOneAndUpdate(filter, { status });
     return true;
   }

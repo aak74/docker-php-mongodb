@@ -1,18 +1,11 @@
 <template>
-  <div  class="info_block">
-   <div  class="info_card">
-          <div class="text_tag_div" v-for="field in fields" >
-            <p v-if="field.attrs.inputType!=='textarea'" class="text_tag_p text_edit">{{field.value}} </p>
+  <div >
+          <div class='elevation-1  layout px-0s table-controls' v-for="field in fields" >
+            <input class = 'headline  lighten-2' disabled v-if="field.attrs.inputType!=='textarea'" v-model='field.value' />
           </div>
-          <div  class="text_edit" style="width:600px; height:200px;">
+          <div  class="elevation-1 justify-center layout px-0s table-controls" style="width:600px; height:200px;">
             <chart  :chart-data="dataCollection" :width="600" :height="200"></chart>
           </div>
-        <textarea disabled rows="6" class="text_tag_textarea text_edit"
-        v-for="field in fields"
-        v-if="field.attrs.inputType==='textarea'"
-          >{{field.value}}
-      </textarea>
-    </div>
   </div>
 
 </template>
@@ -21,6 +14,11 @@
 import FormButtons from './FormButtons'
 import FormInput from './FormInput'
 import FormCheckbox from './FormCheckbox'
+import ArealButton from './elements/ArealButton'
+import ArealInput from './elements/ArealInput'
+import ArealModal from './elements/ArealModal'
+import ArealSelect from './elements/ArealSelect'
+
 import chart from './charts'
 
 
