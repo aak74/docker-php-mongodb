@@ -65,11 +65,10 @@ const saveProject = ({ commit }, data) => {
 );
 };
 
-const backupProject = ({ commit }, data) => {
-
-  api.request('get', `projects/${data.id}/backup`, data)
+const backupProject = ({ commit }, id) => {
+  api.request('get', `projects/${id}/backup`, id)
     .then(
-      commit('BACKUP_TASK_SENDED', data)
+      commit('BACKUP_TASK_SENDED', id)
 );
 };
 

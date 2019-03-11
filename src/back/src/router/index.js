@@ -114,6 +114,17 @@ class Routes {
 
     this.httpServer.get('/projects',passport.authenticate('jwt', { session: false }), async (req, res) => {
       const data = await this.projectController.getList(req.user.id);
+      console.log(data);
+      const History = await this.historyController.getHistory({
+        //        _id: req.params.id,
+                id:data._id
+      });
+      const HistoryLastElement = History.history.slice(History.history.length-1);
+      data[0].status = {};
+      data[0].status.statusText = HistoryLastElement[0].statusText;
+      data[0].status.ping = HistoryLastElement[0].ping;
+      data[0].status.lastUpdate = HistoryLastElement[0].lastUpdate;
+      console.log(data);
       res.send({
         status: 'ok',
         data,
@@ -152,21 +163,18 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.get('/projects/:id/backup', async (req, res) => {
-      console.log( req.body)
-     /* const data = await this.projectController.get({
-        _id:req.body.id,
+    this.httpServer.get('/projects/:id/backup',passport.authenticate('jwt', { session: false }), async (req, res) => {
+      const data = {
+        _id:req.params.id,
         id:req.user.id
-      });
-      const _ = await this.projectController.backup(req.params.id);*/
+      };
+      console.log("Data=>",data);
+      const _ = await this.projectController.backup(data);
       res.send({ status: 'ok' });
     });
 
     this.httpServer.post('/projects/:id/status', bodyParser.json(), async (req, res) => {
-       //console.log('update status', req.params, req.body);
-
       const result = await this.historyController.sendHistory(req.body);
-       //console.log('result',result);
       res.send({ status: 'ok' });
     });
 

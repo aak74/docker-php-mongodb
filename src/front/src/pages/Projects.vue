@@ -197,19 +197,19 @@ export default {
     clickItem(item) {
       //console.log('clicked on', item);
       // this.$store.dispatch('openProject', item._id);
-      this.modalTitle = 'Информация';
-      this.modalSubmitButton = 'Закрыть';
-      this.modalAction = 'Info';
+     // this.modalTitle = 'Информация';
+    //  this.modalSubmitButton = 'Закрыть';
+     // this.modalAction = 'Info';
       this.id = item._id;
       this.name = item.name;
       this.url = item.url;
       this.text = item.text;
       this.disableInput = false;
-      this.showDialog = true;
+     // this.showDialog = true;
       this.showPassword = false;
-      this.loadProject(this.id);
-      this.update = false;
-      //document.location.href = `/projects/${item._id}`;
+     // this.loadProject(this.id);
+     // this.update = false;
+      document.location.href = `/projects/${item._id}`;
     },
     addItem() {
       this.modalTitle = 'Добавить новый проект';
@@ -307,7 +307,7 @@ export default {
     },
     saveProject() {
       console.log('Проект сохранен', this.id, this.name, this.url , this.text, this.password);
-      this.$store.dispatch('saveProject', { name: this.name, url: this.url, text: this.text, password: this.password, host: this.host, user: this.user,
+      this.$store.dispatch('saveProject', { id:this.id, name: this.name, url: this.url, text: this.text, password: this.password, host: this.host, user: this.user,
         port: this.port, passwordSSH: this.passwordSSH, path: this.path,});
       this.showDialog = false;
       this.sendRequest();

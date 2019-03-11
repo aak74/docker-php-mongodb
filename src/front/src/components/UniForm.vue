@@ -4,7 +4,7 @@
           <div class="text_tag_div" v-for="field in fields" >
             <p v-if="field.attrs.inputType!=='textarea'" class="text_tag_p text_edit">{{field.value}} </p>
           </div>
-          <div  class="text_edit" style="width:600px; height:200px;">
+          <div  class="" style="width:600px; height:200px;">
             <chart  :chart-data="dataCollection" :width="600" :height="200"></chart>
           </div>
         <textarea disabled rows="6" class="text_tag_textarea text_edit"

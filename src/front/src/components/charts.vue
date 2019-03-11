@@ -55,8 +55,10 @@ computed: {
       datasets: [
         {
           label: 'Ping',
-          backgroundColor: '#f87979',
+          backgroundColor: "rgba(255,99,132,0.2)",
+          borderColor: "rgba(255,99,132,1)",
           data: this.dataChartsPing,
+          fill: false,
         }
       ]
     }
@@ -64,7 +66,7 @@ computed: {
   },
   fillOptions () {
     const GOptions= {
-    showLines: true, // disable for all datasets'
+    //showLines: true, // disable for all datasets'
     animation: false,
     scales:
     {
@@ -72,7 +74,8 @@ computed: {
             display: false
         }],
         yAxes: [{
-            display: false
+            display: false,
+
         }]
     }
     }
