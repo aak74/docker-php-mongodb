@@ -8,7 +8,7 @@
         <table class="v-datatable v-table theme--light" >
           <tbody>
             <tr v-for="field in fields">
-              <td class="layout px-0s table-controls" disabled><p>{{field.attrs.label}}:</p><span>{{field.value}}</span></td>
+              <td class="layout px-0s table-controls" disabled><p>{{field.attrs.label}}:<span>{{field.value}}</span></p></td>
             </tr>
           </tbody>
         </table>
@@ -102,9 +102,12 @@ export default {
 p{
   font-style: italic;
   font-weight: bold;
-  font-size: 14px;
+  font-size: 16px;
 }
 span{
-  margin-left: 10px;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 15px;
+  margin-left: 13px;
 }
 </style>
