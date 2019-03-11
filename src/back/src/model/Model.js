@@ -29,7 +29,8 @@ class Model {
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOne(this.getFilter(filter));
-       delete result.password;
+       
+      delete result.password;
       //console.log('result=>',result);
     return result;
   }
@@ -43,7 +44,7 @@ class Model {
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
-        this.getFilter(filter), {
+        filter, {
           $set: update
         }, 
         params
@@ -55,22 +56,17 @@ class Model {
   }
   async findOneAndInsert(filter, update, params) {
     filter={
-      _id: filter._id
+      _id: filter._id,
       }
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
-        this.getFilter(filter), {
-          $push: {
-            history: {
-             ...update
-            },
-          },
+        filter, {
+          $set: update
         }, 
         params
       )
       .catch(err => {
-        console.log(err);
       });
     return result;
   }

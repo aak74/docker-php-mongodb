@@ -1,17 +1,8 @@
 
-
 const lodash = require('lodash');
 const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-
-
-/* const users = [{
-  id: 1,
-  name: 'admin',
-  password: 'admin',
-}]; */
-
 
 const auth = require('../auth/authorize');
 
@@ -97,6 +88,7 @@ class Routes {
 
     this.httpServer.get('/projects/:id',passport.authenticate('jwt', { session: false }), async (req, res) => {
       console.log('пользователь', req.params.id);
+      
       const data = await this.projectController.get({
         _id:req.params.id,
         id:req.user.id
@@ -114,17 +106,6 @@ class Routes {
 
     this.httpServer.get('/projects',passport.authenticate('jwt', { session: false }), async (req, res) => {
       const data = await this.projectController.getList(req.user.id);
-      console.log(data);
-      const History = await this.historyController.getHistory({
-        //        _id: req.params.id,
-                id:data._id
-      });
-      const HistoryLastElement = History.history.slice(History.history.length-1);
-      data[0].status = {};
-      data[0].status.statusText = HistoryLastElement[0].statusText;
-      data[0].status.ping = HistoryLastElement[0].ping;
-      data[0].status.lastUpdate = HistoryLastElement[0].lastUpdate;
-      console.log(data);
       res.send({
         status: 'ok',
         data,
@@ -175,6 +156,7 @@ class Routes {
 
     this.httpServer.post('/projects/:id/status', bodyParser.json(), async (req, res) => {
       const result = await this.historyController.sendHistory(req.body);
+      const resultUpdate = await this.projectController.updateStatus(req.body);
       res.send({ status: 'ok' });
     });
 

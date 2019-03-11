@@ -12,16 +12,13 @@ class UpdateStatus {
     const filter = {
       _id: params._id,
     };
-    if (params.statusText=='OK') params.statusText='online';
-    else params.statusText='offline';
-    const status = {
+    const status = {status:{
       statusText: params.statusText,
       ping:params.time,
+      contentLength:params.contentLength,
       lastUpdate: date_time
-    }
+    }};
     this.projectModel.findOneAndInsert(filter,status,params);
-    //this.logger.debug('UpdateStatus',filter);
-    //await this.projectModel.findOneAndUpdate(filter, { status });
     return true;
   }
 }

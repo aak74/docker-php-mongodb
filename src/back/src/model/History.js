@@ -42,7 +42,6 @@ class History {
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOne(filter);
-       delete result.password;
       //console.log('result=>',result);
     return result;
   }

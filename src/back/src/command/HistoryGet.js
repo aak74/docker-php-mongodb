@@ -14,7 +14,9 @@ class HistoryGet {
   async execute(params) {   
        console.log('GetProject', params);
        const result = await this.historyModel.get(params);
-       result.history=result.history.slice(result.history.length-21);
+       if (result){
+        result.history=result.history.slice(result.history.length-21);
+        }
        return result;
   }
 }

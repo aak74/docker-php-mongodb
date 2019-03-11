@@ -1,11 +1,20 @@
 <template>
-  <div >
-          <div class='elevation-1  layout px-0s table-controls' v-for="field in fields" >
-            <input class = 'headline  lighten-2' disabled v-if="field.attrs.inputType!=='textarea'" v-model='field.value' />
-          </div>
-          <div  class="elevation-1 justify-center layout px-0s table-controls" style="width:600px; height:200px;">
-            <chart  :chart-data="dataCollection" :width="600" :height="200"></chart>
-          </div>
+  <div class="container" >
+    <div class="elevation-1">
+      <div class="v-table__overflow">
+        <div  style="height:auto;">
+          <chart  :chart-data="dataCollection" :height="100"></chart>
+        </div>
+        <table class="v-datatable v-table theme--light" >
+          <tbody>
+            <tr v-for="field in fields">
+              <td class="layout px-0s table-controls" disabled><p>{{field.attrs.label}}:</p><span>{{field.value}}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 
 </template>
@@ -45,8 +54,10 @@ export default {
   },
   methods:{
       fetchData(){
-        this.$store.dispatch('getProject', this.projectId);
-        console.log('Пытаюсь обновить');
+        if (this.projectId){
+          this.$store.dispatch('getProject', this.projectId);
+          console.log('Пытаюсь обновить');
+        }
       },
   },
   computed: {
@@ -88,51 +99,12 @@ export default {
 //============================================================
 </script>
 <style>
-.info_block{
-  text-align: center;
-  align-items:center;
-  width:100%;
+p{
+  font-style: italic;
+  font-weight: bold;
+  font-size: 14px;
 }
-.info_card{
-  display: inline-block;
-  padding:1%;
-  margin-top:50px;
-  left:-10%;
-  background:rgba(153, 255, 153,0.5);
-  background: linear-gradient(to right bottom,rgba(0, 204, 68,0.6) 15%, rgba(153, 255, 153,0.8) 80%, rgba(153, 255, 153,0.35) 90%);
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 10px;
-}
-.text_tag_div{
- margin-top:0px;
- padding-top:1%;
-}
-.text_edit{
-  background: rgba(255,255,255,0.9);
-  border-radius:5px;
-  border:1px ridge rgba(0, 0, 0, 0.2);
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-.text_tag_p{
-  font-size: 26px;
-}
-.text_tag_textarea{
-  margin-top: 3%;
-  width:100%;
-  font-size: 20px;
-  resize: none;
-  outline:none;
-}
-.info_date{
-  text-align:center;
-}
-textarea::-webkit-scrollbar {
-    width: 0%;
-}
-::-webkit-calendar-picker-indicator {
-  color: transparent;
-  opacity: 1;
-  background: url(//www.gravatar.com/avatar/cbfaff96665b7567defe1b34a883db8b?s=16&d=identicon&r=PG) no-repeat center;
-  background-size: contain;
+span{
+  margin-left: 10px;
 }
 </style>
