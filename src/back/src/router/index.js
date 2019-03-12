@@ -151,11 +151,11 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    // this.httpServer.get('/server-status/', async (_, res) =>{
-    //   self.logger.debug('server-status');
-    //   const result = await this.projectController.getPage({name: 'arealidea'});
-    //   res.send(result);
-    // });
+    this.httpServer.get('/projects/users', bodyParser.json(), async (req, res) => {
+      const result = await this.historyController.sendHistory(req.body);
+      const resultUpdate = await this.projectController.updateStatus(req.body);
+      res.send({ status: 'ok' });
+    });
 
     this.httpServer.all('*', (req, res) => {
       self.logger.error('Bad request', req.params);

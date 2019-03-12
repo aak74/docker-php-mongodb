@@ -7,6 +7,7 @@ import Project from '../pages/Project';
 import ServerStatus from '../pages/ServerStatus';
 import Login from '../pages/LoginPage';
 import Welcome from '../pages/Welcome';
+import Users from '../pages/Users';
 
 Vue.use(Router);
 
@@ -40,6 +41,11 @@ const routes = [
     path: '/Welcome',
     name: 'Welcome',
     component: Welcome,
+  },
+  {
+    path: '/Users',
+    name: 'Users',
+    component: Users,
   },
 ];
 

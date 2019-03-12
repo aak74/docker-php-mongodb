@@ -44,7 +44,7 @@ class Model {
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
-        filter, {
+        this.getFilter(filter), {
           $set: update
         }, 
         params
@@ -61,7 +61,7 @@ class Model {
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
-        filter, {
+        this.getFilter(filter), {
           $set: update
         }, 
         params
