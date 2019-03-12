@@ -2,6 +2,7 @@ export default {
   login:{
 
   },
+  register: undefined,
   status: {
     loading: true,
   },

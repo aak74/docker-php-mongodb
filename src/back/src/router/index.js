@@ -69,7 +69,7 @@ class Routes {
     
     this.httpServer.post('/user/register', bodyParser.json(), async (req, res) => {
       const result = await this.userController.register(req.body);
-      res.send({ status: 'ok', result });
+      res.send({ status: result.login });
     });
 
     const self = this;

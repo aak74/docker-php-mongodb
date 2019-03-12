@@ -70,8 +70,17 @@ export default {
     console.log('AUTH', data);
   },
 
-  REGISTER(result, data) {
-    console.log('REGISTER',data);
+  REGISTER(state, data) {
+    console.log('REGISTER', data.data.status);
+    if (data.data.status === 'failed') {
+      state.register = false;
+    } else {
+      state.register = true;
+    }
+  },
+  REGISTER_FAIL(state, data) {
+      state.register = false;
+      console.log('REGISTER_FAIL',data);
   },
 
   ADDED_PROJECT(_, data) {

@@ -42,9 +42,12 @@ const auth = ({ commit }) => {
 const register = ({ commit }, data) => {
   console.log({ commit }, data);
   api.request('post', 'user/register', data)
-    .then(
-      commit('SIGN_IN', data),
-    );
+    .then(requestData => {
+      commit('REGISTER', requestData);
+    })
+    .catch(error => {
+      commit('REGISTER_FAIL', error);
+    });
 };
 
 const addProject = ({ commit }, data) => {

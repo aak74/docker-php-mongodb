@@ -10,6 +10,12 @@ function EnableMenuItems() {
   if (user) {
     return [
       {
+        icon: 'home',
+        title: UserName(),
+        link: '/login',
+        description: null,
+      },
+      {
         icon: 'dashboard',
         title: 'Рабочий стол',
         link: '/',
@@ -24,12 +30,6 @@ function EnableMenuItems() {
         icon: 'bar_chart',
         title: 'Состояние серверов',
         link: '/server-status/',
-        description: null,
-      },
-      {
-        icon: 'home',
-        title: UserName(),
-        link: '/login',
         description: null,
       },
     ];
