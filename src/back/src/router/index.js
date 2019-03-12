@@ -63,19 +63,10 @@ class Routes {
       }
     });
 
-    /*
-    this.httpServer.post('/user/login', bodyParser.json(), async (req, res) => {
-      const result = await this.userController.login(req.body);
-
-      res.send({ status: 'ok', result });
-    });
-*/
-  
-
     this.httpServer.get('/secret', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-      //console.log('пользователь', req.user.login);
       res.send({ message: 'Success! You can not see this without a token' });
     });
+    
     this.httpServer.post('/user/register', bodyParser.json(), async (req, res) => {
       const result = await this.userController.register(req.body);
       res.send({ status: 'ok', result });

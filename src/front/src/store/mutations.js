@@ -56,19 +56,22 @@ export default {
   },
   SIGN_IN(state, data) {
     state.login = data;
-    // console.log(state.login.data.token, 'this.data');
     const JWTtoken = `jwt ${state.login.data.token}`;
     const name = `${state.login.data.name}`;
-
     localStorage.setItem('token', JWTtoken);
     localStorage.setItem('UserName', name);
+    localStorage.setItem('FirstLogin', false);
+  },
+  SIGN_IN_FAIL() {
+    console.log('LOGIN FAIL');
+    localStorage.setItem('loginProcces', false);
   },
   AUTH(state, data) {
-    console.log('AUTH',data);
+    console.log('AUTH', data);
   },
 
   REGISTER(result, data) {
-    // console.log('REGISTER',data);
+    console.log('REGISTER',data);
   },
 
   ADDED_PROJECT(_, data) {

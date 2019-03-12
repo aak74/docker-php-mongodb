@@ -52,14 +52,6 @@ export default {
         {
           type: 'input',
           inputType: 'text',
-          label: 'ID',
-          model: '_id',
-          readonly: true,
-          disabled: true,
-        },
-        {
-          type: 'input',
-          inputType: 'text',
           label: 'Name',
           model: 'name',
           placeholder: 'Project name',

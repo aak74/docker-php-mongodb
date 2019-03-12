@@ -18,58 +18,61 @@ const getProject = ({ commit }, id) => {
   api.getData('get', `projects/${id}`)
     .then(data => {
       commit('LOADED_PROJECT', data, data);
-      //console.log(data);
+      // console.log(data);
     });
 };
 
 const signIn = ({ commit }, login) => {
   api.getLogin('post', 'user/login', login)
-   .then(data => {
-     commit('SIGN_IN', data);
+    .then(data => {
+      commit('SIGN_IN', data);
+    })
+    .catch(error => {
+      commit('SIGN_IN_FAIL', error);
     });
 };
 
 const auth = ({ commit }) => {
-  api.getLogin('get', '/secret' )
-   .then(data => {
-     commit('AUTH', data);
+  api.getLogin('get', '/secret')
+    .then(data => {
+      commit('AUTH', data);
     });
 };
 
 const register = ({ commit }, data) => {
-  console.log({ commit },data);
+  console.log({ commit }, data);
   api.request('post', 'user/register', data)
-   .then(
-     commit('SIGN_IN', data)
-  );
+    .then(
+      commit('SIGN_IN', data),
+    );
 };
 
 const addProject = ({ commit }, data) => {
   api.request('post', 'projects/', data)
     .then(
-      commit('ADDED_PROJECT', data)
-);
+      commit('ADDED_PROJECT', data),
+    );
 };
 
 const deleteProject = ({ commit }, data) => {
   api.request('delete', `projects/${data.id}`, data)
     .then(
-      commit('DELETED_PROJECT', data)
-);
+      commit('DELETED_PROJECT', data),
+    );
 };
 
 const saveProject = ({ commit }, data) => {
   api.request('post', `projects/${data.id}`, data)
     .then(
-      commit('SAVED_PROJECT', data)
-);
+      commit('SAVED_PROJECT', data),
+    );
 };
 
 const backupProject = ({ commit }, id) => {
   api.request('get', `projects/${id}/backup`, id)
     .then(
-      commit('BACKUP_TASK_SENDED', id)
-);
+      commit('BACKUP_TASK_SENDED', id),
+    );
 };
 
 export default {

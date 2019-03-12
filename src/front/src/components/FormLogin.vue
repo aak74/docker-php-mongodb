@@ -6,21 +6,20 @@
             <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light input_manager">
               <div class="v-input__control">
                 <div class="v-input__slot">
-                  <input class="v-text-field__slot " v-model="user.login" />
+                  <input placeholder="Имя пользователя" class="v-text-field__slot " v-model="user.login" />
                 </div>
               </div>
             </div>
             <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light input_manager">
               <div class="v-input__control" >
                 <div class="v-input__slot">
-                  <input class="v-text-field__slot" v-model="user.password" type="password"/>
+                  <input placeholder="Пароль" class="v-text-field__slot" v-model="user.password" type="password"/>
                 </div>
               </div>
             </div>
              <div class="justify-center v-dialog__container">
-                  <button @click="register" class="mb15 v-btn theme--dark green lighten-2"> Регистрация   </button>
-                  <button @click="signIn" class="mb15 v-btn theme--dark green lighten-2"> Войти </button>
-                  <button @click="auth" class="mb15 v-btn theme--dark green lighten-2"> Проверка</button>
+                  <button @click="register" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark lighten-2"> Регистрация   </button>
+                  <button @click="signIn" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark  lighten-2"> Войти </button>
              </div>
           </div>
         </div>
@@ -44,31 +43,25 @@ export default {
               login:'',
               password:'',
           },
-          answer:localStorage.getItem('token'),
-
+          fail:true,
       }
   },
-  components: {
-
-  },
-  watch:{
-    data(){
-      this.answer=localStorage.getItem('token');
-    }
-  },
   methods:{
+      setTrue(){
+      this.fail = true;
+      },
       signIn(){
       this.$store.dispatch('signIn', this.user);
-
+      this.fail = false;
+      setTimeout(this.setTrue,800);
       },
       auth(){
       this.$store.dispatch('auth', this.user);
-
       },
       register(){
           let packet=[localStorage.getItem('token'),]
           this.$store.dispatch('register', this.user);
-      }
+      },
   },
 };
 </script>

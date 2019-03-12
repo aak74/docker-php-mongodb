@@ -1,7 +1,14 @@
-export default [
-  {
-    title: 'Главное',
-    items: [
+function UserName() {
+  const user = localStorage.getItem('UserName');
+  if (user) {
+    return user;
+  }
+  return 'Войти';
+}
+function EnableMenuItems() {
+  const user = localStorage.getItem('UserName');
+  if (user) {
+    return [
       {
         icon: 'dashboard',
         title: 'Рабочий стол',
@@ -20,12 +27,32 @@ export default [
         description: null,
       },
       {
-        icon: 'ballot',
-        title: localStorage.getItem('UserName'),
+        icon: 'home',
+        title: UserName(),
         link: '/login',
         description: null,
       },
-    ],
+    ];
+  }
+  return [{
+  icon : 'home',
+  title : UserName(),
+  link: '/login',
+  description: null,
+  }];
+}
+
+export default [
+  {
+    title: 'Главное',
+    computed: {
+    },
+    data() {
+      return {
+        UserCurrentName: UserName(),
+      };
+    },
+    items: EnableMenuItems(),
 
   },
 ];
