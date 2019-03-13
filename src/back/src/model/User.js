@@ -21,10 +21,23 @@ class User {
     return result;
   }
 
+  async getUsers() {
+    return this.find().toArray();
+    console.log(result);
+  }
+
+  find() {
+    // console.log('Model find', filter, projection);
+    return this.db.get()
+      .collection(this.collectionName)
+      .find().project();
+  }
+
   auth(params) {
     const result = this.db.get()
       .collection('users')
       .findOne(params);
+    
     return result;
   }
 }

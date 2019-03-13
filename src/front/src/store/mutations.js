@@ -54,6 +54,26 @@ export default {
     // console.log('LOADED_PROJECT', data);
     state.project.current = data;
   },
+
+  ADDED_PROJECT(_, data) {
+    console.log('ADDED PROJECT - ', data);
+  },
+
+  DELETED_PROJECT(_, data) {
+    console.log('DELETED PROJECT - ', data);
+  },
+
+  SAVED_PROJECT(_, data) {
+    console.log('SAVED PROJECT - ', data);
+  },
+
+  BACKUP_TASK_SENDED(_, data) {
+    console.log('BACKUP TASK SENDED TO QUEUE - ', data);
+  },
+
+  SERVERS_STATUS_LOADED(_, data) {
+    console.log('SERVERS STATUSE LOADED - ', data);
+  },
   SIGN_IN(state, data) {
     state.login = data;
     const JWTtoken = `jwt ${state.login.data.token}`;
@@ -79,27 +99,11 @@ export default {
     }
   },
   REGISTER_FAIL(state, data) {
-      state.register = false;
-      console.log('REGISTER_FAIL',data);
+    state.register = false;
+    console.log('REGISTER_FAIL',data);
   },
 
-  ADDED_PROJECT(_, data) {
-    console.log('ADDED PROJECT - ', data);
-  },
-
-  DELETED_PROJECT(_, data) {
-    console.log('DELETED PROJECT - ', data);
-  },
-
-  SAVED_PROJECT(_, data) {
-    console.log('SAVED PROJECT - ', data);
-  },
-
-  BACKUP_TASK_SENDED(_, data) {
-    console.log('BACKUP TASK SENDED TO QUEUE - ', data);
-  },
-
-  SERVERS_STATUS_LOADED(_, data) {
-    console.log('SERVERS STATUSE LOADED - ', data);
+  USERS(state, data) {
+    console.log(data);
   },
 };

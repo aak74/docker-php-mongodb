@@ -39,8 +39,10 @@ export default {
   methods:{
   },
   computed: {
-
-  }
+  },
+  mounted(){
+    this.$store.dispatch('users');
+  },
 }
 
 //============================================================

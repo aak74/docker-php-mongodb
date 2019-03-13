@@ -22,34 +22,6 @@ const getProject = ({ commit }, id) => {
     });
 };
 
-const signIn = ({ commit }, login) => {
-  api.getLogin('post', 'user/login', login)
-    .then(data => {
-      commit('SIGN_IN', data);
-    })
-    .catch(error => {
-      commit('SIGN_IN_FAIL', error);
-    });
-};
-
-const auth = ({ commit }) => {
-  api.getLogin('get', '/secret')
-    .then(data => {
-      commit('AUTH', data);
-    });
-};
-
-const register = ({ commit }, data) => {
-  console.log({ commit }, data);
-  api.request('post', 'user/register', data)
-    .then(requestData => {
-      commit('REGISTER', requestData);
-    })
-    .catch(error => {
-      commit('REGISTER_FAIL', error);
-    });
-};
-
 const addProject = ({ commit }, data) => {
   api.request('post', 'projects/', data)
     .then(
@@ -78,6 +50,41 @@ const backupProject = ({ commit }, id) => {
     );
 };
 
+const signIn = ({ commit }, login) => {
+  api.getLogin('post', 'user/login', login)
+    .then(data => {
+      commit('SIGN_IN', data);
+    })
+    .catch(error => {
+      commit('SIGN_IN_FAIL', error);
+    });
+};
+
+const auth = ({ commit }) => {
+  api.getLogin('get', '/secret')
+    .then(data => {
+      commit('AUTH', data);
+    });
+};
+
+const register = ({ commit }, data) => {
+  console.log({ commit }, data);
+  api.request('post', 'user/register', data)
+    .then(requestData => {
+      commit('REGISTER', requestData);
+    })
+    .catch(error => {
+      commit('REGISTER_FAIL', error);
+    });
+};
+
+const users = ({ commit }) => {
+  api.request('get', '/users')
+    .then(data => {
+      commit('USERS', data);
+    });
+};
+
 export default {
   loadStatus,
   loadProjects,
@@ -89,4 +96,5 @@ export default {
   signIn,
   register,
   auth,
+  users,
 };

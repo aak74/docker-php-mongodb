@@ -63,10 +63,16 @@ class Routes {
       }
     });
 
-    this.httpServer.get('/secret', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-      res.send({ message: 'Success! You can not see this without a token' });
+    this.httpServer.get('/users',passport.authenticate('jwt', { session: false }), async (req, res) => {
+
+      if(req.user.login==='admin'){
+        const result = await this.userController.usersGet(req.body);
+        res.send({ message: result });
+      }else{
+        res.send({ message: 'Sorry this is private page'});
+      } 
     });
-    
+
     this.httpServer.post('/user/register', bodyParser.json(), async (req, res) => {
       const result = await this.userController.register(req.body);
       res.send({ status: result.login });
@@ -95,14 +101,6 @@ class Routes {
       });
     });
 
-    this.httpServer.get('/projects',passport.authenticate('jwt', { session: false }), async (req, res) => {
-      const data = await this.projectController.getList(req.user.id);
-      res.send({
-        status: 'ok',
-        data,
-
-      });
-    });
     this.httpServer.get('/historyprojects', async (req, res) => {
       const data = await this.projectController.getList();
       //console.log('data',data);
