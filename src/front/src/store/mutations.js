@@ -104,6 +104,8 @@ export default {
   },
 
   USERS(state, data) {
-    console.log(data);
+    state.users = data.data;
+  },
+  DELETED_USER(state, data) {
   },
 };

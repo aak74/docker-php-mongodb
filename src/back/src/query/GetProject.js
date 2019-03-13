@@ -7,7 +7,6 @@ class GetProject {
   }
 
   async get(params) {
-    //console.log('GetProject', params);
     const result = await this.projectModel.getObject(params);
     return result;
   }

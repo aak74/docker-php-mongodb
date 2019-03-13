@@ -10,6 +10,9 @@
             <tr v-for="field in fields">
               <td class="layout px-0s table-controls" disabled><p>{{field.attrs.label}}:<span>{{field.value}}</span></p></td>
             </tr>
+            <tr>
+              <BackupHistory/>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -20,14 +23,7 @@
 </template>
 
 <script>
-import FormButtons from './FormButtons'
-import FormInput from './FormInput'
-import FormCheckbox from './FormCheckbox'
-import ArealButton from './elements/ArealButton'
-import ArealInput from './elements/ArealInput'
-import ArealModal from './elements/ArealModal'
-import ArealSelect from './elements/ArealSelect'
-
+import BackupHistory from './BackupHistory'
 import chart from './charts'
 
 
@@ -47,10 +43,8 @@ export default {
       }
   },
   components: {
-    FormButtons,
-    FormInput,
-    FormCheckbox,
     chart,
+    BackupHistory,
   },
   methods:{
       fetchData(){

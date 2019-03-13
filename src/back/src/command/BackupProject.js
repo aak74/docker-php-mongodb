@@ -11,8 +11,7 @@ class BackupProject {
     const RequestData = await this.projectModel.findOne({ '_id': FindProject._id, id:FindProject.id });
     const BackupData = {host:RequestData.host, user:RequestData.user, port:RequestData.port, passwordSSH:RequestData.passwordSSH, path:RequestData.path};
     //TODO: Передавать только необходимые для бэкапа данные
-    this.queue.publish(BackupData, 'backup');
-    return true;
+    return this.queue.publish(BackupData, 'backup');
   }
 }
 

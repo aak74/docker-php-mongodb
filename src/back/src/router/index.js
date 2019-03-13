@@ -7,6 +7,13 @@ const passport = require('passport');
 const auth = require('../auth/authorize');
 
 const verifyKey = auth.verifyKey;
+const isAdmin = function(name){
+  if (name==='admin'){
+    return true
+  }
+  return false
+} 
+
 
 class Routes {
   constructor({
@@ -64,10 +71,9 @@ class Routes {
     });
 
     this.httpServer.get('/users',passport.authenticate('jwt', { session: false }), async (req, res) => {
-
-      if(req.user.login==='admin'){
+      if(isAdmin(req.user.login)){
         const result = await this.userController.usersGet(req.body);
-        res.send({ message: result });
+        res.send(result);
       }else{
         res.send({ message: 'Sorry this is private page'});
       } 
@@ -78,20 +84,37 @@ class Routes {
       res.send({ status: result.login });
     });
 
+    this.httpServer.delete('/user/:id',passport.authenticate('jwt', { session: false }), bodyParser.json(), async (req, res) => {
+      if (isAdmin(req.user.login)){
+        const result = await this.userController.delete({
+          _id: req.params.id,
+        });
+        res.send({ status: result, id: req.params.id});
+      }else{
+        res.send({ status: 'fail', id: req.params.id});
+      }
+    });
+
     const self = this;
     this.httpServer.use('/status', (_, res) => {
       res.status(200).send('OK');
     });
 
+    this.httpServer.get('/projects',passport.authenticate('jwt', { session: false }), async (req, res) => {
+      const data = await this.projectController.getList(req.user.id);
+      res.send({
+        status: 'ok',
+        data,
+
+      });
+    });
+    
     this.httpServer.get('/projects/:id',passport.authenticate('jwt', { session: false }), async (req, res) => {
-      console.log('пользователь', req.params.id);
-      
       const data = await this.projectController.get({
         _id:req.params.id,
         id:req.user.id
       });
       const History = await this.historyController.getHistory({
-//        _id: req.params.id,
         id:req.params.id
       });
       data.history = History.history;
@@ -139,8 +162,8 @@ class Routes {
         id:req.user.id
       };
       console.log("Data=>",data);
-      const _ = await this.projectController.backup(data);
-      res.send({ status: 'ok' });
+      const result = await this.projectController.backup(data);
+      res.send({result});
     });
 
     this.httpServer.post('/projects/:id/status', bodyParser.json(), async (req, res) => {

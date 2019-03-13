@@ -1,8 +1,9 @@
 export default {
-  login:{
+  login: {
 
   },
   register: undefined,
+  users: {},
   status: {
     loading: true,
   },

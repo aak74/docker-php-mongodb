@@ -26,6 +26,17 @@ class User {
     console.log(result);
   }
 
+  async delete(id) {
+    console.log(id)
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .deleteOne(this.getFilter(id))
+      .catch(err => {
+        console.log(err);
+      });
+    return result;
+  }
+
   find() {
     // console.log('Model find', filter, projection);
     return this.db.get()
@@ -39,6 +50,12 @@ class User {
       .findOne(params);
     
     return result;
+  }
+  getFilter(filter) {
+    if (filter && filter['_id']) {
+      filter['_id'] = this.db.objectId(filter['_id']);
+    }
+    return filter;
   }
 }
 

@@ -85,6 +85,14 @@ const users = ({ commit }) => {
     });
 };
 
+const userDelete = ({ commit }, id) => {
+  console.log(id);
+  api.request('delete', `user/${id}`)
+    .then(data => {
+      commit('DELETED_USER', data);
+    });
+};
+
 export default {
   loadStatus,
   loadProjects,
@@ -97,4 +105,5 @@ export default {
   register,
   auth,
   users,
+  userDelete,
 };
