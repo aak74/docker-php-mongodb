@@ -72,7 +72,6 @@ class Model {
   }
 
   async insertOne(params) {
-    console.log('params', params);
     const result = await this.db.get()
       .collection(this.collectionName)
       .insertOne(params)

@@ -7,7 +7,6 @@ class User {
   }
 
   async register(params) {
-    console.log(params, 'params');
     const result = await this.db.get()
       .collection(this.collectionName)
       .insertOne(params);
@@ -23,11 +22,9 @@ class User {
 
   async getUsers() {
     return this.find().toArray();
-    console.log(result);
   }
 
   async delete(id) {
-    console.log(id)
     const result = await this.db.get()
       .collection(this.collectionName)
       .deleteOne(this.getFilter(id))

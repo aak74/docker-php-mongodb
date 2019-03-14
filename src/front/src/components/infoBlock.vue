@@ -50,7 +50,6 @@ export default {
       fetchData(){
         if (this.projectId){
           this.$store.dispatch('getProject', this.projectId);
-          console.log('Пытаюсь обновить');
         }
       },
   },
@@ -63,7 +62,6 @@ export default {
     },
     dataCollection(){
       if (this.update === false){
-        console.log('Включаю обновление');
         this.update = true;
         setInterval(this.fetchData, 2000);
       }

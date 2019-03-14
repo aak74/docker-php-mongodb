@@ -26,7 +26,6 @@ class History {
         console.log(err);
       });
       if(result.value == null){
-        console.log(result,'result');
           const resultInsert = await this.db.get()
             .collection(this.collectionName)
             .insertOne(filter)

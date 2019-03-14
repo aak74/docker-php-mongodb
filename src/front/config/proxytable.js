@@ -4,5 +4,5 @@ const proxy = {
 };
 
 module.exports = {
-  '/api': proxy,
+  '^/api': proxy,
 };

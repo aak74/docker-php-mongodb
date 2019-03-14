@@ -12,7 +12,6 @@ class UpdateProject {
   }
 
   async execute(filter, update) {
-    console.log('Filter=>', filter,'<=Update=>', update);
     const id = update.id;
     delete(update.id);
     await this.projectModel.findOneAndUpdate(filter, update);

@@ -43,5 +43,6 @@ export default {
     },
   },
   props: ['items', 'mini'],
+
 };
 </script>

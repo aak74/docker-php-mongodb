@@ -105,7 +105,6 @@ export default {
   computed: {
     items() {
       const ProjectsData = this.$store.getters.projects
-      console.log('ProjectsData=>',ProjectsData)
       return this.$store.getters.projects;
     },
     totalItems() {

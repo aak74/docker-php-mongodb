@@ -48,7 +48,6 @@ export default {
   methods:{
       fetchData(){
         this.$store.dispatch('getProject', this.projectId);
-        console.log('Пытаюсь обновить');
       },
   },
   computed: {
@@ -60,7 +59,6 @@ export default {
     },
     dataCollection(){
       if (this.update === false){
-        console.log('Включаю обновление');
         this.update = true;
         setInterval(this.fetchData, 2000);
       }

@@ -8,6 +8,7 @@ export default {
   name: 'BackupHistory',
   data(){
       return{
+        connect_error_count: 0,
       }
   },
 };

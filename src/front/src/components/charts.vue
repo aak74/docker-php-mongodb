@@ -21,7 +21,6 @@ name:'charts',
       chartData() {
         const currectData=this.fillData;
         if (this.status === true){
-          console.log('обновил')
           this.renderChart(currectData, this.fillOptions);
           this.status = false;
         }
@@ -30,7 +29,6 @@ name:'charts',
 computed: {
   fillData () {
       const EnterDate = this.chartData;
-      console.log(EnterDate) ;
       let i=0;
       let y=0;//кол во удаленных
       EnterDate.forEach(item => {

@@ -7,6 +7,7 @@
       <transition name="fade" mode="out-in">
         <router-view />
       </transition>
+      <notifications group="foo" />
     </v-content>
   </v-app>
 </div>
@@ -14,11 +15,37 @@
 
 <script>
 import Sidebar from './components/admin/Sidebar';
+import io from 'socket.io-client';
+
+
+const socket = io.connect("http://localhost")
+
 
 export default {
   name: 'App',
   components: {
     Sidebar,
+    io,
+  },
+  data(){
+    return{
+
+    }
+  },
+  methods:{
+  },
+  mounted() {
+      socket.emit('autorized', {user:localStorage.getItem('UserName')});
+      const vm = this;
+      socket.on('message', function(msg){
+        vm.$notify({
+          group: 'foo',
+          title: 'Message',
+          text: msg.msg,
+          enter: {opacity: [1, 0]},
+          leave: {opacity: [0, 1]}
+        });
+      });
   },
 };
 </script>

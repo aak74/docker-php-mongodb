@@ -68,7 +68,6 @@ const auth = ({ commit }) => {
 };
 
 const register = ({ commit }, data) => {
-  console.log({ commit }, data);
   api.request('post', 'user/register', data)
     .then(requestData => {
       commit('REGISTER', requestData);
@@ -86,7 +85,6 @@ const users = ({ commit }) => {
 };
 
 const userDelete = ({ commit }, id) => {
-  console.log(id);
   api.request('delete', `user/${id}`)
     .then(data => {
       commit('DELETED_USER', data);

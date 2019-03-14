@@ -1,6 +1,8 @@
+const proxy = require('./config/proxytable');
+
 module.exports = {
   devServer: {
-    proxy: 'http://localhost'
+    proxy,
   },
 
   baseUrl: undefined,

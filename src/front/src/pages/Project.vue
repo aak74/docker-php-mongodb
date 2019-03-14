@@ -15,14 +15,12 @@ export default {
     infoBlock,
   },
   beforeRouteEnter (to, from, next) {
-    console.log(to);
     next(vm => {
       vm.fetchData(to.params.id);
     });
   },
   methods: {
     fetchData(id) {
-      console.log('fetchData', id);
       this.$store.dispatch('getProject', id);
     },
   },
