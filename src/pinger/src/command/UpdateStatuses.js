@@ -7,13 +7,15 @@ class UpdateStatuses extends EventEmitter {
     logger,
     getProjects,
     getPage,
-    updateStatus
+    updateStatus,
+    requestQueue,
   }) {
     super();
 
     this.logger = logger;
     this.getProjects = getProjects;
     this.updateStatus = updateStatus;
+    this.requestQueue = requestQueue;
     this.getPage = getPage;
     this.queue = new Map;
     this.timers = new Map;
@@ -61,6 +63,10 @@ class UpdateStatuses extends EventEmitter {
     this.updateStatus.execute(project);
     this.putProjectToQueue(project);
     //this.logger.debug('debug>>>',this.putProjectToQueue(project));
+  }
+
+  async sendRequestQueue(msg) {
+    this.requestQueue.execute(msg);
   }
 
   async putProjectToQueue(project) {

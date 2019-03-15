@@ -79,6 +79,7 @@ class Queue extends EventEmitter {
   getLastResult() {
     return this.lastResult;
   }
+  
 
   async publish(msg, queue) {
     try {

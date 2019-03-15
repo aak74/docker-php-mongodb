@@ -12,10 +12,8 @@ class DeleteProject {
   }
 
   async execute(filter) {
-    
-    await this.projectModel.deleteOne(filter);
-    this.publishMessage.execute({ queue: 'projectDeleted', msg: filter });
-    return true;
+    const result = await this.projectModel.deleteOne(filter);
+    return result;
   }
 }
 

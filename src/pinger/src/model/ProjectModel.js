@@ -10,7 +10,6 @@ class ProjectModel {
   }
 
   async getList() {
-    console.log('ping');
     try {
       var result = await this.httpClient.get(`http://back:3000/historyprojects`)
         .then(res => {
@@ -22,6 +21,20 @@ class ProjectModel {
      // console.log('catch err', err);
     }
     return result;
+  }
+
+  async requestQueue(msg) {
+    console.log(msg.login);
+    try {
+      var result = await this.httpClient.post(`http://back:3000/backup/${msg.id}/Queue/${msg.login}/${msg.name}`)
+        .then(res => {
+          console.log('nice', msg.login);
+          return 'succes';
+        })
+        .catch((err) => {
+        });
+    } catch (err) {
+    }
   }
 
   async update(status) {

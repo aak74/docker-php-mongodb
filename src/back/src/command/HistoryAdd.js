@@ -14,17 +14,26 @@ class HistoryAdd {
   async execute(params) {   
     let date_time =new Date();
     const filter = {
-      id: params._id,
+      _id: params._id,
     };
-    if (params.statusText=='OK') params.statusText='online';
-    else params.statusText='offline';
-    const status = {
-      statusText: params.statusText,
-      ping:params.time,
-      lastUpdate: date_time
-    }
-    this.historyModel.Insert(filter,status,params);
-    //await this.projectModel.findOneAndUpdate(filter, { status });
+    if (params.statusText){
+      const status = {
+        status:{
+          statusText: params.statusText,
+          ping:params.time,
+          contentLength:params.contentLength,
+          lastUpdate: date_time
+        }
+      };
+      this.historyModel.Insert(filter,status,params);
+      return true;
+    };
+    const backupTime = {
+      backuphistory:{
+        backupTime: params.time,
+      }
+    };
+    this.historyModel.InsertBackup(filter,backupTime,params);
     return true;
   }
 }

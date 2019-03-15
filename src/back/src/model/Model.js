@@ -84,11 +84,12 @@ class Model {
   async deleteOne(filter) {
     const result = await this.db.get()
       .collection(this.collectionName)
-      .deleteOne(filter)
+      .deleteOne(this.getFilter(filter))
       .catch(err => {
         console.log(err);
       });
-    return result;
+    if (result.result.n===0){return false}
+    return true
   }
 
   getFilter(filter) {
