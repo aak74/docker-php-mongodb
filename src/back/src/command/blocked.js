@@ -1,6 +1,6 @@
 'use strict';
 
-class userAuth {
+class blocked {
   constructor({
     logger,
     userModel,
@@ -11,11 +11,10 @@ class userAuth {
     this.publishMessage = publishMessage;
   }
 
-  async execute(params) {
-
-    const result = await this.userModel.signIn(params);
+  async execute(id) {
+    const result = await this.userModel.blocked(id);
     return result;
   }
 }
 
-module.exports = userAuth;
+module.exports = blocked;

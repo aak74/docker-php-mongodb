@@ -34,7 +34,7 @@
                       {{user.login}}
                     </v-flex>
                     <v-flex xs6>
-                      Права
+                      {{user.blocked}}
                     </v-flex>
                     <v-flex>
                       <v-btn v-on:click="deleteUser(user._id)" flat icon color="red lighten-2">

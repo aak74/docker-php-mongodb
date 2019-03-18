@@ -14,8 +14,9 @@ class userRegister {
   async execute(params) {
     const resultsignIn = await this.userModel.signIn(params);
     if(!resultsignIn){
+      params.blocked = false;
       const result = await this.userModel.register(params);
-      return result;
+      return { login:'registered'}
     }
     return {login:'failed'}
   }

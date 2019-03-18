@@ -35,8 +35,26 @@ class Routes {
     this.bodyParser = bodyParser;
   }
 
-
   async run() {
+    const self = this;
+    const isBlocked =  async function (req,res,next){
+      const params = {
+        login:req.user.login,
+        blocked:true,
+      };
+      const result = await self.userController.login(params);
+      if (result){
+        res.status(401).json({ message: 'you are blocked' });
+        return
+      }
+      next();
+    };
+
+    const authenticate = () => {
+
+      return this.passport.authenticate('jwt', { session: false });
+    };
+    
     this.httpServer.all('/', function(req, res, next) {
       res.header("Access-Control-Allow-Origin", "*");
       res.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -52,11 +70,18 @@ class Routes {
         const payload = 
         { id: user._id,
           login: user.login,
-          password: user.password,
+          date: Date.now(),
           verifyKey: this.auth.verifyKey,
         };
         const token = jwt.sign(payload, this.auth.jwtOptions.secretOrKey);
-        res.json({ message: 'ok', name: user.login ,token });
+        const refreshPayload = 
+        {
+          login: user.login,
+          tokenToReftesh: token,
+          verifyKey: this.auth.verifyKey,
+        };
+        const refreshToken = jwt.sign(refreshPayload, this.auth.jwtOptions.secretOrKey);
+        res.json({ message: 'ok', name: user.login , token, refreshToken });
       } else {
         console.log(user, 'notpassword');
         res.status(401).json({ message: 'passwords did not match' });
@@ -86,12 +111,21 @@ class Routes {
 
     this.httpServer.post('/user/register', this.bodyParser.json(), async (req, res) => {
       const result = await this.userController.register(req.body);
+      console.log(result.login);
       res.send({ status: result.login });
     });
 
     this.httpServer.delete('/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
+      // if (isAdmin(req.user.login)){
+      //   const result = await this.userController.delete({
+      //     _id: req.params.id,
+      //   });
+      //   res.send({ status: result, id: req.params.id});
+      // }else{
+      //   res.send({ status: 'fail', id: req.params.id});
+      // }
       if (isAdmin(req.user.login)){
-        const result = await this.userController.delete({
+        const result = await this.userController.block({
           _id: req.params.id,
         });
         res.send({ status: result, id: req.params.id});
@@ -100,22 +134,49 @@ class Routes {
       }
     });
 
-    const self = this;
+
     this.httpServer.use('/status', (_, res) => {
       res.status(200).send('OK');
     });
 
-    this.httpServer.get('/projects',this.passport.authenticate('jwt', { session: false }), async (req, res) => {
-      
+    this.httpServer.get('/projects',[this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), isBlocked], async (req, res) => {
       const data = await this.projectController.getList(req.user.id);
       res.send({
         status: 'ok',
         data,
+      });
+    });
 
+    this.httpServer.post('/refreshToken',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+      if (req.user.tokenToReftesh === req.body.token){
+        const self = this;
+        const params = {
+          login: req.user.login,
+        };
+        const user = await self.userController.login(params);
+        const payload = 
+        { id: user._id,
+          login: user.login,
+          date: Date.now(),
+          verifyKey: this.auth.verifyKey,
+        };
+        const token = jwt.sign(payload, this.auth.jwtOptions.secretOrKey);
+        const refreshPayload = 
+        {
+          login: user.login,
+          tokenToReftesh: token,
+          verifyKey: this.auth.verifyKey,
+        };
+        const refreshToken = jwt.sign(refreshPayload, this.auth.jwtOptions.secretOrKey);
+        res.json({ message: 'ok', name: user.login , token, refreshToken });
+        return
+      }
+      res.send({
+        status: 'failed',
       });
     });
     
-    this.httpServer.get('/projects/:id',this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+    this.httpServer.get('/projects/:id',[this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), isBlocked], async (req, res) => {
       const data = await this.projectController.get({
         _id:req.params.id,
         id:req.user.id
@@ -146,7 +207,7 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.delete('/projects/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
+    this.httpServer.delete('/projects/:id',[this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), isBlocked], this.bodyParser.json(), async (req, res) => {
       const result = await this.projectController.delete({
         _id: req.params.id,
         password: req.body.password,
@@ -159,7 +220,7 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.post('/projects', this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+    this.httpServer.post('/projects', this.bodyParser.json(),[this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), isBlocked], async (req, res) => {
       this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
       const dataProject= req.body;
       dataProject.id=req.user.id;
@@ -195,7 +256,8 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.get('/projects/users', this.bodyParser.json(), async (req, res) => {
+    this.httpServer.get('/projects/users', this.bodyParser.json() , async (req, res) => {
+      console.log('ok');
       const result = await this.historyController.sendHistory(req.body);
       const resultUpdate = await this.projectController.updateStatus(req.body);
       res.send({ status: 'ok' });
@@ -208,6 +270,8 @@ class Routes {
       }
       self.logger.info(`Server is listening on ${this.config.port}`);
     });
+
+
 
     // this.http.listen(3001, (err) => {
     //   if (err) {

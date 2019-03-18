@@ -1,11 +1,12 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import store from '.';
 
 dayjs.extend(relativeTime);
 
 export default {
   STATUS_LOADED(state, payload) {
-    // console.log('STATUS_LOADED', payload);
+    console.log('STATUS_LOADED', payload);
 
     state.appStatus = payload;
   },
@@ -28,7 +29,6 @@ export default {
   },
 
   SET_ERROR(state, error) {
-    // console.log('SET_ERROR', error);
     state.error = error;
   },
 
@@ -76,11 +76,27 @@ export default {
   },
   SIGN_IN(state, data) {
     state.login = data;
-    const JWTtoken = `jwt ${state.login.data.token}`;
+    console.log(state.login.data);
+    const JWTtoken = `${state.login.data.token}`;
+    const refreshtTtoken = state.login.data.refreshToken;
     const name = `${state.login.data.name}`;
     localStorage.setItem('token', JWTtoken);
+    localStorage.setItem('refreshToken', refreshtTtoken);
     localStorage.setItem('UserName', name);
     localStorage.setItem('FirstLogin', false);
+  },
+
+  SIGN_IN_REFRESH(state, data, method, uri, dataLoading) {
+    state.login = data;
+    console.log(state.login.data);
+    const JWTtoken = `${state.login.data.token}`;
+    const refreshtTtoken = state.login.data.refreshToken;
+    const name = `${state.login.data.name}`;
+    localStorage.setItem('token', JWTtoken);
+    localStorage.setItem('refreshToken', refreshtTtoken);
+    localStorage.setItem('UserName', name);
+    localStorage.setItem('FirstLogin', false);
+
   },
   SIGN_IN_FAIL() {
     console.log('LOGIN FAIL');

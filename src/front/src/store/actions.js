@@ -66,6 +66,22 @@ const auth = ({ commit }) => {
       commit('AUTH', data);
     });
 };
+const refreshToken = ({ commit }) => {
+  const refreshToToken = {
+    token: localStorage.getItem('token'),
+  };
+  api.request('post', '/refreshToken', refreshToToken)
+    .then(res => {
+      commit('SIGN_IN_REFRESH', res, method, uri, data);
+    });
+};
+
+const refreshOperation = ({ commit }, method, uri, data) => {
+  api.request(method, uri, data)
+    .then(data => {
+      //commit('AUTH', data);
+    });
+};
 
 const register = ({ commit }, data) => {
   api.request('post', 'user/register', data)
@@ -104,4 +120,6 @@ export default {
   auth,
   users,
   userDelete,
+  refreshToken,
+  refreshOperation,
 };

@@ -5,12 +5,14 @@ class UserModel {
     userAuth,
     userRegister,
     users,
-    deleteUser
+    deleteUser,
+    blocked,
   }) {
     this.userAuth = userAuth;
     this.userRegister = userRegister;
     this.users = users;
     this.deleteUser = deleteUser;
+    this.blocked = blocked;
   }
 
   async usersGet(params) {
@@ -19,6 +21,11 @@ class UserModel {
 
   async delete(id) {
     return await this.deleteUser.execute(id);
+  }
+
+  async block(id) {
+
+    return await this.blocked.execute(id);
   }
 
   async login(params) {
