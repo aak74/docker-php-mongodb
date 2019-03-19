@@ -48,7 +48,9 @@ export default {
   queuesAvailable: ['backup', 'backuped'],
   projects: [],
   project: {
-    current: {},
+    current: {
+      history: {},
+    },
     schema: {
       fields: [
         {

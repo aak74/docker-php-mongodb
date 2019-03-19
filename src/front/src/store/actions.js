@@ -66,20 +66,26 @@ const auth = ({ commit }) => {
       commit('AUTH', data);
     });
 };
-const refreshToken = ({ commit }) => {
+const refreshToken = ({ commit }, refreshDATA) => {
   const refreshToToken = {
     token: localStorage.getItem('token'),
   };
   api.request('post', '/refreshToken', refreshToToken)
     .then(res => {
-      commit('SIGN_IN_REFRESH', res, method, uri, data);
+      if (res.data.message === 'blocked') {
+        console.log('blocked');
+        commit('BLOCKED');
+      } else {
+        commit('SIGN_IN_REFRESH', res);
+        commit('OPERATION_REFRESH', refreshDATA);
+      }
     });
 };
 
-const refreshOperation = ({ commit }, method, uri, data) => {
-  api.request(method, uri, data)
-    .then(data => {
-      //commit('AUTH', data);
+const refreshOperation = ({ commit }, refreshDATA) => {
+  api.request(refreshDATA.METHOD, refreshDATA.URI, refreshDATA.DATA)
+    .then(res => {
+      commit('SUCCES_REFRESH', res);
     });
 };
 
@@ -106,6 +112,18 @@ const userDelete = ({ commit }, id) => {
       commit('DELETED_USER', data);
     });
 };
+const block = ({ commit }, id) => {
+  api.request('delete', `block/user/${id}`)
+    .then(data => {
+      commit('BLOCK_USER', data);
+    });
+};
+const unblock = ({ commit }, id) => {
+  api.request('delete', `unblock/user/${id}`)
+    .then(data => {
+      commit('UNBLOCK_USER', data);
+    });
+};
 
 export default {
   loadStatus,
@@ -122,4 +140,6 @@ export default {
   userDelete,
   refreshToken,
   refreshOperation,
+  block,
+  unblock,
 };

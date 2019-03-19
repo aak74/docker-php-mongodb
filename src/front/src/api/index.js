@@ -5,6 +5,11 @@ import store from '../store';
 import server from '../config/server';
 
 const request = (method, uri, data, timeout = 5000) => {
+  const refreshDATA = {
+    METHOD: method,
+    URI: uri,
+    DATA: data,
+  };
   const JWTtoken = () => {
     if (uri === '/refreshToken') {
       return `jwt ${localStorage.getItem('refreshToken')}`;
@@ -21,7 +26,6 @@ const request = (method, uri, data, timeout = 5000) => {
     return;
   }
 
-  console.log('uri>>>', uri, JWTtoken(), 'data>>>>>', data);
   const url = (uri.substr(0, 4) === 'http')
     ? uri
     : server.serverURI + uri;
@@ -39,11 +43,16 @@ const request = (method, uri, data, timeout = 5000) => {
   })
     .catch(error => {
       if (error.response.status === 401) {
-        store.dispatch('refreshToken', method, uri, data);
-
+        store.dispatch('refreshToken', refreshDATA);
       }
       store.commit('SET_ERROR', error);
     });
+    // .then(dataRequest => {
+    //   if (dataRequest.data.message === 'blocked') {
+    //     console.log(1111);
+    //     store.commit('BLOCKED');
+    //   }
+    // });
   return result;
 };
 
@@ -77,13 +86,15 @@ const getData = (method, uri) => {
   store.commit('admin/LOADING');
   const result = request(method, uri)
     .then(response => {
-      if (response.data.status !== 'ok') {
-        store.commit('admin/LOADING_ERROR', { message: 'Response status is not ok', code: 406 });
-        return;
-      }
+      if (response) {
+        if (response.data.status !== 'ok') {
+          store.commit('admin/LOADING_ERROR', { message: 'Response status is not ok', code: 406 });
+          return;
+        }
 
-      store.commit('admin/LOADED');
-      return response.data.data;
+        store.commit('admin/LOADED');
+        return response.data.data;
+      }
     })
     .catch(error => {
       store.commit('admin/LOADING_ERROR', error);

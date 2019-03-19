@@ -12,7 +12,7 @@ const verifyKey = 'ArealGroup'
 const strategy = new JwtStrategy(jwtOptions, ((jwt_payload, next) => {
   // usually this would be a database call:
   if (!jwt_payload.tokenToReftesh){
-    if ((jwt_payload.verifyKey === verifyKey) && ((jwt_payload.date+3000) > Date.now())){
+    if (((jwt_payload.verifyKey === verifyKey) && ((jwt_payload.date+15000) > Date.now())) && (!jwt_payload.blocked)){
       next(null, jwt_payload);
     } else {
       next(null, false);

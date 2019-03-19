@@ -7,6 +7,7 @@ class History {
   }
 
   async Insert(filter, update, params) {
+    console
     filter={
       id: filter.id
       }
@@ -39,15 +40,19 @@ class History {
   }
 
   async InsertBackup(filter, update, params) {
+    console.log(111);
     filter={
       id: filter.id
       }
+      console.log(filter, update);
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
         filter, {
           $push: {
-             ...update 
+            historyBackup: {
+             ...update
+            },
           },
         }, 
         params
@@ -67,6 +72,7 @@ class History {
       }
     return result;
   }
+
   async get(filter, projection) {
     const result = await this.db.get()
       .collection(this.collectionName)

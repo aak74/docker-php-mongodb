@@ -2,7 +2,7 @@
   <div class="container" >
     <div class="elevation-1">
       <div class="v-table__overflow">
-        <div  style="height:auto;">
+        <div v-if="data" style="height:auto;">
           <chart  :chart-data="dataCollection" :height="100"></chart>
         </div>
         <table class="v-datatable v-table theme--light" >
@@ -11,7 +11,7 @@
               <td class="layout px-0s table-controls" disabled><p>{{field.attrs.label}}:<span>{{field.value}}</span></p></td>
             </tr>
             <tr>
-              <BackupHistory/>
+              <BackupHistory :history="BackupHistory"/>
             </tr>
           </tbody>
         </table>
@@ -40,6 +40,7 @@ export default {
   data(){
       return{
            update:false,
+           project:this.projectData,
       }
   },
   components: {
@@ -54,27 +55,39 @@ export default {
       },
   },
   computed: {
+    BackupHistory(){
+      return this.data.backup
+    },
+    projectData(){
+       return this.data
+    },
     projectId(){
       return this.$route.params.id;
     },
     history(){
+      if(this.data){
       return this.data.history || []
+      }
     },
     dataCollection(){
-      if (this.update === false){
-        this.update = true;
-        setInterval(this.fetchData, 2000);
+      if(this.data){
+        if (this.update === false){
+          this.update = true;
+          setInterval(this.fetchData, 2000);
+        }
+        return this.history || []
       }
-      return this.history || []
     },
     fields() {
-      return this.schema.fields.reduce((carry, item) => {
-        carry.push({
-          value: this.data[item.model],
-          attrs: Object.assign({}, item),
-        });
-        return carry;
-      }, []);
+      if (this.update){
+        return this.schema.fields.reduce((carry, item) => {
+          carry.push({
+            value: this.data[item.model],
+            attrs: Object.assign({}, item),
+          });
+          return carry;
+        }, []);
+    }
     },
     buttons() {
       return [

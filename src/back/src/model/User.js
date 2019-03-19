@@ -52,6 +52,24 @@ class User {
     return result;
   }
 
+  async unblocked(id) {
+    const update = {
+      blocked:false,
+    };
+     //console.log('findOneAndUpdate', filter, update);
+    const result = await this.db.get()
+      .collection(this.collectionName)
+      .findOneAndUpdate(
+        this.getFilter(id), {
+          $set: update
+        }, 
+      )
+      .catch(err => {
+        console.log(err);
+      });
+    return result;
+  }
+
   find() {
     // console.log('Model find', filter, projection);
     return this.db.get()

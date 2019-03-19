@@ -3,5 +3,6 @@ module.exports = {
     'projectCreated': {},
     'projectUpdated': {},
     'projectDeleted': {},
+    'backup': {},
   },
 }

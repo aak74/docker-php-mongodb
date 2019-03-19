@@ -55,7 +55,7 @@ class UpdateStatuses extends EventEmitter {
     // }
     
     // const pause = getRandomInt(1, 6) * 1000;
-    const pause = this.minPause * 200;
+    const pause = this.minPause * 2000;
     // const pause = getRandomInt(this.minPause, this.minPause * 2) * 1000;
     project.toExec = Date.now() + pause;
     //this.logger.debug(`-------------------------------- next ----> | count=${project.count} | pause=${pause / 1000}s | ${project.url}`);

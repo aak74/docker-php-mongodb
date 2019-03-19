@@ -71,6 +71,7 @@ class Routes {
         { id: user._id,
           login: user.login,
           date: Date.now(),
+          blocked: user.blocked,
           verifyKey: this.auth.verifyKey,
         };
         const token = jwt.sign(payload, this.auth.jwtOptions.secretOrKey);
@@ -116,14 +117,17 @@ class Routes {
     });
 
     this.httpServer.delete('/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
-      // if (isAdmin(req.user.login)){
-      //   const result = await this.userController.delete({
-      //     _id: req.params.id,
-      //   });
-      //   res.send({ status: result, id: req.params.id});
-      // }else{
-      //   res.send({ status: 'fail', id: req.params.id});
-      // }
+      if (isAdmin(req.user.login)){
+        const result = await this.userController.delete({
+          _id: req.params.id,
+        });
+        res.send({ status: result, id: req.params.id});
+      }else{
+        res.send({ status: 'fail', id: req.params.id});
+      }
+    });
+
+    this.httpServer.delete('/block/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
       if (isAdmin(req.user.login)){
         const result = await this.userController.block({
           _id: req.params.id,
@@ -134,12 +138,24 @@ class Routes {
       }
     });
 
+    this.httpServer.delete('/unblock/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
+      if (isAdmin(req.user.login)){
+        const result = await this.userController.unblock({
+          _id: req.params.id,
+        });
+        res.send({ status: result, id: req.params.id});
+      }else{
+        res.send({ status: 'fail', id: req.params.id});
+      }
+    });
+
+
 
     this.httpServer.use('/status', (_, res) => {
       res.status(200).send('OK');
     });
 
-    this.httpServer.get('/projects',[this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), isBlocked], async (req, res) => {
+    this.httpServer.get('/projects',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
       const data = await this.projectController.getList(req.user.id);
       res.send({
         status: 'ok',
@@ -150,6 +166,7 @@ class Routes {
     this.httpServer.post('/refreshToken',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
       if (req.user.tokenToReftesh === req.body.token){
         const self = this;
+        const JWTtoken = {};
         const params = {
           login: req.user.login,
         };
@@ -158,8 +175,10 @@ class Routes {
         { id: user._id,
           login: user.login,
           date: Date.now(),
+          blocked: user.blocked,
           verifyKey: this.auth.verifyKey,
         };
+        
         const token = jwt.sign(payload, this.auth.jwtOptions.secretOrKey);
         const refreshPayload = 
         {
@@ -168,7 +187,11 @@ class Routes {
           verifyKey: this.auth.verifyKey,
         };
         const refreshToken = jwt.sign(refreshPayload, this.auth.jwtOptions.secretOrKey);
-        res.json({ message: 'ok', name: user.login , token, refreshToken });
+        if(!user.blocked){
+          res.json({ message: 'ok', name: user.login , token, refreshToken });
+          return
+        }
+        res.json({ message: 'blocked', name: user.login , token, refreshToken  });
         return
       }
       res.send({
@@ -176,7 +199,7 @@ class Routes {
       });
     });
     
-    this.httpServer.get('/projects/:id',[this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), isBlocked], async (req, res) => {
+    this.httpServer.get('/projects/:id',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
       const data = await this.projectController.get({
         _id:req.params.id,
         id:req.user.id
@@ -185,6 +208,7 @@ class Routes {
         id:req.params.id
       });
       data.history = History.history;
+      data.backup= History.historyBackup;
       res.send({
         status: 'ok',
         data,
@@ -207,7 +231,7 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.delete('/projects/:id',[this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), isBlocked], this.bodyParser.json(), async (req, res) => {
+    this.httpServer.delete('/projects/:id',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
       const result = await this.projectController.delete({
         _id: req.params.id,
         password: req.body.password,
@@ -220,7 +244,7 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.post('/projects', this.bodyParser.json(),[this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), isBlocked], async (req, res) => {
+    this.httpServer.post('/projects', this.bodyParser.json(),this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
       this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
       const dataProject= req.body;
       dataProject.id=req.user.id;

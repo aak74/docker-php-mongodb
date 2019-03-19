@@ -1,6 +1,8 @@
+/* eslint-disable no-cond-assign */
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import store from '.';
+import router from '../router';
 
 dayjs.extend(relativeTime);
 
@@ -33,26 +35,29 @@ export default {
   },
 
   LOADED_PROJECTS(state, data) {
-    // console.log('LOADED_PROJECTS', data);
-    state.projects = data.map(elem => {
-      if (elem.status && elem.status.lastUpdate) {
-        elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();
-      } else {
-        elem.status = {
-          contentLength: 0,
-          lastUpdate: 'Unknown',
-          status: 'Unknown',
-          statusText: 'Unknown',
-          time: 0,
-        };
-      }
-      return elem;
-    }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
+    if (data) {
+      state.projects = data.map(elem => {
+        if (elem.status && elem.status.lastUpdate) {
+          elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();
+        } else {
+          elem.status = {
+            contentLength: 0,
+            lastUpdate: 'Unknown',
+            status: 'Unknown',
+            statusText: 'Unknown',
+            time: 0,
+          };
+        }
+        return elem;
+      }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
+    }
   },
 
   LOADED_PROJECT(state, data) {
-    // console.log('LOADED_PROJECT', data);
-    state.project.current = data;
+    console.log('LOADED_PROJECT', data);
+    if (data) {
+      state.project.current = data;
+    }
   },
 
   ADDED_PROJECT(_, data) {
@@ -76,7 +81,6 @@ export default {
   },
   SIGN_IN(state, data) {
     state.login = data;
-    console.log(state.login.data);
     const JWTtoken = `${state.login.data.token}`;
     const refreshtTtoken = state.login.data.refreshToken;
     const name = `${state.login.data.name}`;
@@ -84,20 +88,53 @@ export default {
     localStorage.setItem('refreshToken', refreshtTtoken);
     localStorage.setItem('UserName', name);
     localStorage.setItem('FirstLogin', false);
+    localStorage.setItem('isLogin', true);
   },
 
-  SIGN_IN_REFRESH(state, data, method, uri, dataLoading) {
+  SIGN_IN_REFRESH(state, data) {
     state.login = data;
-    console.log(state.login.data);
     const JWTtoken = `${state.login.data.token}`;
     const refreshtTtoken = state.login.data.refreshToken;
     const name = `${state.login.data.name}`;
     localStorage.setItem('token', JWTtoken);
     localStorage.setItem('refreshToken', refreshtTtoken);
     localStorage.setItem('UserName', name);
-    localStorage.setItem('FirstLogin', false);
-
   },
+
+  OPERATION_REFRESH(state, data) {
+    store.dispatch('refreshOperation', data);
+  },
+  SUCCES_REFRESH(state, refreshData) {
+    if (((refreshData.data.data) && (!refreshData.data.data.name)) && (refreshData.data.data.type !== 'user')) {
+      const refresh = refreshData.data.data;
+      if (refresh) {
+        state.projects = refresh.map(elem => {
+          if (elem.status && elem.status.lastUpdate) {
+            elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();
+          } else {
+            elem.status = {
+              contentLength: 0,
+              lastUpdate: 'Unknown',
+              status: 'Unknown',
+              statusText: 'Unknown',
+              time: 0,
+            };
+          }
+          return elem;
+        }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
+      }
+    }
+    if ((refreshData.data.data) && (refreshData.data.data.type !== 'user')) {
+      if (refreshData.data.data.name) {
+        state.project.current = refreshData.data.data;
+      }
+    }
+    if (refreshData.data[0].type === 'user') {
+      state.users = refreshData.data;
+    }
+  },
+
+
   SIGN_IN_FAIL() {
     console.log('LOGIN FAIL');
     localStorage.setItem('loginProcces', false);
@@ -116,12 +153,23 @@ export default {
   },
   REGISTER_FAIL(state, data) {
     state.register = false;
-    console.log('REGISTER_FAIL',data);
+    console.log('REGISTER_FAIL', data);
   },
 
   USERS(state, data) {
-    state.users = data.data;
+    if (data) {
+      state.users = data.data;
+    }
   },
+
+  BLOCKED(state, data) {
+    router.replace('/Blocked');
+  },
+
   DELETED_USER(state, data) {
+  },
+  BLOCK_USER(state, data) {
+  },
+  UNBLOCK_USER(state, data) {
   },
 };

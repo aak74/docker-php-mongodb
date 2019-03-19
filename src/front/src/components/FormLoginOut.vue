@@ -34,25 +34,14 @@ export default {
           user:{
               login:localStorage.getItem('UserName'),
           },
-          answer:localStorage.getItem('token'),
-
       }
-  },
-  components: {
-
-  },
-  watch:{
-    data(){
-      this.answer=localStorage.getItem('token');
-    }
   },
   methods:{
       signOut(){
         localStorage.removeItem('token');
         localStorage.removeItem('UserName');
-        if (!name) {
-          document.location.pathname = '/login';
-        }
+        localStorage.setItem('isLogin',false);
+        document.location.pathname = '/login'
       },
   },
 };

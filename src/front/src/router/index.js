@@ -8,6 +8,7 @@ import ServerStatus from '../pages/ServerStatus';
 import Login from '../pages/LoginPage';
 import Welcome from '../pages/Welcome';
 import Users from '../pages/Users';
+import Blocked from '../pages/Blocked';
 
 Vue.use(Router);
 
@@ -46,6 +47,11 @@ const routes = [
     path: '/Users',
     name: 'Users',
     component: Users,
+  },
+  {
+    path: '/Blocked',
+    name: 'Blocked',
+    component: Blocked,
   },
 ];
 

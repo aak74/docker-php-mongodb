@@ -27,9 +27,7 @@ class HistoryAdd {
       return true;
     };
     const backupTime = {
-      backuphistory:{
         backupTime: params.time,
-      }
     };
     this.historyModel.InsertBackup(filter,backupTime,params);
     return true;

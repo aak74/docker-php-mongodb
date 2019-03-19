@@ -10,7 +10,7 @@ function EnableMenuItems() {
   if (user) {
     return [
       {
-        icon: 'home',
+        icon: 'perm_identity',
         title: UserName(),
         link: '/login',
         description: null,
@@ -35,7 +35,7 @@ function EnableMenuItems() {
     ];
   }
   return [{
-  icon : 'home',
+  icon : 'input',
   title : UserName(),
   link: '/login',
   description: null,

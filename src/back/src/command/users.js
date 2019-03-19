@@ -13,6 +13,10 @@ class users {
 
   async execute(params) {
     const result = await this.userModel.getUsers(params);
+    result.forEach(element => {
+       element.password="";
+       element.type='user';
+    });
     return result
   }
 }
