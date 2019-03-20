@@ -9,18 +9,13 @@
                   <th class="layout px-0s table-controls " disabled>
 
                     <v-flex xs4>
-                      <v-icon class="search">search</v-icon>
-                      <input v-model="userName" placeholder="Пользователь"/>
-                    </v-flex>
-                    <v-flex xs4>
-                      <p class="head">
-                      Права
-                      </p>
-                    </v-flex>
-                    <v-flex xs4>
-                      <p class="head">
-                      Действия
-                      </p>
+                      <!--<v-icon class="search">search</v-icon>-->
+                      <v-text-field
+                        v-model="userName"
+                        prepend-inner-icon ="search"
+                        label="Пользователь"
+                      ></v-text-field>
+                     <!-- <input v-model="userName" placeholder="Пользователь"/>-->
                     </v-flex>
                   </th>
               </v-layout>
@@ -30,13 +25,8 @@
             <tr v-for="user in users">
               <v-layout v-show="isSearhing(user.login)" align-center justify-center row fill-height>
                   <td class="layout px-0s table-controls " disabled>
-                    <v-flex xs4>
+                    <v-flex xs8>
                       {{user.login}}
-                    </v-flex>
-                    <v-flex xs4>
-                      <v-layout row justify-center>
-                      {{user.blocked}}
-                      </v-layout>
                     </v-flex>
                     <v-flex  xs4>
                       <v-layout row justify-center>
