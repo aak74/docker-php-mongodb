@@ -1,5 +1,5 @@
 'use strict';
-
+const security = 'ArealIdea'
 class ProjectModel {
   constructor({
     logger,
@@ -11,36 +11,42 @@ class ProjectModel {
 
   async getList() {
     try {
-      var result = await this.httpClient.get(`http://back:3000/projects`)
-        .then(res => {
-         // console.log('getList', res.data.data);
-          
+      console.log('1')
+      var result = await this.httpClient.get(`http://back:3000/historyprojects/${security}`)
+        .then(res => {  
           return res.data.data;
         });
     } catch (err) {
-     // console.log('catch err', err);
+      console.log('catch err', err);
     }
     return result;
   }
 
-  async update(status) {
-    //console.log('staty',status);
-    
-    // return;
+  async requestQueue(msg) {
+    console.log(msg.login);
     try {
-      var result = await this.httpClient.post(`http://back:3000/projects/${status._id}/status`, status)
+      var result = await this.httpClient.post(`http://back:3000/backup/${msg.id}/Queue/${msg.login}/${msg.name}/${security}`)
         .then(res => {
-          //console.log('getList', res.data.data);
-          
+          return 'success';
+        })
+        .catch((err) => {
+        });
+    } catch (err) {
+    }
+  }
+
+  async update(status) {
+    try {
+      var result = await this.httpClient.post(`http://back:3000/projects/${status._id}/status/${security}`, status)
+        .then(res => { 
           return res.data.data;
         })
         .catch((err) => {
-         // console.log('http catch err', err);
+         console.log('http catch err', err);
         });
     } catch (err) {
-     // console.log('catch err', err);
+     console.log('catch err', err);
     }
-   // console.log('resuld=>',result);
     return result;
   }
 }

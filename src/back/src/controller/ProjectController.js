@@ -21,8 +21,8 @@ class  ProjectModel {
     this.updateStatusCommand = updateStatus;
   }
 
-  async getList() {
-    return await this.getProjects.get();
+  async getList(user) {
+    return await this.getProjects.get(user);
   }
 
   async get(params) { 

@@ -1,11 +1,14 @@
+/* eslint-disable no-cond-assign */
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import store from '.';
+import router from '../router';
 
 dayjs.extend(relativeTime);
 
 export default {
   STATUS_LOADED(state, payload) {
-    // console.log('STATUS_LOADED', payload);
+    console.log('STATUS_LOADED', payload);
 
     state.appStatus = payload;
   },
@@ -28,46 +31,34 @@ export default {
   },
 
   SET_ERROR(state, error) {
-    // console.log('SET_ERROR', error);
     state.error = error;
   },
 
   LOADED_PROJECTS(state, data) {
-    // console.log('LOADED_PROJECTS', data);
-    state.projects = data.map(elem => {
-      if (elem.status && elem.status.lastUpdate) {
-        elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();
-      } else {
-        elem.status = {
-          contentLength: 0,
-          lastUpdate: 'Unknown',
-          status: 'Unknown',
-          statusText: 'Unknown',
-          time: 0,
-        };
-      }
-      return elem;
-    }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
+    console.log('LOADED', data)
+    if (data) {
+      state.projects = data.map(elem => {
+        if (elem.status && elem.status.lastUpdate) {
+          elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();
+        } else {
+          elem.status = {
+            contentLength: 0,
+            lastUpdate: 'Unknown',
+            status: 'Unknown',
+            statusText: 'Unknown',
+            time: 0,
+          };
+        }
+        return elem;
+      }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
+    }
   },
 
   LOADED_PROJECT(state, data) {
-    // console.log('LOADED_PROJECT', data);
-    state.project.current = data;
-  },
-  SIGN_IN(state, data) {
-    state.login = data;
-    // console.log(state.login.data.token, 'this.data');
-    const JWTtoken = `jwt ${state.login.data.token}`;
-    
-    localStorage.setItem('token', JWTtoken);
-    console.log('jwtToken  ', localStorage.getItem('token'));
-  },
-  AUTH(state, data) {
-    console.log('AUTH',data);
-  },
-
-  REGISTER(result, data) {
-    // console.log('REGISTER',data);
+    console.log('LOADED_PROJECT', data);
+    if (data) {
+      state.project.current = data;
+    }
   },
 
   ADDED_PROJECT(_, data) {
@@ -88,5 +79,72 @@ export default {
 
   SERVERS_STATUS_LOADED(_, data) {
     console.log('SERVERS STATUSE LOADED - ', data);
+  },
+  SIGN_IN(state, data) {
+    state.login = data;
+    const JWTtoken = `${state.login.data.token}`;
+    const refreshtTtoken = state.login.data.refreshToken;
+    const name = `${state.login.data.name}`;
+    localStorage.setItem('token', JWTtoken);
+    localStorage.setItem('refreshToken', refreshtTtoken);
+    localStorage.setItem('UserName', name);
+    localStorage.setItem('FirstLogin', false);
+    localStorage.setItem('isLogin', true);
+  },
+
+  SIGN_IN_REFRESH(state, data) {
+    state.login = data;
+    const JWTtoken = `${state.login.data.token}`;
+    const refreshtTtoken = state.login.data.refreshToken;
+    const name = `${state.login.data.name}`;
+    localStorage.setItem('token', JWTtoken);
+    localStorage.setItem('refreshToken', refreshtTtoken);
+    localStorage.setItem('UserName', name);
+  },
+
+  SIGN_IN_FAIL() {
+    console.log('LOGIN FAIL');
+    localStorage.setItem('loginProcces', false);
+  },
+  AUTH(state, data) {
+    console.log('AUTH', data);
+  },
+
+  REGISTER(state, data) {
+    console.log('REGISTER', data.data.status);
+    if (data.data.status === 'failed') {
+      state.register = false;
+    } else {
+      state.register = true;
+    }
+  },
+
+  isAdmin(state, data) {
+    if (data.data.isAdmin) {
+      state.isAdmin = true;
+    } else {
+      state.isAdmin = false;
+    }
+  },
+  REGISTER_FAIL(state, data) {
+    state.register = false;
+    console.log('REGISTER_FAIL', data);
+  },
+
+  USERS(state, data) {
+    if (data) {
+      state.users = data.data;
+    }
+  },
+
+  BLOCKED(state, data) {
+    router.replace('/Blocked');
+  },
+
+  DELETED_USER(state, data) {
+  },
+  BLOCK_USER(state, data) {
+  },
+  UNBLOCK_USER(state, data) {
   },
 };

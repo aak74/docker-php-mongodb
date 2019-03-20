@@ -7,13 +7,11 @@ class BackupProject {
     this.queue = queue;
   }
 
-  async execute(id) {
-    //console.log('BackupProject', id);
-    const data = await this.projectModel.findOne({ '_id': id });
-    // console.log('BackupProject data', data);
+  async execute(FindProject) {
+    const RequestData = await this.projectModel.findOne({ '_id': FindProject._id, id:FindProject.id });
+    const BackupData = {id:FindProject._id,login:FindProject.login, name:RequestData.name,  host:RequestData.host, user:RequestData.user, port:RequestData.port, passwordSSH:RequestData.passwordSSH, path:RequestData.path};
     //TODO: Передавать только необходимые для бэкапа данные
-    this.queue.publish(data, 'backup');
-    return true;
+    return this.queue.publish(BackupData, 'backup');
   }
 }
 

@@ -7,13 +7,15 @@ class UpdateStatuses extends EventEmitter {
     logger,
     getProjects,
     getPage,
-    updateStatus
+    updateStatus,
+    requestQueue,
   }) {
     super();
 
     this.logger = logger;
     this.getProjects = getProjects;
     this.updateStatus = updateStatus;
+    this.requestQueue = requestQueue;
     this.getPage = getPage;
     this.queue = new Map;
     this.timers = new Map;
@@ -53,7 +55,7 @@ class UpdateStatuses extends EventEmitter {
     // }
     
     // const pause = getRandomInt(1, 6) * 1000;
-    const pause = this.minPause * 200;
+    const pause = this.minPause * 2000;
     // const pause = getRandomInt(this.minPause, this.minPause * 2) * 1000;
     project.toExec = Date.now() + pause;
     //this.logger.debug(`-------------------------------- next ----> | count=${project.count} | pause=${pause / 1000}s | ${project.url}`);
@@ -61,6 +63,10 @@ class UpdateStatuses extends EventEmitter {
     this.updateStatus.execute(project);
     this.putProjectToQueue(project);
     //this.logger.debug('debug>>>',this.putProjectToQueue(project));
+  }
+
+  async sendRequestQueue(msg) {
+    this.requestQueue.execute(msg);
   }
 
   async putProjectToQueue(project) {

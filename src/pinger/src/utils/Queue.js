@@ -73,6 +73,7 @@ class QueueBroker extends EventEmitter {
   }
 
   subscribe (queueName) {
+    console.log('Подписался на ', queueName)
     if (!this.channel) {
       this.queuesForSubscribe.push(queueName);
 

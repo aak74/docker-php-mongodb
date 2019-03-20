@@ -21,6 +21,7 @@ class App {
     this.queue.subscribe('projectCreated');
     this.queue.subscribe('projectDeleted');
     this.queue.subscribe('projectUpdated');
+    this.queue.subscribe('backup');
     this.queue.on('projectCreated', msg => {
       this.logger.debug('projectCreated', msg);
       this.update(msg);
@@ -28,6 +29,10 @@ class App {
     this.queue.on('projectDeleted', msg => {
       this.logger.debug('projectDeleted', msg);
       // projectCreated(msg);
+    });
+    this.queue.on('backup', msg => {
+      this.logger.debug('projectBackup', msg);
+      this.requestQueue(msg);
     });
     this.queue.on('projectUpdated', msg => {
       this.logger.debug('projectUpdated', msg);
@@ -38,6 +43,10 @@ class App {
   update(params) {
     // params._id = id;
     this.updateStatuses.putProjectToQueue(params);
+  }
+  requestQueue(msg) {
+    // params._id = id;
+    this.updateStatuses.sendRequestQueue(msg);
   }
 }
 

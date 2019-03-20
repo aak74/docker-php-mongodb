@@ -1,7 +1,10 @@
 export default {
-  login:{
+  login: {
 
   },
+  register: undefined,
+  users: {},
+  isAdmin: false,
   status: {
     loading: true,
   },
@@ -46,17 +49,11 @@ export default {
   queuesAvailable: ['backup', 'backuped'],
   projects: [],
   project: {
-    current: {},
+    current: {
+      history: {},
+    },
     schema: {
       fields: [
-        {
-          type: 'input',
-          inputType: 'text',
-          label: 'ID',
-          model: '_id',
-          readonly: true,
-          disabled: true,
-        },
         {
           type: 'input',
           inputType: 'text',

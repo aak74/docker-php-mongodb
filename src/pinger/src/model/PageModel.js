@@ -51,7 +51,6 @@ class PageModel {
         time
       };
     }
-     console.log('PING',url, result);
       
     return result;
   }

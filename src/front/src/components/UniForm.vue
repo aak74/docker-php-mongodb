@@ -1,20 +1,20 @@
 <template>
-  <div  class="info_block">  
-    <div  class="info_card"> 
-          <div class="text_tag_div" v-for="field in fields" >        
-            <p v-if="field.attrs.inputType!=='textarea'" class="text_tag_p text_edit">{{field.value}} </p>     
-          </div>  
-          <div  class="text_edit" style="width:600px; height:200px;">
+  <div  class="info_block">
+   <div  class="info_card">
+          <div class="text_tag_div" v-for="field in fields" >
+            <p v-if="field.attrs.inputType!=='textarea'" class="text_tag_p text_edit">{{field.value}} </p>
+          </div>
+          <div  class="" style="width:600px; height:200px;">
             <chart  :chart-data="dataCollection" :width="600" :height="200"></chart>
           </div>
         <textarea disabled rows="6" class="text_tag_textarea text_edit"
-        v-for="field in fields" 
+        v-for="field in fields"
         v-if="field.attrs.inputType==='textarea'"
           >{{field.value}}
-      </textarea> 
-    </div> 
+      </textarea>
+    </div>
   </div>
-  
+
 </template>
 
 <script>
@@ -32,7 +32,7 @@ export default {
     schema: {
       type: Object
     },
-    
+
   },
   data(){
       return{
@@ -48,7 +48,6 @@ export default {
   methods:{
       fetchData(){
         this.$store.dispatch('getProject', this.projectId);
-        console.log('Пытаюсь обновить');
       },
   },
   computed: {
@@ -60,7 +59,6 @@ export default {
     },
     dataCollection(){
       if (this.update === false){
-        console.log('Включаю обновление');
         this.update = true;
         setInterval(this.fetchData, 2000);
       }
@@ -92,7 +90,7 @@ export default {
 <style>
 .info_block{
   text-align: center;
-  align-items:center; 
+  align-items:center;
   width:100%;
 }
 .info_card{

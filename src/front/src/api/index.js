@@ -5,6 +5,17 @@ import store from '../store';
 import server from '../config/server';
 
 const request = (method, uri, data, timeout = 5000) => {
+  const refreshDATA = {
+    METHOD: method,
+    URI: uri,
+    DATA: data,
+  };
+  const JWTtoken = () => {
+    if (uri === '/refreshToken') {
+      return `jwt ${localStorage.getItem('refreshToken')}`;
+    }
+    return `jwt ${localStorage.getItem('token')}`;
+  };
   if (!method) {
     console.error('API function call requires method argument');
     return;
@@ -24,16 +35,24 @@ const request = (method, uri, data, timeout = 5000) => {
     url,
     data,
     headers: {
-      Authorization: localStorage.getItem('token'),
+      Authorization: JWTtoken(),
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     timeout,
   })
     .catch(error => {
+      if (error.response.status === 401) {
+        store.dispatch('refreshToken', refreshDATA);
+      }
       store.commit('SET_ERROR', error);
     });
-
+    // .then(dataRequest => {
+    //   if (dataRequest.data.message === 'blocked') {
+    //     console.log(1111);
+    //     store.commit('BLOCKED');
+    //   }
+    // });
   return result;
 };
 
@@ -45,39 +64,42 @@ const getLogin = (method, uri, data) => {
 const getLoginNew = (method, uri, data) => {
   // console.log('getData', store);
   store.commit('admin/LOADING');
-  return request(method, uri)
+
+  const result = request(method, uri)
     .then(response => {
-      console.log('getData response', response);
       if (response.data.status !== 'ok') {
         store.commit('admin/LOADING_ERROR', { message: 'Response status is not ok', code: 406 });
         return;
       }
-
       store.commit('admin/LOADED');
       return response.data.data;
     })
     .catch(error => {
       store.commit('admin/LOADING_ERROR', error);
     });
+
+  return result;
 };
 
 const getData = (method, uri) => {
   // console.log('getData', store);
   store.commit('admin/LOADING');
-  return request(method, uri)
+  const result = request(method, uri)
     .then(response => {
-      console.log('getData response', response);
-      if (response.data.status !== 'ok') {
-        store.commit('admin/LOADING_ERROR', { message: 'Response status is not ok', code: 406 });
-        return;
-      }
+      if (response) {
+        if (response.data.status !== 'ok') {
+          store.commit('admin/LOADING_ERROR', { message: 'Response status is not ok', code: 406 });
+          return;
+        }
 
-      store.commit('admin/LOADED');
-      return response.data.data;
+        store.commit('admin/LOADED');
+        return response.data.data;
+      }
     })
     .catch(error => {
       store.commit('admin/LOADING_ERROR', error);
     });
+  return result;
 };
 
 export default {

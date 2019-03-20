@@ -37,8 +37,8 @@
             <v-list-tile>
               <v-list-tile-content>Status:</v-list-tile-content>
               <v-list-tile-content class="align-end">
-                <span :class="statusCircle(props.item.status.status)">
-                {{ props.item.status.status }} {{ props.item.status.text }}
+                <span :class="statusCircle(props.item.status.statusText)">
+                {{ props.item.status.statusText }} {{ props.item.status.text }}
                 </span>
               </v-list-tile-content>
             </v-list-tile>
@@ -46,7 +46,7 @@
               <v-list-tile-content>Response time:</v-list-tile-content>
               <v-list-tile-content class="align-end">
                 <span>
-                {{ props.item.status.time }} ms
+                {{ props.item.status.ping }} ms
                 </span>
               </v-list-tile-content>
             </v-list-tile>
@@ -93,19 +93,18 @@ export default {
       }, 5000);
     },
     statusCircle(code) {
-      const divider = Math.floor(code / 100);
-      switch (divider) {
+     // const divider = Math.floor(code / 100);
+      switch (code) {
         default:
           return 'status-circle red-circle';
-        case 2:
+        case 'online':
           return 'status-circle green-circle';
-        case 3:
-          return 'status-circle orange-circle';
       }
     },
   },
   computed: {
     items() {
+      const ProjectsData = this.$store.getters.projects
       return this.$store.getters.projects;
     },
     totalItems() {
