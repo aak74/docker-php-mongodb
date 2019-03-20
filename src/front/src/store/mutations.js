@@ -35,6 +35,7 @@ export default {
   },
 
   LOADED_PROJECTS(state, data) {
+    console.log('LOADED', data)
     if (data) {
       state.projects = data.map(elem => {
         if (elem.status && elem.status.lastUpdate) {
@@ -101,40 +102,6 @@ export default {
     localStorage.setItem('UserName', name);
   },
 
-  OPERATION_REFRESH(state, data) {
-    store.dispatch('refreshOperation', data);
-  },
-  SUCCES_REFRESH(state, refreshData) {
-    if (((refreshData.data.data) && (!refreshData.data.data.name)) && (refreshData.data.data.type !== 'user')) {
-      const refresh = refreshData.data.data;
-      if (refresh) {
-        state.projects = refresh.map(elem => {
-          if (elem.status && elem.status.lastUpdate) {
-            elem.status.lastUpdate = dayjs(elem.status.lastUpdate).fromNow();
-          } else {
-            elem.status = {
-              contentLength: 0,
-              lastUpdate: 'Unknown',
-              status: 'Unknown',
-              statusText: 'Unknown',
-              time: 0,
-            };
-          }
-          return elem;
-        }).sort((a, b) => ((a.name > b.name) ? 1 : -1));
-      }
-    }
-    if ((refreshData.data.data) && (refreshData.data.data.type !== 'user')) {
-      if (refreshData.data.data.name) {
-        state.project.current = refreshData.data.data;
-      }
-    }
-    if (refreshData.data[0].type === 'user') {
-      state.users = refreshData.data;
-    }
-  },
-
-
   SIGN_IN_FAIL() {
     console.log('LOGIN FAIL');
     localStorage.setItem('loginProcces', false);
@@ -149,6 +116,14 @@ export default {
       state.register = false;
     } else {
       state.register = true;
+    }
+  },
+
+  isAdmin(state, data) {
+    if (data.data.isAdmin) {
+      state.isAdmin = true;
+    } else {
+      state.isAdmin = false;
     }
   },
   REGISTER_FAIL(state, data) {

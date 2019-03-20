@@ -1,5 +1,5 @@
 'use strict';
-
+const security = 'ArealIdea'
 class ProjectModel {
   constructor({
     logger,
@@ -11,7 +11,8 @@ class ProjectModel {
 
   async getList() {
     try {
-      var result = await this.httpClient.get(`http://back:3000/historyprojects`)
+      console.log('1')
+      var result = await this.httpClient.get(`http://back:3000/historyprojects/${security}`)
         .then(res => {  
           return res.data.data;
         });
@@ -24,7 +25,7 @@ class ProjectModel {
   async requestQueue(msg) {
     console.log(msg.login);
     try {
-      var result = await this.httpClient.post(`http://back:3000/backup/${msg.id}/Queue/${msg.login}/${msg.name}`)
+      var result = await this.httpClient.post(`http://back:3000/backup/${msg.id}/Queue/${msg.login}/${msg.name}/${security}`)
         .then(res => {
           return 'success';
         })
@@ -36,7 +37,7 @@ class ProjectModel {
 
   async update(status) {
     try {
-      var result = await this.httpClient.post(`http://back:3000/projects/${status._id}/status`, status)
+      var result = await this.httpClient.post(`http://back:3000/projects/${status._id}/status/${security}`, status)
         .then(res => { 
           return res.data.data;
         })

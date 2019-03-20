@@ -1,9 +1,13 @@
 <template>
   <div class="container" >
-    <div class="elevation-1">
+    <div v-show="progress">
+     <v-progress-linear  :indeterminate="true"></v-progress-linear>
+    </div>
+    <div v-show="!progress" class="elevation-1">
       <div class="v-table__overflow">
         <div v-if="data" style="height:auto;">
-          <chart  :chart-data="dataCollection" :height="100"></chart>
+          <v-progress-linear v-if="!dataCollection"  :indeterminate="true"></v-progress-linear>
+          <chart v-else  :chart-data="dataCollection" :height="100"></chart>
         </div>
         <table class="v-datatable v-table theme--light" >
           <tbody>
@@ -55,6 +59,15 @@ export default {
       },
   },
   computed: {
+    lenght(){
+      return this.data.history[3]
+    },
+    progress(){
+      if(!this.lenght){
+        return true
+      }
+      return false
+    },
     BackupHistory(){
       return this.data.backup
     },

@@ -34,12 +34,12 @@ export default {
       },
     }
   },
+  created(){
+      this.$store.dispatch('isAdmin');
+  },
   computed:{
     isAdmin(){
-      if(localStorage.getItem('UserName')==='admin'){
-        return true
-      }
-      return false
+      return this.$store.state.isAdmin
     },
   },
   props: ['items', 'mini'],

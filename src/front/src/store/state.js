@@ -4,6 +4,7 @@ export default {
   },
   register: undefined,
   users: {},
+  isAdmin: false,
   status: {
     loading: true,
   },

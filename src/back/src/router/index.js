@@ -1,7 +1,13 @@
 const jwt = require('jsonwebtoken');
+const Admins = [
+  '5c87a19084ddc510b92b87c3',
 
-const isAdmin = function(name){
-  if (name==='admin'){
+];
+const security = 'ArealIdea'
+const isAdmin = function(id){
+  // id=''+id;
+  console.log(id,Admins[0]);
+  if (Admins.indexOf(id)!=-1){
     return true
   }
   return false
@@ -90,11 +96,19 @@ class Routes {
     });
 
     this.httpServer.get('/users', this.passport.authenticate('jwt', { session: false }), async (req, res) => {
-      if(isAdmin(req.user.login)){
+      if(isAdmin(req.user.id)){
         const result = await this.userController.usersGet(req.body);
         res.send(result);
       }else{
         res.send({ message: 'Sorry this is private page'});
+      } 
+    });
+
+    this.httpServer.get('/isAdmin', this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+      if(isAdmin(req.user.id)){
+        res.send({isAdmin: true});
+      }else{
+        res.send({isAdmin: false});
       } 
     });
 
@@ -117,7 +131,7 @@ class Routes {
     });
 
     this.httpServer.delete('/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
-      if (isAdmin(req.user.login)){
+      if (isAdmin(req.user.id)){
         const result = await this.userController.delete({
           _id: req.params.id,
         });
@@ -128,7 +142,7 @@ class Routes {
     });
 
     this.httpServer.delete('/block/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
-      if (isAdmin(req.user.login)){
+      if (isAdmin(req.user.id)){
         const result = await this.userController.block({
           _id: req.params.id,
         });
@@ -139,7 +153,7 @@ class Routes {
     });
 
     this.httpServer.delete('/unblock/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
-      if (isAdmin(req.user.login)){
+      if (isAdmin(req.user.id)){
         const result = await this.userController.unblock({
           _id: req.params.id,
         });
@@ -215,7 +229,11 @@ class Routes {
       });
     });
 
-    this.httpServer.get('/historyprojects', async (req, res) => {
+    this.httpServer.get('/historyprojects/:key', async (req, res) => {
+      if (req.params.key != security){
+        res.send({message: 'private page'});
+        return
+      }
       const data = await this.projectController.getList();
       res.send({
         status: 'ok',
@@ -252,7 +270,12 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.post('/backup/:id/Queue/:user/:ProjectName', this.bodyParser.json(), async (req, res) => {
+    this.httpServer.post('/backup/:id/Queue/:user/:ProjectName/:key', this.bodyParser.json(), async (req, res) => {
+      if (req.params.key != security){
+        res.send({message: 'private page'});
+        return
+      }
+      console.log(req.params.key)
       const data={
         '_id': req.params.id,
         time: new Date(),
@@ -274,14 +297,17 @@ class Routes {
       res.send('result');
     });
 
-    this.httpServer.post('/projects/:id/status', this.bodyParser.json(), async (req, res) => {
+    this.httpServer.post('/projects/:id/status/:key', this.bodyParser.json(), async (req, res) => {
+      if (req.params.key != security){
+        res.send({message: 'private page'});
+        return
+      }
       const result = await this.historyController.sendHistory(req.body);
       const resultUpdate = await this.projectController.updateStatus(req.body);
       res.send({ status: 'ok' });
     });
 
     this.httpServer.get('/projects/users', this.bodyParser.json() , async (req, res) => {
-      console.log('ok');
       const result = await this.historyController.sendHistory(req.body);
       const resultUpdate = await this.projectController.updateStatus(req.body);
       res.send({ status: 'ok' });

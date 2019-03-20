@@ -66,7 +66,7 @@ const auth = ({ commit }) => {
       commit('AUTH', data);
     });
 };
-const refreshToken = ({ commit }, refreshDATA) => {
+const refreshToken = ({ commit, dispatch }, refreshDATA) => {
   const refreshToToken = {
     token: localStorage.getItem('token'),
   };
@@ -77,7 +77,7 @@ const refreshToken = ({ commit }, refreshDATA) => {
         commit('BLOCKED');
       } else {
         commit('SIGN_IN_REFRESH', res);
-        commit('OPERATION_REFRESH', refreshDATA);
+        dispatch('refreshOperation', refreshDATA);
       }
     });
 };
@@ -85,7 +85,14 @@ const refreshToken = ({ commit }, refreshDATA) => {
 const refreshOperation = ({ commit }, refreshDATA) => {
   api.request(refreshDATA.METHOD, refreshDATA.URI, refreshDATA.DATA)
     .then(res => {
-      commit('SUCCES_REFRESH', res);
+      commit('isAdmin', res);
+      commit('USERS', res);
+      commit('DELETED_USER', res);
+      commit('BLOCK_USER', res);
+      commit('UNBLOCK_USER', res);
+      commit('getProject', res);
+      commit('loadProjects', res);
+      commit('LOADED_PROJECTS', res.data.data);
     });
 };
 
@@ -96,6 +103,13 @@ const register = ({ commit }, data) => {
     })
     .catch(error => {
       commit('REGISTER_FAIL', error);
+    });
+};
+
+const isAdmin = ({ commit }) => {
+  api.request('get', 'isAdmin/')
+    .then(requestData => {
+      commit('isAdmin', requestData);
     });
 };
 
@@ -142,4 +156,5 @@ export default {
   refreshOperation,
   block,
   unblock,
+  isAdmin,
 };
