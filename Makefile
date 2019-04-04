@@ -26,7 +26,7 @@ help: ## Show this help
 
 # --- [ Application ] -------------------------------------------------------------------------------------------------
 
-init: npm build-all composer ## init project
+init: back-npm pinger-npm build-all composer ## init project
 
 restore:  ## restore mysql database
 	@echo "Starting restore MongoDB database"
@@ -50,10 +50,27 @@ restart: build down up ## rebuild and restart all containers
 stop: ## stop all containers
 	@$(docker_bin) ps -aq | xargs $(docker_bin) stop
 
-build-front: ## build front scripts from source
+# --- [ Front ] -------------------------------------------------------------------------------------------------
+
+build-all: front-build ## build all scripts from source
+
+front-build: ## build front scripts from source
 	@cd ./src/front && npm install && npm run build
 
-build-all: build-front ## build all scripts from source
+front-dev: ## run dev server
+	@cd ./src/front && npm run dev
+
+# --- [ Backend ] -------------------------------------------------------------------------------------------------
+
+back-npm: ## npm install for webserver
+	@cd ./src/back/src && npm install
+
+# --- [ Pinger ] -------------------------------------------------------------------------------------------------
+
+pinger-npm: ## npm install for webserver
+	@cd ./src/pinger/src && npm install
+
+# --- [ Backup ] -------------------------------------------------------------------------------------------------
 
 composer: composer-backup composer-runner
 
@@ -63,8 +80,3 @@ composer-backup:
 composer-runner:
 	@cd ./src/backup-runner && composer install
 
-dev-front: ## run dev server
-	@cd ./src/front && npm run dev
-
-npm: ## npm install for webserver
-	@cd ./src/back/src && npm install

@@ -61,7 +61,6 @@ services:
 
   mongo:
     image: mongo:3-stretch
-    container_name: ${MONGODB_CONTAINER_NAME}
     ports:
       - 27017:27017
     volumes:
