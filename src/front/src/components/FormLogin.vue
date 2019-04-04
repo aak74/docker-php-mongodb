@@ -3,20 +3,25 @@
       <div class="v-card__text ">
         <div class="layout row align-end justify-center" >
           <div class="flex xs3 " >
-            <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
-              <div class="v-input__control">
-                <div class="v-input__slot">
-                  <input placeholder="Имя пользователя" class="v-text-field__slot " v-model="user.login" />
+              <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
+                <div class="v-input__control">
+                  <v-text-field
+                    v-model="user.login"
+                    prepend-inner-icon ="perm_identity"
+                    label="Имя пользователя"
+                  ></v-text-field>
                 </div>
               </div>
-            </div>
-            <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
-              <div class="v-input__control" >
-                <div class="v-input__slot">
-                  <input placeholder="Пароль" class="v-text-field__slot" v-model="user.password" type="password"/>
+              <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
+                <div class="v-input__control" >
+                  <v-text-field
+                    v-model="user.password"
+                    prepend-inner-icon ="build"
+                    label="Пароль"
+                    type="password"
+                  ></v-text-field>
                 </div>
               </div>
-            </div>
             <div class="justify-center v-dialog__container">
               <button @click="register" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark lighten-2"> Регистрация   </button>
               <button @click="signIn" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark  lighten-2"> Войти </button>

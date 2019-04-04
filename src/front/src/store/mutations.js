@@ -122,7 +122,7 @@ export default {
   isAdmin(state, data) {
     if (data.data.isAdmin) {
       state.isAdmin = true;
-    } else {
+    } else if (!state.isAdmin) {
       state.isAdmin = false;
     }
   },

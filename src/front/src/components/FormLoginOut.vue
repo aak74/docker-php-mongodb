@@ -39,6 +39,7 @@ export default {
   methods:{
       signOut(){
         localStorage.removeItem('token');
+        localStorage.removeItem('refreshToken');
         localStorage.removeItem('UserName');
         localStorage.setItem('isLogin',false);
         document.location.pathname = '/login'
