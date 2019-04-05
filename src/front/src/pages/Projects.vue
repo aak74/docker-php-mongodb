@@ -47,14 +47,7 @@
                     :disabled="disableInput"
 
                   ></v-text-field>
-                    <v-text-field
-                    v-model="password"
-                    label="Пароль"
-                    v-if="showPassword"
-                    :rules="passwordRules"
-                    required
-                  ></v-text-field>
-                  <label v-if="showPassword" class="checkbox">SSH {{SSH}}
+                  <label v-if="showPassword" class="checkbox">SSH
                     <input type="checkbox" id="checkbox"  for="checkbox" v-model="SSH">
                     <span class="checkmark"></span>
                   </label>
@@ -164,12 +157,12 @@ export default {
       ],
       url: '',
       urlRules: [
-        v => !!v || 'URL адрес обязятелен',
+        v => !!v || 'URL адрес обязателен',
       ],
       text: '',
       password: '',
       passwordRules: [
-        v => !!v || 'Пароль обязятелен',
+        v => !!v || 'Пароль обязателен',
       ],
       host: '',
       user: '',
@@ -195,20 +188,12 @@ export default {
       this.data = this.$store.state.project.current
     },
     clickItem(item) {
-      //console.log('clicked on', item);
-      // this.$store.dispatch('openProject', item._id);
-     // this.modalTitle = 'Информация';
-    //  this.modalSubmitButton = 'Закрыть';
-     // this.modalAction = 'Info';
       this.id = item._id;
       this.name = item.name;
       this.url = item.url;
       this.text = item.text;
       this.disableInput = false;
-     // this.showDialog = true;
       this.showPassword = false;
-     // this.loadProject(this.id);
-     // this.update = false;
       document.location.href = `/projects/${item._id}`;
     },
     addItem() {
@@ -299,12 +284,14 @@ export default {
       this.showDialog = false;
       this.sendRequest();
     },
+
     deleteProject() {
       //console.log('Проект удалён', this.name, this.url, this.id, this.password);
       this.$store.dispatch('deleteProject', { name: this.name, url: this.url, id: this.id, text: this.text, password: this.password });
       this.showDialog = false;
       this.sendRequest();
     },
+
     saveProject() {
       console.log('Проект сохранен', this.id, this.name, this.url , this.text, this.password);
       this.$store.dispatch('saveProject', { id:this.id, name: this.name, url: this.url, text: this.text, password: this.password, host: this.host, user: this.user,
@@ -312,11 +299,13 @@ export default {
       this.showDialog = false;
       this.sendRequest();
     },
+
     backupProject() {
       console.log('Запрос на создание бэкапа добавлен в очередь', { name: this.name, url: this.url, id: this.id, text: this.text, password: this.password });
       this.$store.dispatch('backupProject', this.id,this.password);
       this.showDialog = false;
     },
+
     InfoProject() {
       setTimeout(function() {
         clearInterval(this.autoupdate);

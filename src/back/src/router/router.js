@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
 const Admins = [
   '5c87a19084ddc510b92b87c3',
 ];
 const security = 'ArealIdea'
 const isAdmin = function(id){
+  return true;
   // id=''+id;
   console.log(id,Admins[0]);
   if (Admins.indexOf(id)!=-1){
@@ -12,8 +12,18 @@ const isAdmin = function(id){
   return false
 } 
 
+var auth1 = null;
 
-class Routes {
+const authMiddleware = (req, res, next) => {
+  // return true;
+  // console.log('authMiddleware', Router);
+
+  auth1.auth();
+  next();
+};
+
+
+class Router {
   constructor({
     logger,
     httpServer,
@@ -23,7 +33,6 @@ class Routes {
     historyController,
     socketIO,
     auth,
-    passport,
     bodyParser,
     http,
   }) {
@@ -36,8 +45,27 @@ class Routes {
     this.http = http;
     this.io = socketIO;
     this.auth = auth;
-    this.passport = passport;
+    auth1 = auth;
+    // this.passport = passport;
+
     this.bodyParser = bodyParser;
+  }
+
+
+  getToken(user) {
+    return this.auth.getToken({
+      id: user._id,
+      login: user.login,
+      date: Date.now(),
+      blocked: user.blocked,
+    });
+  }
+
+  getRefreshToken(user, token) {
+    return this.auth.getRefreshToken({
+      login: user.login,
+      tokenToReftesh: token,
+    });
   }
 
   async run() {
@@ -55,46 +83,37 @@ class Routes {
       next();
     };
 
-    const authenticate = () => {
+    const route = this.httpServer.use(authMiddleware, this.bodyParser.json());
+    // const route = this.httpServer.route('/', authMiddleware, this.bodyParser.json());
 
-      return this.passport.authenticate('jwt', { session: false });
-    };
-    
-    this.httpServer.all('/', function(req, res, next) {
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header("Access-Control-Allow-Headers", "X-Requested-With");
-    });
+    // this.httpServer.all('/', function(_, res) {
+    //   res.header("Access-Control-Allow-Origin", "*");
+    //   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    // });
 
-    this.httpServer.post('/user/login', async (req, res) => {
+    this.httpServer.post('user/login', async (req, res) => {
       const user = await this.userController.login(req.body);
       if (!user) {
         console.log(user, 'notlogin');
-        res.status(401).json({ message: 'no such user found' });
+        res.status(401).json({ message: 'User not found' });
       }
-      if (user.password === req.body.password) {
-        const payload = 
-        { id: user._id,
-          login: user.login,
-          date: Date.now(),
-          blocked: user.blocked,
-          verifyKey: this.auth.verifyKey,
-        };
-        const token = jwt.sign(payload, this.auth.jwtOptions.secretOrKey);
-        const refreshPayload = 
-        {
-          login: user.login,
-          tokenToReftesh: token,
-          verifyKey: this.auth.verifyKey,
-        };
-        const refreshToken = jwt.sign(refreshPayload, this.auth.jwtOptions.secretOrKey);
-        res.json({ message: 'ok', name: user.login , token, refreshToken });
-      } else {
-        console.log(user, 'notpassword');
+      
+      if (user.password !== req.body.password) {
         res.status(401).json({ message: 'passwords did not match' });
+        return;
       }
+
+      const token = this.getToken(user);
+      const refreshToken = this.getRefreshToken(user, token);
+      res.json({ 
+        message: 'ok', 
+        name: user.login , 
+        token, 
+        refreshToken 
+      });
     });
 
-    this.httpServer.get('/users', this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+    this.httpServer.get('users', async (req, res) => {
       if(isAdmin(req.user.id)){
         const result = await this.userController.usersGet(req.body);
         res.send(result);
@@ -103,7 +122,10 @@ class Routes {
       } 
     });
 
-    this.httpServer.get('/isAdmin', this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+    this.httpServer.get('/isAdmin', async (req, res) => {
+      res.send({isAdmin: true});
+      return;
+
       if(isAdmin(req.user.id)){
         res.send({isAdmin: true});
       }else{
@@ -123,13 +145,13 @@ class Routes {
       });
     });
 
-    this.httpServer.post('/user/register', this.bodyParser.json(), async (req, res) => {
+    this.httpServer.post('user/register', async (req, res) => {
       const result = await this.userController.register(req.body);
       console.log(result.login);
       res.send({ status: result.login });
     });
 
-    this.httpServer.delete('/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
+    this.httpServer.delete('user/:id', async (req, res) => {
       if (isAdmin(req.user.id)){
         const result = await this.userController.delete({
           _id: req.params.id,
@@ -140,7 +162,7 @@ class Routes {
       }
     });
 
-    this.httpServer.delete('/block/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
+    this.httpServer.delete('/block/user/:id', async (req, res) => {
       if (isAdmin(req.user.id)){
         const result = await this.userController.block({
           _id: req.params.id,
@@ -151,7 +173,7 @@ class Routes {
       }
     });
 
-    this.httpServer.delete('/unblock/user/:id',this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
+    this.httpServer.delete('/unblock/user/:id', async (req, res) => {
       if (isAdmin(req.user.id)){
         const result = await this.userController.unblock({
           _id: req.params.id,
@@ -162,13 +184,11 @@ class Routes {
       }
     });
 
-
-
     this.httpServer.use('/status', (_, res) => {
       res.status(200).send('OK');
     });
 
-    this.httpServer.get('/projects',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+    this.httpServer.get('/projects', async (req, res) => {
       const data = await this.projectController.getList(req.user.id);
       res.send({
         status: 'ok',
@@ -176,46 +196,37 @@ class Routes {
       });
     });
 
-    this.httpServer.post('/refreshToken',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+    this.httpServer.post('/refreshToken', async (req, res) => {
+      console.log('refreshToken', req.user);
+      
       if (req.user.tokenToReftesh === req.body.token){
         const self = this;
-        const JWTtoken = {};
+
         const params = {
           login: req.user.login,
         };
         const user = await self.userController.login(params);
-        const payload = 
-        { id: user._id,
-          login: user.login,
-          date: Date.now(),
-          blocked: user.blocked,
-          verifyKey: this.auth.verifyKey,
-        };
-        
-        const token = jwt.sign(payload, this.auth.jwtOptions.secretOrKey);
-        const refreshPayload = 
-        {
-          login: user.login,
-          tokenToReftesh: token,
-          verifyKey: this.auth.verifyKey,
-        };
-        const refreshToken = jwt.sign(refreshPayload, this.auth.jwtOptions.secretOrKey);
-        if(!user.blocked){
-          res.json({ message: 'ok', name: user.login , token, refreshToken });
-          return
+        if (user.blocked) {
+          res.json({ message: 'blocked', name: user.login, token, refreshToken });
+          return;
         }
-        res.json({ message: 'blocked', name: user.login , token, refreshToken  });
-        return
+
+        const token = this.getToken(user);
+        const refreshToken = this.getRefreshToken(user, token);
+
+        res.json({ message: 'ok', name: user.login , token, refreshToken });
+        return;
       }
-      res.send({
-        status: 'failed',
-      });
+      res.send({ status: 'failed' });
     });
     
-    this.httpServer.get('/projects/:id',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+    this.httpServer.get('/projects/:id', async (req, res) => {
+    // this.httpServer.get('/projects/:id', async (req, res) => {
+      console.log('projects/id', req.params, req.user);
+      
       const data = await this.projectController.get({
         _id: req.params.id,
-        id: req.user.id
+        userId: req.user.id
       });
 
       const History = await this.historyController.getHistory({
@@ -242,7 +253,7 @@ class Routes {
       });
     });
 
-    this.httpServer.post('/projects/:id', this.bodyParser.json(), async (req, res) => {
+    this.httpServer.post('/projects/:id', async (req, res) => {
       const _ = await this.projectController.update({
         _id: req.params.id,
       }, req.body);
@@ -251,9 +262,6 @@ class Routes {
 
     this.httpServer.delete(
       '/projects/:id', 
-      this.bodyParser.json(), 
-      this.passport.authenticate('jwt', { session: false }), 
-      // this.bodyParser.json(), 
       async (req, res) => {
         
         const result = await this.projectController.delete({
@@ -273,7 +281,7 @@ class Routes {
       }
     );
 
-    this.httpServer.post('/projects', this.bodyParser.json(),this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
+    this.httpServer.post('/projects', async (req, res) => {
       this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
       const dataProject= req.body;
       dataProject.id=req.user.id;
@@ -281,7 +289,7 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    // this.httpServer.post('/backup/:id/Queue/:user/:ProjectName/:key', this.bodyParser.json(), async (req, res) => {
+    // this.httpServer.post('/backup/:id/Queue/:user/:ProjectName/:key', async (req, res) => {
     //   if (req.params.key != security){
     //     res.send({message: 'private page'});
     //     return
@@ -299,7 +307,7 @@ class Routes {
 
     this.httpServer.get(
       '/projects/:id/backup',
-      this.passport.authenticate('jwt', { session: false }), 
+      authMiddleware, 
       async (req, res) => {
         this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект поставлен на бэкап'});
         try {
@@ -318,7 +326,7 @@ class Routes {
       }
     );
 
-    // this.httpServer.post('/projects/:id/status/:key', this.bodyParser.json(), async (req, res) => {
+    // this.httpServer.post('/projects/:id/status/:key', async (req, res) => {
     //   if (req.params.key != security){
     //     res.send({message: 'private page'});
     //     return
@@ -328,7 +336,7 @@ class Routes {
     //   res.send({ status: 'ok' });
     // });
 
-    // this.httpServer.get('/projects/users', this.bodyParser.json() , async (req, res) => {
+    // this.httpServer.get('/projects/users' , async (req, res) => {
     //   const result = await this.historyController.sendHistory(req.body);
     //   const resultUpdate = await this.projectController.updateStatus(req.body);
     //   res.send({ status: 'ok' });
@@ -344,4 +352,4 @@ class Routes {
   }
 }
 
-module.exports = Routes;
+module.exports = Router;

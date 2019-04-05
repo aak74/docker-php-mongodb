@@ -61,7 +61,7 @@ const signIn = ({ commit }, login) => {
 };
 
 const auth = ({ commit }) => {
-  api.getLogin('get', '/secret')
+  api.getLogin('get', 'secret')
     .then(data => {
       commit('AUTH', data);
     });
@@ -70,14 +70,20 @@ const refreshToken = ({ commit, dispatch }, refreshDATA) => {
   const refreshToToken = {
     token: localStorage.getItem('token'),
   };
-  api.request('post', '/refreshToken', refreshToToken)
+
+  api.request('post', 'refreshToken', refreshToToken)
     .then(res => {
+      if (!res.data) {
+        return;
+      }
       if (res.data.message === 'blocked') {
         console.log('blocked');
         commit('BLOCKED');
       } else {
         commit('SIGN_IN_REFRESH', res);
-        dispatch('refreshOperation', refreshDATA);
+        setTimeout(() => {
+          dispatch('refreshOperation', refreshDATA);
+        }, 1000);
       }
     });
 };
@@ -114,7 +120,7 @@ const isAdmin = ({ commit }) => {
 };
 
 const users = ({ commit }) => {
-  api.request('get', '/users')
+  api.request('get', 'users')
     .then(data => {
       commit('USERS', data);
     });
