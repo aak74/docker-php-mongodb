@@ -1,6 +1,6 @@
 'use strict';
 
-class HistoryGet {
+class GetHistory {
   constructor({
     logger,
     historyModel,
@@ -11,7 +11,7 @@ class HistoryGet {
     this.publishMessage = publishMessage;
   }
 
-  async execute(params) {   
+  async get(params) {   
        const result = await this.historyModel.get(params);
        if (result){
         result.history=result.history.slice(result.history.length-21);
@@ -20,4 +20,4 @@ class HistoryGet {
   }
 }
 
-module.exports = HistoryGet;
+module.exports = GetHistory;

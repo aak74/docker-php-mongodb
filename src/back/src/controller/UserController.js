@@ -2,14 +2,14 @@
 
 class UserModel {
   constructor({
-    userAuth,
+    authUser,
     userRegister,
     users,
     deleteUser,
     blocked,
     unblocked,
   }) {
-    this.userAuth = userAuth;
+    this.authUser = authUser;
     this.userRegister = userRegister;
     this.users = users;
     this.deleteUser = deleteUser;
@@ -34,7 +34,7 @@ class UserModel {
   }
 
   async login(params) {
-    return await this.userAuth.execute(params);
+    return await this.authUser.execute(params);
   }
 
   async register(params) {

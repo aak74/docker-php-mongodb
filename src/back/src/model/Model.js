@@ -25,13 +25,10 @@ class Model {
       .find(this.getFilter(filter)).project(projection);
   }
 
-  async findOne(filter, projection) {
+  async findOne(filter) {
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOne(this.getFilter(filter));
-       
-      delete result.password;
-      //console.log('result=>',result);
     return result;
   }
 
@@ -54,6 +51,7 @@ class Model {
       });
     return result;
   }
+
   async findOneAndInsert(filter, update, params) {
     filter={
       _id: filter._id,

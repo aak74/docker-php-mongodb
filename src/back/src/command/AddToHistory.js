@@ -1,6 +1,6 @@
 'use strict';
 
-class HistoryAdd {
+class AddToHistory {
   constructor({
     logger,
     historyModel,
@@ -34,4 +34,4 @@ class HistoryAdd {
   }
 }
 
-module.exports = HistoryAdd;
+module.exports = AddToHistory;

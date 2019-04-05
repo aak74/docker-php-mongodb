@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const Admins = [
   '5c87a19084ddc510b92b87c3',
-
 ];
 const security = 'ArealIdea'
 const isAdmin = function(id){
@@ -215,11 +214,12 @@ class Routes {
     
     this.httpServer.get('/projects/:id',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
       const data = await this.projectController.get({
-        _id:req.params.id,
-        id:req.user.id
+        _id: req.params.id,
+        id: req.user.id
       });
+
       const History = await this.historyController.getHistory({
-        id:req.params.id
+        id: req.params.id
       });
       data.history = History.history;
       data.backup= History.historyBackup;
@@ -249,18 +249,29 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.delete('/projects/:id',this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), this.bodyParser.json(), async (req, res) => {
-      const result = await this.projectController.delete({
-        _id: req.params.id,
-        password: req.body.password,
-      });
-      if (result){
-        this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно удален'}); 
-      }else{
-        this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' не удален'});
+    this.httpServer.delete(
+      '/projects/:id', 
+      this.bodyParser.json(), 
+      this.passport.authenticate('jwt', { session: false }), 
+      // this.bodyParser.json(), 
+      async (req, res) => {
+        
+        const result = await this.projectController.delete({
+          _id: req.params.id,
+          // password: req.body.password,
+        });
+        
+        console.log('delete', result);
+        if (result){
+          // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно удален'}); 
+          res.send({ status: 'ok' });
+          return;
+        }
+        // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' не удален'});
+        res.send({ status: 'error' });
+
       }
-      res.send({ status: 'ok' });
-    });
+    );
 
     this.httpServer.post('/projects', this.bodyParser.json(),this.bodyParser.json(),this.passport.authenticate('jwt', { session: false }), async (req, res) => {
       this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
@@ -270,66 +281,66 @@ class Routes {
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.post('/backup/:id/Queue/:user/:ProjectName/:key', this.bodyParser.json(), async (req, res) => {
-      if (req.params.key != security){
-        res.send({message: 'private page'});
-        return
+    // this.httpServer.post('/backup/:id/Queue/:user/:ProjectName/:key', this.bodyParser.json(), async (req, res) => {
+    //   if (req.params.key != security){
+    //     res.send({message: 'private page'});
+    //     return
+    //   }
+    //   console.log(req.params.key)
+    //   const data={
+    //     '_id': req.params.id,
+    //     time: new Date(),
+    //   };
+    //   const resultUpdate = await this.historyController.sendHistory(data);
+    //   //const resultUpdate = await this.projectController.updateStatus(data);
+    //   this.io.sockets.in(req.params.user).emit('message', {msg: 'Бекап проекта '+req.params.ProjectName+' успешно завершен'});
+    //   return true
+    // });
+
+    this.httpServer.get(
+      '/projects/:id/backup',
+      this.passport.authenticate('jwt', { session: false }), 
+      async (req, res) => {
+        this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект поставлен на бэкап'});
+        try {
+          const result = await this.projectController.backup({
+            _id: req.params.id,
+            userId: req.user.id,
+          });
+          if (result) {
+            res.send({ status: 'ok' });
+            return;
+          }
+          res.send({ status: 'error', message: 'Unknown Error' });
+        } catch (error) {
+          res.send({ status: 'error', message: error.message });
+        }
       }
-      console.log(req.params.key)
-      const data={
-        '_id': req.params.id,
-        time: new Date(),
-      };
-      const resultUpdate = await this.historyController.sendHistory(data);
-      //const resultUpdate = await this.projectController.updateStatus(data);
-      this.io.sockets.in(req.params.user).emit('message', {msg: 'Бекап проекта '+req.params.ProjectName+' успешно завершен'});
-      return true
-    });
+    );
 
-    this.httpServer.get('/projects/:id/backup',this.passport.authenticate('jwt', { session: false }), async (req, res) => {
-      this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект поставлен на бэкап'});
-      const data = {
-        _id:req.params.id,
-        id:req.user.id, 
-        login:req.user.login,   
-      };
-      const result = await this.projectController.backup(data);
-      res.send('result');
-    });
+    // this.httpServer.post('/projects/:id/status/:key', this.bodyParser.json(), async (req, res) => {
+    //   if (req.params.key != security){
+    //     res.send({message: 'private page'});
+    //     return
+    //   }
+    //   const result = await this.historyController.sendHistory(req.body);
+    //   const resultUpdate = await this.projectController.updateStatus(req.body);
+    //   res.send({ status: 'ok' });
+    // });
 
-    this.httpServer.post('/projects/:id/status/:key', this.bodyParser.json(), async (req, res) => {
-      if (req.params.key != security){
-        res.send({message: 'private page'});
-        return
-      }
-      const result = await this.historyController.sendHistory(req.body);
-      const resultUpdate = await this.projectController.updateStatus(req.body);
-      res.send({ status: 'ok' });
-    });
+    // this.httpServer.get('/projects/users', this.bodyParser.json() , async (req, res) => {
+    //   const result = await this.historyController.sendHistory(req.body);
+    //   const resultUpdate = await this.projectController.updateStatus(req.body);
+    //   res.send({ status: 'ok' });
+    // });
 
-    this.httpServer.get('/projects/users', this.bodyParser.json() , async (req, res) => {
-      const result = await this.historyController.sendHistory(req.body);
-      const resultUpdate = await this.projectController.updateStatus(req.body);
-      res.send({ status: 'ok' });
-    });
-
-    this.http.listen(this.config.port, '0.0.0.0', (err) => {
+    this.http.listen(this.config.port, (err) => {
       if (err) {
         self.logger.error('Server error', err);
         return;
       }
       self.logger.info(`Server is listening on ${this.config.port}`);
     });
-
-
-
-    // this.http.listen(3001, (err) => {
-    //   if (err) {
-    //     self.logger.error('Server error', err);
-    //     return;
-    //   }
-    //   self.logger.info(`Server is listening on 3001`);
-    // });
   }
 }
 

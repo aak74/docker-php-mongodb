@@ -1,23 +1,22 @@
 'use strict';
 
-class  HistoryModel {
+class  HistoryController {
   constructor({
-  historyAdd,
-  historyGet,
+    addToHistory,
+    getHistory,
   }) {
-    this.historyAdd = historyAdd;
-    this.historyGet = historyGet;
+    this.AddToHistory = addToHistory;
+    this.GetHistory = getHistory;
   }
-  async sendHistory(history) {
-    return await this.historyAdd.execute(history);
-    //console.log('tyt',history);
+  async addToHistory(history) {
+    return await this.AddToHistory.execute(history);
   }
-  async getHistory(history) {
-    
-    return await this.historyGet.execute(history);
+
+  async getHistory(projectId) {
+    return await this.GetHistory.get(projectId);
     //
   }
 
 }
 
-module.exports = HistoryModel;
+module.exports = HistoryController;

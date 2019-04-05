@@ -1,6 +1,6 @@
 'use strict';
 
-class deleteUser {
+class DeleteUser {
   constructor({
     logger,
     userModel,
@@ -17,4 +17,4 @@ class deleteUser {
   }
 }
 
-module.exports = deleteUser;
+module.exports = DeleteUser;

@@ -1,6 +1,6 @@
 'use strict';
 
-class userAuth {
+class AuthUser {
   constructor({
     logger,
     userModel,
@@ -12,10 +12,9 @@ class userAuth {
   }
 
   async execute(params) {
-
     const result = await this.userModel.signIn(params);
     return result;
   }
 }
 
-module.exports = userAuth;
+module.exports = AuthUser;
