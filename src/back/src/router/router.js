@@ -1,3 +1,11 @@
+const express = require('express');
+// const http = require('http');
+const http = require('http');
+const socketIO = require('socket.io');
+const bodyParser = require('body-parser');
+
+// var httpServer = ;
+
 const Admins = [
   '5c87a19084ddc510b92b87c3',
 ];
@@ -12,47 +20,67 @@ const isAdmin = function(id){
   return false
 } 
 
-var auth1 = null;
+var Auth = null;
 
 const authMiddleware = (req, res, next) => {
-  // return true;
-  // console.log('authMiddleware', Router);
-
-  auth1.auth();
-  next();
+  Auth.auth(req, res, next);
+  // next();
 };
 
 
 class Router {
   constructor({
     logger,
-    httpServer,
+    // httpServer,
     config,
     projectController,
     userController,
     historyController,
-    socketIO,
+    // socketIO,
+    // app,
     auth,
-    bodyParser,
-    http,
+    // bodyParser,
+    // http,
   }) {
     this.logger = logger;
-    this.httpServer = httpServer;
+    // this.app = httpServer;
     this.config = config;
     this.projectController = projectController;
     this.userController = userController;
     this.historyController = historyController;
-    this.http = http;
-    this.io = socketIO;
+    // this.http = http;
+    // this.io = socketIO;
+
+    this.app = express();
+    this.app.use(bodyParser.json());
+    this.app.use(authMiddleware, bodyParser.json());
+    // this.app.use(/\/(?!user\/login.)*/, authMiddleware, bodyParser.json());
+    // this.app.use(/\/((?!status|refreshToken|user).)*/, authMiddleware, bodyParser.json());
+    // this.app.use((req, res, next) => {
+    //   console.log('use', req.url);
+    //   // return true;      
+    //   if (['/status', '/refreshToken', '/user/login'].indexOf(req.url) !== -1) {
+    //     console.log('xxx');
+    //     // 
+    //     return next();
+    //     return true;
+    //   }
+    //   return [authMiddleware, bodyParser.json()]
+    // });
+    // this.io = socketIO(http.Server(this.app));
+
     this.auth = auth;
-    auth1 = auth;
+    Auth = auth;
+    // this.app.use(auth.passport);
     // this.passport = passport;
 
-    this.bodyParser = bodyParser;
+    // this.bodyParser = bodyParser;
   }
 
 
   getToken(user) {
+    console.log('getToken');
+    
     return this.auth.getToken({
       id: user._id,
       login: user.login,
@@ -64,7 +92,7 @@ class Router {
   getRefreshToken(user, token) {
     return this.auth.getRefreshToken({
       login: user.login,
-      tokenToReftesh: token,
+      tokenToRefresh: token,
     });
   }
 
@@ -83,18 +111,16 @@ class Router {
       next();
     };
 
-    const route = this.httpServer.use(authMiddleware, this.bodyParser.json());
-    // const route = this.httpServer.route('/', authMiddleware, this.bodyParser.json());
-
-    // this.httpServer.all('/', function(_, res) {
+    // this.app.all('/', function(_, res) {
     //   res.header("Access-Control-Allow-Origin", "*");
     //   res.header("Access-Control-Allow-Headers", "X-Requested-With");
     // });
 
-    this.httpServer.post('user/login', async (req, res) => {
+    this.app.post('/user/login', async (req, res) => {
+
+      console.log('user/login', user);
       const user = await this.userController.login(req.body);
       if (!user) {
-        console.log(user, 'notlogin');
         res.status(401).json({ message: 'User not found' });
       }
       
@@ -113,7 +139,11 @@ class Router {
       });
     });
 
-    this.httpServer.get('users', async (req, res) => {
+    console.log('this.app', this.app);
+    
+    this.app.get('/users', async (req, res) => {
+      res.send('1');
+      return;
       if(isAdmin(req.user.id)){
         const result = await this.userController.usersGet(req.body);
         res.send(result);
@@ -122,7 +152,7 @@ class Router {
       } 
     });
 
-    this.httpServer.get('/isAdmin', async (req, res) => {
+    this.app.get('/isAdmin', async (req, res) => {
       res.send({isAdmin: true});
       return;
 
@@ -133,25 +163,13 @@ class Router {
       } 
     });
 
-    this.io.sockets.on('connection',function (socket) {
-      socket.on('autorized', function (user) {
-        socket.user=user.user;
-        socket.join(socket.user);
-      });
-      socket.on('message', function (msg) {
-      });
-
-      socket.on('disconnect', function () {
-      });
-    });
-
-    this.httpServer.post('user/register', async (req, res) => {
+    this.app.post('user/register', async (req, res) => {
       const result = await this.userController.register(req.body);
-      console.log(result.login);
+      // console.log(result.login);
       res.send({ status: result.login });
     });
 
-    this.httpServer.delete('user/:id', async (req, res) => {
+    this.app.delete('user/:id', async (req, res) => {
       if (isAdmin(req.user.id)){
         const result = await this.userController.delete({
           _id: req.params.id,
@@ -162,7 +180,7 @@ class Router {
       }
     });
 
-    this.httpServer.delete('/block/user/:id', async (req, res) => {
+    this.app.delete('/block/user/:id', async (req, res) => {
       if (isAdmin(req.user.id)){
         const result = await this.userController.block({
           _id: req.params.id,
@@ -173,7 +191,7 @@ class Router {
       }
     });
 
-    this.httpServer.delete('/unblock/user/:id', async (req, res) => {
+    this.app.delete('/unblock/user/:id', async (req, res) => {
       if (isAdmin(req.user.id)){
         const result = await this.userController.unblock({
           _id: req.params.id,
@@ -184,11 +202,10 @@ class Router {
       }
     });
 
-    this.httpServer.use('/status', (_, res) => {
-      res.status(200).send('OK');
-    });
 
-    this.httpServer.get('/projects', async (req, res) => {
+    this.app.get('/projects', async (req, res) => {
+      // console.log('get projects', req.user);
+      
       const data = await this.projectController.getList(req.user.id);
       res.send({
         status: 'ok',
@@ -196,10 +213,10 @@ class Router {
       });
     });
 
-    this.httpServer.post('/refreshToken', async (req, res) => {
-      console.log('refreshToken', req.user);
+    this.app.post('/refreshToken', async (req, res) => {
+      // console.log('refreshToken', req.user);
       
-      if (req.user.tokenToReftesh === req.body.token){
+      if (req.user.tokenToRefresh === req.body.token){
         const self = this;
 
         const params = {
@@ -220,9 +237,9 @@ class Router {
       res.send({ status: 'failed' });
     });
     
-    this.httpServer.get('/projects/:id', async (req, res) => {
-    // this.httpServer.get('/projects/:id', async (req, res) => {
-      console.log('projects/id', req.params, req.user);
+    this.app.get('/projects/:id', async (req, res) => {
+    // this.app.get('/projects/:id', async (req, res) => {
+      // console.log('projects/id', req.params, req.user);
       
       const data = await this.projectController.get({
         _id: req.params.id,
@@ -240,7 +257,7 @@ class Router {
       });
     });
 
-    this.httpServer.get('/historyprojects/:key', async (req, res) => {
+    this.app.get('/historyprojects/:key', async (req, res) => {
       if (req.params.key != security){
         res.send({message: 'private page'});
         return
@@ -253,23 +270,22 @@ class Router {
       });
     });
 
-    this.httpServer.post('/projects/:id', async (req, res) => {
+    this.app.post('/projects/:id', async (req, res) => {
       const _ = await this.projectController.update({
         _id: req.params.id,
       }, req.body);
       res.send({ status: 'ok' });
     });
 
-    this.httpServer.delete(
+    this.app.delete(
       '/projects/:id', 
       async (req, res) => {
-        
         const result = await this.projectController.delete({
           _id: req.params.id,
           // password: req.body.password,
         });
         
-        console.log('delete', result);
+        // console.log('delete', result);
         if (result){
           // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно удален'}); 
           res.send({ status: 'ok' });
@@ -281,15 +297,15 @@ class Router {
       }
     );
 
-    this.httpServer.post('/projects', async (req, res) => {
+    this.app.post('/projects', async (req, res) => {
       this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
-      const dataProject= req.body;
-      dataProject.id=req.user.id;
+      const dataProject = req.body;
+      dataProject.id = req.user.id;
       const _ = await this.projectController.create(req.body);
       res.send({ status: 'ok' });
     });
 
-    // this.httpServer.post('/backup/:id/Queue/:user/:ProjectName/:key', async (req, res) => {
+    // this.app.post('/backup/:id/Queue/:user/:ProjectName/:key', async (req, res) => {
     //   if (req.params.key != security){
     //     res.send({message: 'private page'});
     //     return
@@ -305,9 +321,8 @@ class Router {
     //   return true
     // });
 
-    this.httpServer.get(
+    this.app.get(
       '/projects/:id/backup',
-      authMiddleware, 
       async (req, res) => {
         this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект поставлен на бэкап'});
         try {
@@ -326,7 +341,7 @@ class Router {
       }
     );
 
-    // this.httpServer.post('/projects/:id/status/:key', async (req, res) => {
+    // this.app.post('/projects/:id/status/:key', async (req, res) => {
     //   if (req.params.key != security){
     //     res.send({message: 'private page'});
     //     return
@@ -336,19 +351,37 @@ class Router {
     //   res.send({ status: 'ok' });
     // });
 
-    // this.httpServer.get('/projects/users' , async (req, res) => {
+    // this.app.get('/projects/users' , async (req, res) => {
     //   const result = await this.historyController.sendHistory(req.body);
     //   const resultUpdate = await this.projectController.updateStatus(req.body);
     //   res.send({ status: 'ok' });
     // });
 
-    this.http.listen(this.config.port, (err) => {
+    this.app.listen(this.config.port, (err) => {
       if (err) {
         self.logger.error('Server error', err);
         return;
       }
       self.logger.info(`Server is listening on ${this.config.port}`);
     });
+
+    // this.app.get('/status', (_, res) => {
+    //   console.log('status', _);
+      
+    //   res.status(200).send('OK');
+    // });
+
+    // this.io.sockets.on('connection',function (socket) {
+    //   socket.on('autorized', function (user) {
+    //     socket.user=user.user;
+    //     socket.join(socket.user);
+    //   });
+    //   socket.on('message', function (msg) {
+    //   });
+
+    //   socket.on('disconnect', function () {
+    //   });
+    // });
   }
 }
 

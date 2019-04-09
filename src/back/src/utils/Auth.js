@@ -1,30 +1,36 @@
 'use strict';
+const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const passportJWT = require('passport-jwt');
 
-var pass = null;
+
+
+// var pass = null;
 
 class Auth {
-  constructor({ logger, jwt, passportJWT, passport }) {
+  constructor({ logger }) {
     this.logger = logger;
-    this.passport = passport;
-    pass = passport;
-    this.jwt = jwt;
-    this.passportJWT = passportJWT;
+    // this.passport = passport;
+    // pass = passport;
+    // this.jwt = jwt;
+    // this.passportJWT = passportJWT;
     this.init();
   }
 
   init() {
     this.options = {
-      jwtFromRequest: this.passportJWT.ExtractJwt.fromAuthHeaderWithScheme('jwt'),
+      jwtFromRequest: passportJWT.ExtractJwt.fromAuthHeaderWithScheme('jwt'),
       secretOrKey: 'ArealJWTkey',
     };
     this.verifyKey = 'ArealGroup';
-    this.passport.initialize();
+    passport.initialize();
     this.newStrategy();
+    this.authenticate = passport.authenticate('jwt', { session: false });
     // app.use(passport.initialize());
   }
 
   getToken(payload) {
-    return this.jwt.sign(
+    return jwt.sign(
       {
         exp: Math.floor(Date.now() / 1000) + (60 * 60),
         data: payload,
@@ -46,7 +52,7 @@ class Auth {
   }
 
   newStrategy() {
-    const strategy = new this.passportJWT.Strategy(this.options, ((jwt_payload, next) => {
+    const strategy = new passportJWT.Strategy(this.options, ((jwt_payload, next) => {
       // usually this would be a database call:
       if (!jwt_payload.tokenToReftesh) {
         if (((jwt_payload.verifyKey === this.verifyKey) && ((jwt_payload.date + 15000) > Date.now())) && (!jwt_payload.blocked)) {
@@ -62,21 +68,24 @@ class Auth {
         }
       }
     }));
-    this.passport.use(strategy);
+    passport.use(strategy);
   }
 
-  auth() {
-    return this.passport.authenticate('jwt', { session: false });
-  }
+  auth(req, res, next) {
+    // console.log('auth', req.headers.authorization, res, next);
+    console.log('auth', req.url);
+    // console.log('auth', req.url, req.headers);
 
-  authMiddleware(req, res, next) {
-    // return true;
-    // console.log('authMiddleware', Router);
-
-    pass.authenticate('jwt', { session: false });
+    // console.log('auth', passport);
+    req.user = { id: '5ca60cb3e45e3a016b49b474' };
+    // this.authenticate(req, res);
+    // console.log('auth2', req.user);
     next();
-  };
+  }
 
+  passport() {
+    return passport;
+  }
 }
 
 module.exports = Auth;

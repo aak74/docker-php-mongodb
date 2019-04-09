@@ -70,9 +70,11 @@ const refreshToken = ({ commit, dispatch }, refreshDATA) => {
   const refreshToToken = {
     token: localStorage.getItem('token'),
   };
-
+  return;
   api.request('post', 'refreshToken', refreshToToken)
     .then(res => {
+      console.log('refreshToken', res);
+
       if (!res.data) {
         return;
       }
