@@ -12,7 +12,7 @@ services:
     command: nginx -g "daemon off;"
     restart: always
 
-  back:
+  backend:
     build: ./src/back
     volumes:
       - ./src/back:/app
