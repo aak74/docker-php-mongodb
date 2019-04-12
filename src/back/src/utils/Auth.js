@@ -42,7 +42,7 @@ class Auth {
   getRefreshToken(payload) {
     // verifyKey: this.auth.verifyKey,
 
-    return this.jwt.sign(
+    return jwt.sign(
       {
         exp: Math.floor(Date.now() / 1000) + (60 * 60 * 30),
         data: payload,
@@ -73,13 +73,20 @@ class Auth {
 
   auth(req, res, next) {
     // console.log('auth', req.headers.authorization, res, next);
-    console.log('auth', req.url);
+    console.log('auth1', req.url);
+    if ((req.url == '/') || (req.url == '/status') || (req.url == '/user/login')) {
+    // if (req.url === '/user/login') {
+      console.log('auth10');
+      req.user = { id: '5ca60cb3e45e3a016b49b474' };
+      next();
+      return;
+    }
+    console.log('auth2', req.url);
     // console.log('auth', req.url, req.headers);
 
     // console.log('auth', passport);
-    req.user = { id: '5ca60cb3e45e3a016b49b474' };
-    // this.authenticate(req, res);
-    // console.log('auth2', req.user);
+    const x = this.authenticate(req, res);
+    console.log('auth2', req.user, x);
     next();
   }
 

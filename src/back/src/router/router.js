@@ -1,5 +1,4 @@
 const express = require('express');
-// const http = require('http');
 const http = require('http');
 const socketIO = require('socket.io');
 const bodyParser = require('body-parser');
@@ -27,7 +26,6 @@ const authMiddleware = (req, res, next) => {
   // next();
 };
 
-
 class Router {
   constructor({
     logger,
@@ -52,8 +50,10 @@ class Router {
     // this.io = socketIO;
 
     this.app = express();
-    this.app.use(bodyParser.json());
-    this.app.use(authMiddleware, bodyParser.json());
+    // this.app.use(bodyParser.json());
+    // this.app.use(/\/(user\/login)*/, bodyParser.json());
+    // this.app.use(authMiddleware, bodyParser.json());
+    this.app.use(/\/(?!status).*/, authMiddleware, bodyParser.json());
     // this.app.use(/\/(?!user\/login.)*/, authMiddleware, bodyParser.json());
     // this.app.use(/\/((?!status|refreshToken|user).)*/, authMiddleware, bodyParser.json());
     // this.app.use((req, res, next) => {
@@ -67,14 +67,10 @@ class Router {
     //   }
     //   return [authMiddleware, bodyParser.json()]
     // });
-    // this.io = socketIO(http.Server(this.app));
+    // this.io = socketIO(http.Server(express()));
 
     this.auth = auth;
     Auth = auth;
-    // this.app.use(auth.passport);
-    // this.passport = passport;
-
-    // this.bodyParser = bodyParser;
   }
 
 
@@ -117,11 +113,16 @@ class Router {
     // });
 
     this.app.post('/user/login', async (req, res) => {
+      if (!req.body.login || !req.body.password) {
+        res.status(400).json({ message: 'Bad request'});
+        return;
+      }
 
-      console.log('user/login', user);
+      console.log('user/login',req.user);
       const user = await this.userController.login(req.body);
       if (!user) {
-        res.status(401).json({ message: 'User not found' });
+        res.status(404).json({ message: 'User not found' });
+        return;
       }
       
       if (user.password !== req.body.password) {
@@ -215,7 +216,11 @@ class Router {
 
     this.app.post('/refreshToken', async (req, res) => {
       // console.log('refreshToken', req.user);
-      
+      if (!req.user) {
+        res.json({ message: 'User not found' });
+        return;
+      }
+
       if (req.user.tokenToRefresh === req.body.token){
         const self = this;
 
