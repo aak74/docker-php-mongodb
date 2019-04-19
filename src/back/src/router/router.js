@@ -53,7 +53,7 @@ class Router {
     // this.app.use(bodyParser.json());
     // this.app.use(/\/(user\/login)*/, bodyParser.json());
     // this.app.use(authMiddleware, bodyParser.json());
-    this.app.use(/\/(?!status).*/, authMiddleware, bodyParser.json());
+    // this.app.use(/\/(?!status).*/, authMiddleware, bodyParser.json());
     // this.app.use(/\/(?!user\/login.)*/, authMiddleware, bodyParser.json());
     // this.app.use(/\/((?!status|refreshToken|user).)*/, authMiddleware, bodyParser.json());
     // this.app.use((req, res, next) => {
@@ -74,22 +74,14 @@ class Router {
   }
 
 
-  getToken(user) {
+  getToken(login) {
     console.log('getToken');
     
-    return this.auth.getToken({
-      id: user._id,
-      login: user.login,
-      date: Date.now(),
-      blocked: user.blocked,
-    });
+    return this.auth.getToken(login);
   }
 
-  getRefreshToken(user, token) {
-    return this.auth.getRefreshToken({
-      login: user.login,
-      tokenToRefresh: token,
-    });
+  getRefreshToken(login) {
+    return this.auth.getRefreshToken(login);
   }
 
   async run() {
@@ -112,7 +104,7 @@ class Router {
     //   res.header("Access-Control-Allow-Headers", "X-Requested-With");
     // });
 
-    this.app.post('/user/login', async (req, res) => {
+    this.app.post('/user/login', bodyParser.json(), async (req, res) => {
       if (!req.body.login || !req.body.password) {
         res.status(400).json({ message: 'Bad request'});
         return;
@@ -130,8 +122,8 @@ class Router {
         return;
       }
 
-      const token = this.getToken(user);
-      const refreshToken = this.getRefreshToken(user, token);
+      const token = this.getToken({ login: user.login });
+      const refreshToken = this.getRefreshToken({ login: user.login }, token);
       res.json({ 
         message: 'ok', 
         name: user.login , 
@@ -154,13 +146,13 @@ class Router {
     });
 
     this.app.get('/isAdmin', async (req, res) => {
-      res.send({isAdmin: true});
+      res.send({ isAdmin: true });
       return;
 
       if(isAdmin(req.user.id)){
-        res.send({isAdmin: true});
+        res.send({ isAdmin: true });
       }else{
-        res.send({isAdmin: false});
+        res.send({ isAdmin: false });
       } 
     });
 
@@ -204,9 +196,7 @@ class Router {
     });
 
 
-    this.app.get('/projects', async (req, res) => {
-      // console.log('get projects', req.user);
-      
+    this.app.get('/projects', authMiddleware, bodyParser.json(), async (req, res) => {
       const data = await this.projectController.getList(req.user.id);
       res.send({
         status: 'ok',
@@ -276,6 +266,8 @@ class Router {
     });
 
     this.app.post('/projects/:id', async (req, res) => {
+      console.log(`post /projects/${req.params.id}`);
+      
       const _ = await this.projectController.update({
         _id: req.params.id,
       }, req.body);

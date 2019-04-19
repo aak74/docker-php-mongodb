@@ -1,4 +1,5 @@
 import api from '../api';
+import Token from '../service/Token';
 
 const loadStatus = ({ commit }) => {
   api.request('get', 'status/', null, 2500)
@@ -66,12 +67,11 @@ const auth = ({ commit }) => {
       commit('AUTH', data);
     });
 };
+
 const refreshToken = ({ commit, dispatch }, refreshDATA) => {
-  const refreshToToken = {
-    token: localStorage.getItem('token'),
-  };
+  const token = new Token;
   return;
-  api.request('post', 'refreshToken', refreshToToken)
+  api.request('post', 'refreshToken', token.getRefreshToken())
     .then(res => {
       console.log('refreshToken', res);
 

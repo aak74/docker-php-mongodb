@@ -3,19 +3,20 @@
 import axios from 'axios';
 import store from '../store';
 import server from '../config/server';
+import Token from '../service/Token';
+// import { log } from 'util';
+
+function getAuthHeader(uri) {
+  const token = new Token;
+  const jwt = (uri === '/refreshToken') ? token.getRefreshToken() : token.getToken();
+  // console.log({ uri, jwt });
+  // debugger;
+  return `Bearer ${jwt}`
+};
 
 const request = (method, uri, data, timeout = 5000) => {
-  const refreshDATA = {
-    METHOD: method,
-    URI: uri,
-    DATA: data,
-  };
-  const JWTtoken = () => {
-    if (uri === '/refreshToken') {
-      return `jwt ${localStorage.getItem('refreshToken')}`;
-    }
-    return `jwt ${localStorage.getItem('token')}`;
-  };
+  // debugger;
+
   if (!method) {
     console.error('API function call requires method argument');
     return;
@@ -30,20 +31,30 @@ const request = (method, uri, data, timeout = 5000) => {
     ? uri
     : server.serverURI + uri;
 
-  const result = axios({
+  const params = {
     method,
     url,
-    data,
+    data: data || null,
     headers: {
-      Authorization: JWTtoken(),
+      Authorization: getAuthHeader(uri),
       Accept: 'application/json',
       'Content-Type': 'application/json',
     },
     timeout,
-  })
+  };
+
+  console.log({ params });
+
+  const result = axios(params)
     .catch(error => {
+      console.log('catch', error);
+
       if (error.response.status === 401) {
-        store.dispatch('refreshToken', refreshDATA);
+        store.dispatch('refreshToken', {
+          METHOD: method,
+          URI: uri,
+          DATA: data,
+        });
       }
       store.commit('SET_ERROR', error);
     });
@@ -82,7 +93,7 @@ const getLoginNew = (method, uri, data) => {
 };
 
 const getData = (method, uri) => {
-  // console.log('getData', store);
+  console.log('getData', store);
   store.commit('admin/LOADING');
   const result = request(method, uri)
     .then(response => {

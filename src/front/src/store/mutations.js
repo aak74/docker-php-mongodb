@@ -1,7 +1,6 @@
 /* eslint-disable no-cond-assign */
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import store from '.';
 import router from '../router';
 
 dayjs.extend(relativeTime);
@@ -16,9 +15,11 @@ export default {
   TOTAL_HISTORY_LOADED(state, payload) {
     state.history.total = payload.data;
   },
+
   CONTAINER_HISTORY_LOADED(state, payload) {
     state.history.containers[payload[0].info.name] = payload;
   },
+
   HISTORY_STATS_LOADED(state, payload) {
     state.historyStats = payload.data;
   },
@@ -26,6 +27,7 @@ export default {
   CLEAR_NOTIFICATIONS: state => {
     state.socket.notifications = [];
   },
+
   CLEAR_TEST_RESPONSE: state => {
     state.socket.testResponse = null;
   },
@@ -80,6 +82,7 @@ export default {
   SERVERS_STATUS_LOADED(_, data) {
     console.log('SERVERS STATUSE LOADED - ', data);
   },
+
   SIGN_IN(state, data) {
     state.login = data;
     const JWTtoken = `${state.login.data.token}`;
@@ -106,6 +109,7 @@ export default {
     console.log('LOGIN FAIL');
     localStorage.setItem('loginProcces', false);
   },
+
   AUTH(state, data) {
     console.log('AUTH', data);
   },
@@ -126,6 +130,7 @@ export default {
       state.isAdmin = false;
     }
   },
+
   REGISTER_FAIL(state, data) {
     state.register = false;
     console.log('REGISTER_FAIL', data);
@@ -143,8 +148,10 @@ export default {
 
   DELETED_USER(state, data) {
   },
+
   BLOCK_USER(state, data) {
   },
+
   UNBLOCK_USER(state, data) {
   },
 };
