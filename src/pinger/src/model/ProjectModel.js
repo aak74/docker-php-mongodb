@@ -12,7 +12,7 @@ class ProjectModel {
   async getList() {
     try {
       console.log('1')
-      var result = await this.httpClient.get(`http://back:3000/historyprojects/${security}`)
+      var result = await this.httpClient.get(`http://backend:3000/historyprojects/${security}`)
         .then(res => {  
           return res.data.data;
         });
@@ -25,7 +25,7 @@ class ProjectModel {
   async requestQueue(msg) {
     console.log(msg.login);
     try {
-      var result = await this.httpClient.post(`http://back:3000/backup/${msg.id}/Queue/${msg.login}/${msg.name}/${security}`)
+      var result = await this.httpClient.post(`http://backend:3000/backup/${msg.id}/Queue/${msg.login}/${msg.name}/${security}`)
         .then(res => {
           return 'success';
         })
@@ -37,7 +37,7 @@ class ProjectModel {
 
   async update(status) {
     try {
-      var result = await this.httpClient.post(`http://back:3000/projects/${status._id}/status/${security}`, status)
+      var result = await this.httpClient.post(`http://backend:3000/projects/${status._id}/status/${security}`, status)
         .then(res => { 
           return res.data.data;
         })
