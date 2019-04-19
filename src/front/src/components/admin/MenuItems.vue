@@ -34,9 +34,6 @@ export default {
       },
     }
   },
-  created(){
-      this.$store.dispatch('isAdmin');
-  },
   computed:{
     isAdmin(){
       return this.$store.state.isAdmin
