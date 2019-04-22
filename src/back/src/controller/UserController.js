@@ -1,45 +1,55 @@
 'use strict';
 
-class UserModel {
+const BaseController = require('./BaseController');
+
+class UserController extends BaseController {
   constructor({
-    authUser,
-    userRegister,
-    users,
+    registerUser,
+    getUsers,
     deleteUser,
     blocked,
     unblocked,
+    checkCredentials
   }) {
-    this.authUser = authUser;
-    this.userRegister = userRegister;
-    this.users = users;
-    this.deleteUser = deleteUser;
-    this.blocked = blocked;
-    this.unblocked = unblocked;
+    // this.authUser = authUser;
+    console.log('UserController', arguments[0]);
+    super();
+    this.registerCommands({
+      registerUser,
+      getUsers,
+      deleteUser,
+      blocked,
+      unblocked,
+    });
+ 
+    this.registerQueries({
+      checkCredentials
+    });
   }
 
   async usersGet(params) {
-    return await this.users.execute(params);
+    return await this.get('getUsers', params);
   }
 
   async delete(id) {
-    return await this.deleteUser.execute(id);
+    return await this.execute('delete', id);
   }
 
   async block(id) {
-    return await this.blocked.execute(id);
+    return await this.execute('blocked', id);
   }
 
   async unblock(id) {
-    return await this.unblocked.execute(id);
+    return await this.execute('unblocked', id);
   }
 
-  async login(params) {
-    return await this.authUser.execute(params);
+  async checkCredentials(params) {
+    return await this.get('checkCredentials', params);
   }
 
   async register(params) {
-    return await this.userRegister.execute(params);
+    return await this.execute('registerUser', params);
   }
 }
 
-module.exports = UserModel;
+module.exports = UserController;

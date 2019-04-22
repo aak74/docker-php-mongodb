@@ -1,6 +1,6 @@
 'use strict';
 
-class userRegister {
+class RegisterUser {
   constructor({
     logger,
     userModel,
@@ -22,4 +22,4 @@ class userRegister {
   }
 }
 
-module.exports = userRegister;
+module.exports = RegisterUser;

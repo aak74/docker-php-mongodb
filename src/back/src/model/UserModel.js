@@ -21,10 +21,6 @@ class UserModel extends Model {
     return result;
   }
 
-  async getUsers() {
-    return this.find().toArray();
-  }
-
   async delete(id) {
     const result = await this.db.get()
       .collection(this.collectionName)
@@ -85,6 +81,7 @@ class UserModel extends Model {
     
     return result;
   }
+
   getFilter(filter) {
     if (filter && filter['_id']) {
       filter['_id'] = this.db.objectId(filter['_id']);

@@ -110,20 +110,18 @@ class Router {
         return;
       }
 
-      console.log('user/login',req.user);
-      const user = await this.userController.login(req.body);
-      if (!user) {
-        res.status(404).json({ message: 'User not found' });
-        return;
-      }
+      const user = await this.userController.checkCredentials({
+        login: req.body.login,
+        password: req.body.password
+      });
       
-      if (user.password !== req.body.password) {
-        res.status(401).json({ message: 'passwords did not match' });
+      if (!user) {
+        res.status(404).json({ message: 'User or password not found' });
         return;
       }
 
-      const token = this.getToken({ login: user.login });
-      const refreshToken = this.getRefreshToken({ login: user.login }, token);
+      const token = this.getToken(user);
+      const refreshToken = this.getRefreshToken(user, token);
       res.json({ 
         message: 'ok', 
         name: user.login , 
@@ -156,9 +154,8 @@ class Router {
       } 
     });
 
-    this.app.post('user/register', async (req, res) => {
+    this.app.post('/user/register', bodyParser.json(), async (req, res) => {
       const result = await this.userController.register(req.body);
-      // console.log(result.login);
       res.send({ status: result.login });
     });
 

@@ -8,7 +8,6 @@ class  ProjectModel {
     createProject,
     deleteProject,
     backupProject,
-    authUser,
     updateStatus,
   }) {
     this.getProjects = getProjects;
@@ -17,7 +16,6 @@ class  ProjectModel {
     this.createProject = createProject;
     this.deleteProject = deleteProject;
     this.backupProject = backupProject;
-    this.authUser = authUser;
     this.updateStatusCommand = updateStatus;
   }
 

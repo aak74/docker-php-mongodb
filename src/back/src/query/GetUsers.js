@@ -1,6 +1,6 @@
 'use strict';
 
-class users {
+class GetUsers {
   constructor({
     logger,
     userModel,
@@ -11,8 +11,8 @@ class users {
     this.publishMessage = publishMessage;
   }
 
-  async execute(params) {
-    const result = await this.userModel.getUsers(params);
+  async get(params) {
+    const result = await this.userModel.getList(params);
     result.forEach(element => {
        element.password="";
        element.type='user';
@@ -21,4 +21,4 @@ class users {
   }
 }
 
-module.exports = users;
+module.exports = GetUsers;
