@@ -1,18 +1,18 @@
 import api from '../api';
-import Token from '../service/Token';
+// import Token from '../service/Token';
 
 const loadStatus = ({ commit }) => {
-  api.request('get', 'status/', null, 2500)
-    .then(response => {
-      commit('STATUS_LOADED', response.data);
-    });
+  api.get('status/', null, (response) => {
+    commit('STATUS_LOADED', response.data);
+  });
 };
 
 const loadProjects = ({ commit }) => {
-  api.getData('get', 'projects/')
-    .then(data => {
-      commit('LOADED_PROJECTS', data);
-    });
+  console.log('loadProjects');
+
+  api.get('projects', {}, data => {
+    commit('LOADED_PROJECTS', data);
+  });
 };
 
 const getProject = ({ commit }, id) => {
@@ -61,32 +61,20 @@ const signIn = ({ commit }, login) => {
     });
 };
 
+const login = ({ commit }, login) => {
+  api.login(login)
+    .then(data => {
+      commit('SIGN_IN', data);
+    })
+    .catch(error => {
+      commit('SIGN_IN_FAIL', error);
+    });
+};
+
 const auth = ({ commit }) => {
   api.getLogin('get', 'secret')
     .then(data => {
       commit('AUTH', data);
-    });
-};
-
-const refreshToken = ({ commit, dispatch }, refreshDATA) => {
-  const token = new Token;
-  return;
-  api.request('post', 'refreshToken', token.getRefreshToken())
-    .then(res => {
-      console.log('refreshToken', res);
-
-      if (!res.data) {
-        return;
-      }
-      if (res.data.message === 'blocked') {
-        console.log('blocked');
-        commit('BLOCKED');
-      } else {
-        commit('SIGN_IN_REFRESH', res);
-        setTimeout(() => {
-          dispatch('refreshOperation', refreshDATA);
-        }, 1000);
-      }
     });
 };
 
@@ -160,9 +148,10 @@ export default {
   auth,
   users,
   userDelete,
-  refreshToken,
+  // refreshToken,
   refreshOperation,
   block,
   unblock,
   isAdmin,
+  login
 };

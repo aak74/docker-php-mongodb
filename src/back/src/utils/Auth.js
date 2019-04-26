@@ -45,14 +45,8 @@ class Auth {
   newStrategy() {
     const strategy = new passportJWT.Strategy(
       this.options, 
-      async (payload, cb) => {
-        try {
-          const user = await this.userModel.findOne(payload.data);
-          delete(user.password);
-          cb(false, user);
-        } catch (err) {
-          return cb(err);
-        }
+      (payload, cb) => {
+        cb(false, payload.data);
       });
     passport.use(strategy);
   }

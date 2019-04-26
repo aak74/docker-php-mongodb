@@ -27,7 +27,8 @@ new Vue({
   template: '<App/>',
 });
 
+// store.dispatch('login', { login: 'ak', password: 'Woodae23!' });
 store.dispatch('admin/loadAll');
-store.dispatch('isAdmin');
+// store.dispatch('isAdmin');
 
 // store.dispatch('socket/connect');

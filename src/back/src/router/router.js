@@ -22,6 +22,8 @@ const isAdmin = function(id){
 var Auth = null;
 
 const authMiddleware = (req, res, next) => {
+  console.log('authMiddleware', req);
+  
   Auth.auth(req, res, next);
   // next();
 };
@@ -29,46 +31,19 @@ const authMiddleware = (req, res, next) => {
 class Router {
   constructor({
     logger,
-    // httpServer,
     config,
     projectController,
     userController,
     historyController,
-    // socketIO,
-    // app,
     auth,
-    // bodyParser,
-    // http,
   }) {
     this.logger = logger;
-    // this.app = httpServer;
     this.config = config;
     this.projectController = projectController;
     this.userController = userController;
     this.historyController = historyController;
-    // this.http = http;
-    // this.io = socketIO;
 
     this.app = express();
-    // this.app.use(bodyParser.json());
-    // this.app.use(/\/(user\/login)*/, bodyParser.json());
-    // this.app.use(authMiddleware, bodyParser.json());
-    // this.app.use(/\/(?!status).*/, authMiddleware, bodyParser.json());
-    // this.app.use(/\/(?!user\/login.)*/, authMiddleware, bodyParser.json());
-    // this.app.use(/\/((?!status|refreshToken|user).)*/, authMiddleware, bodyParser.json());
-    // this.app.use((req, res, next) => {
-    //   console.log('use', req.url);
-    //   // return true;      
-    //   if (['/status', '/refreshToken', '/user/login'].indexOf(req.url) !== -1) {
-    //     console.log('xxx');
-    //     // 
-    //     return next();
-    //     return true;
-    //   }
-    //   return [authMiddleware, bodyParser.json()]
-    // });
-    // this.io = socketIO(http.Server(express()));
-
     this.auth = auth;
     Auth = auth;
   }
@@ -86,6 +61,7 @@ class Router {
 
   async run() {
     const self = this;
+    /*
     const isBlocked =  async function (req,res,next){
       const params = {
         login:req.user.login,
@@ -98,13 +74,13 @@ class Router {
       }
       next();
     };
-
+*/
     // this.app.all('/', function(_, res) {
     //   res.header("Access-Control-Allow-Origin", "*");
     //   res.header("Access-Control-Allow-Headers", "X-Requested-With");
     // });
 
-    this.app.post('/user/login', bodyParser.json(), async (req, res) => {
+    this.app.post('/auth/user', bodyParser.json(), async (req, res) => {
       if (!req.body.login || !req.body.password) {
         res.status(400).json({ message: 'Bad request'});
         return;
@@ -123,14 +99,43 @@ class Router {
       const token = this.getToken(user);
       const refreshToken = this.getRefreshToken(user, token);
       res.json({ 
-        message: 'ok', 
-        name: user.login , 
-        token, 
-        refreshToken 
+        status: 'ok',
+        data: {
+          token, 
+          refreshToken 
+        }
       });
     });
 
-    console.log('this.app', this.app);
+
+    this.app.post('/auth/refreshToken', bodyParser.json(), authMiddleware, async (req, res) => {
+    // this.app.post('/auth/refreshToken', async (req, res) => {
+      console.log('refreshToken', req.body);
+      if (!req.user) {
+        res.json({ message: 'User not found' });
+        return;
+      }
+
+      if (req.user.tokenToRefresh === req.body.token) {
+        const self = this;
+
+        const params = {
+          login: req.user.login,
+        };
+        const user = await self.userController.login(params);
+        if (user.blocked) {
+          res.json({ message: 'blocked', name: user.login, token, refreshToken });
+          return;
+        }
+
+        const token = this.getToken(user);
+        const refreshToken = this.getRefreshToken(user, token);
+
+        res.json({ message: 'ok', name: user.login, token, refreshToken });
+        return;
+      }
+      res.send({ status: 'failed' });
+    });
     
     this.app.get('/users', async (req, res) => {
       res.send('1');
@@ -200,34 +205,6 @@ class Router {
         data,
       });
     });
-
-    this.app.post('/refreshToken', async (req, res) => {
-      // console.log('refreshToken', req.user);
-      if (!req.user) {
-        res.json({ message: 'User not found' });
-        return;
-      }
-
-      if (req.user.tokenToRefresh === req.body.token){
-        const self = this;
-
-        const params = {
-          login: req.user.login,
-        };
-        const user = await self.userController.login(params);
-        if (user.blocked) {
-          res.json({ message: 'blocked', name: user.login, token, refreshToken });
-          return;
-        }
-
-        const token = this.getToken(user);
-        const refreshToken = this.getRefreshToken(user, token);
-
-        res.json({ message: 'ok', name: user.login , token, refreshToken });
-        return;
-      }
-      res.send({ status: 'failed' });
-    });
     
     this.app.get('/projects/:id', async (req, res) => {
     // this.app.get('/projects/:id', async (req, res) => {
@@ -291,8 +268,8 @@ class Router {
       }
     );
 
-    this.app.post('/projects', async (req, res) => {
-      this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
+    this.app.post('/projects', authMiddleware, bodyParser.json(), async (req, res) => {
+      // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
       const dataProject = req.body;
       dataProject.id = req.user.id;
       const _ = await this.projectController.create(req.body);
