@@ -181,8 +181,10 @@ class Api {
   }
 }
 
-export default new Api({
-  token: localStorage.getItem('token'),
-  refreshToken: localStorage.getItem('refreshToken'),
-});
+export default Api;
+
+// export default new Api({
+//   token: localStorage.getItem('token'),
+//   refreshToken: localStorage.getItem('refreshToken'),
+// });
 
