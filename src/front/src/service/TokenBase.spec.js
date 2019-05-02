@@ -2,6 +2,7 @@ import Token from './TokenBase';
 
 test('New Token without properly params throw error', async () => {
   const t = () => {
+    // eslint-disable-next-line
     new Token();
   };
   expect(t).toThrowError(TypeError);

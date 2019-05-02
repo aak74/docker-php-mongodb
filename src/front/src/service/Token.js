@@ -1,11 +1,11 @@
+import TokenBase from './TokenBase';
+
 class Token extends TokenBase {
-  set token(token) {
-    super();
+  beforeSetToken(token) {
     localStorage.setItem('token', token);
   }
 
-  set refreshToken(refreshToken) {
-    super();
+  beforeSetRefreshToken(refreshToken) {
     localStorage.setItem('refreshToken', refreshToken);
   }
 }
