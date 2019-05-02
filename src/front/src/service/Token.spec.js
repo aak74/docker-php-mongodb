@@ -1,4 +1,4 @@
-import Token from './TokenBase';
+import Token from './Token';
 import runTests from './TokenBase.tests';
 
 runTests(Token);

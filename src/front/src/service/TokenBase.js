@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 /* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
 class TokenBase {
@@ -15,7 +16,7 @@ class TokenBase {
     this._token = token;
   }
 
-  beforeSetToken(token) {
+  beforeSetToken() {
   }
 
   get refreshToken() {
@@ -27,7 +28,7 @@ class TokenBase {
     this._refreshToken = refreshToken;
   }
 
-  beforeSetRefreshToken(refreshToken) {
+  beforeSetRefreshToken() {
   }
 }
 
