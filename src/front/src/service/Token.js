@@ -1,21 +1,14 @@
-'use strict';
 
-class Token {
-  constuctor() {
-    this.token = localStorage.getItem('token');
-    this.refreshToken = localStorage.getItem('refreshToken');
+
+class Token extends TokenBase {
+  set token(token) {
+    super();
+    localStorage.setItem('token', token);
   }
 
-  getToken() {
-    // debugger;
-    return localStorage.getItem('token');
-    // return this.token;
-  }
-
-  getRefreshToken() {
-    // debugger;
-    return localStorage.getItem('refreshToken');
-    // return this.refreshToken;
+  set refreshToken(refreshToken) {
+    super();
+    localStorage.setItem('refreshToken', refreshToken);
   }
 }
 

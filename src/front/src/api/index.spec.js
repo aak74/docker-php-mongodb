@@ -8,6 +8,7 @@ beforeEach(() => {
   const client = axios.create();
   context.mock = new AxiosAdapter(client);
   context.api = new Api({ client });
+  // console.log(context.api);
 });
 
 test('Login captures token information', async () => {
