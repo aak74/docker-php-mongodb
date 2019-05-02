@@ -1,14 +1,12 @@
-/* eslint-disable consistent-return, no-console */
+/* eslint no-underscore-dangle: ["error", { "allowAfterThis": true }] */
 
 class TokenBase {
   constructor({ token, refreshToken }) {
-    this.t = 123;
     this._token = token;
     this._refreshToken = refreshToken;
   }
 
   get token() {
-    console.log('getToken', this);
     return this._token;
   }
 

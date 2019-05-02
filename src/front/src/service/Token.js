@@ -1,5 +1,3 @@
-
-
 class Token extends TokenBase {
   set token(token) {
     super();
