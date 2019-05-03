@@ -78,7 +78,7 @@ export default {
           placeholder: 'Enter url',
           required: true,
         },
-        /*{
+        /* {
           type: 'input',
           inputType: 'password',
           label: 'Password',
@@ -93,7 +93,7 @@ export default {
           label: 'isActive',
           model: 'isActive',
           default: true,
-        },*/
+        }, */
       ],
     },
   },
@@ -101,14 +101,14 @@ export default {
     defaultPagination: [20, 50, { text: 'All', value: -1 }],
     defaultControls: [
       {
- name: 'Edit', icon: 'edit', color: 'teal lighten-1', emit: 'editItem'
-},
+        name: 'Edit', icon: 'edit', color: 'teal lighten-1', emit: 'editItem',
+      },
       {
- name: 'Delete', icon: 'delete', color: 'pink lighten-2', emit: 'deleteItem'
-},
+        name: 'Delete', icon: 'delete', color: 'pink lighten-2', emit: 'deleteItem',
+      },
       {
- name: 'Backup', icon: 'backup', color: 'indigo lighten-2', emit: 'backupItem'
-},
+        name: 'Backup', icon: 'backup', color: 'indigo lighten-2', emit: 'backupItem',
+      },
     ],
   },
 };

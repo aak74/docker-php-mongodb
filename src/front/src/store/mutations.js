@@ -110,7 +110,7 @@ export default {
     localStorage.setItem('loginProcces', false);
   },
 
-  AUTH(state, data) {
+  AUTH(_, data) {
     console.log('AUTH', data);
   },
 
@@ -142,7 +142,7 @@ export default {
     }
   },
 
-  BLOCKED(state, data) {
+  BLOCKED() {
     router.replace('/Blocked');
   },
 /*

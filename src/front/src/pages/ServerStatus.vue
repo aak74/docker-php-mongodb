@@ -75,10 +75,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-    };
-  },
   methods: {
     getUrl(url) {
       if (url.substr(0, 4) === 'http') {
@@ -93,7 +89,7 @@ export default {
       }, 5000);
     },
     statusCircle(code) {
-     // const divider = Math.floor(code / 100);
+      // const divider = Math.floor(code / 100);
       switch (code) {
         default:
           return 'status-circle red-circle';
@@ -104,7 +100,6 @@ export default {
   },
   computed: {
     items() {
-      const ProjectsData = this.$store.getters.projects
       return this.$store.getters.projects;
     },
     totalItems() {

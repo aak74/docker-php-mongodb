@@ -39,54 +39,52 @@
     </div>
 </template>
 <script>
-import FormLogin from '../components/FormLogin';
 
 export default {
   name: 'Login',
-   props: {
-    data: {
-      type: Object
-    },
+  data() {
+    return {
+      user: {
+        login: '',
+        password: '',
+      },
+      fail: true,
+    };
   },
-  data(){
-      return{
-          user:{
-              login:'',
-              password:'',
-          },
-          fail:true,
-      }
-  },
-  computed:{
-    isReg(){
-      return this.$store.state.register
+  computed: {
+    isReg() {
+      return this.$store.state.register;
     },
-    regComputed(){
+
+    regComputed() {
       if (this.$store.state.register === undefined) {
-        return ''
+        return '';
       }
       if (!this.$store.state.register) {
-        return 'Произошла ошибка во время регистрации'
+        return 'Произошла ошибка во время регистрации';
       }
-      return 'Регистрация успешна'
-    }
+      return 'Регистрация успешна';
+    },
   },
-  methods:{
-      setTrue(){
+  methods: {
+    setTrue() {
       this.fail = true;
-      },
-      signIn(){
+    },
+
+    signIn() {
       console.log('login');
       this.$store.dispatch('signIn', this.user);
       this.fail = false;
-      setTimeout(this.setTrue,800);
-      },
-      auth(){
+      setTimeout(this.setTrue, 800);
+    },
+
+    auth() {
       console.log(this.$store.state);
-      },
-      register(){
+    },
+
+    register() {
       this.$store.dispatch('register', this.user);
-      },
+    },
   },
 };
 </script>

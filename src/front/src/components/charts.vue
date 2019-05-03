@@ -1,5 +1,5 @@
 <script>
-import { Line } from 'vue-chartjs'
+import { Line } from 'vue-chartjs';
 
 export default {
   name: 'charts',
@@ -28,6 +28,21 @@ export default {
     },
   },
   computed: {
+    fillOptions() {
+      return {
+        animation: false,
+        scales: {
+          xAxes: [{
+            display: false,
+          }],
+          yAxes: [{
+            display: false,
+          }],
+        },
+      };
+    },
+  },
+  methods: {
     fillData() {
       const EnterDate = this.chartData;
       let i = 0;
@@ -61,20 +76,6 @@ export default {
         }],
       };
       return datacollection;
-    },
-
-    fillOptions() {
-      return {
-        animation: false,
-        scales: {
-          xAxes: [{
-            display: false,
-          }],
-          yAxes: [{
-            display: false,
-          }],
-        },
-      };
     },
   },
 };

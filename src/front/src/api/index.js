@@ -1,4 +1,4 @@
-/* eslint-disable consistent-return, no-console */
+/* eslint-disable */
 
 import axios from 'axios';
 // import store from '../store';
@@ -16,9 +16,9 @@ class Api {
       authBase: 'auth/user',
       auth: 'auth/user',
       refreshToken: 'auth/refreshToken',
-    }
+    };
     this.requests = [];
-/*
+    /*
     this.client.interceptors.response.use(
       r => r,
       async error => {
@@ -70,7 +70,7 @@ class Api {
       // throw new Error('Refresh Token doesn`t exists');
     }
 
-    this.post(this.urls.refreshToken, { data: { token: this.refreshToken } }, (response) => {
+    this.post(this.urls.refreshToken, { data: { token: this.refreshToken } }, response => {
       console.log('getRefreshToken response', response);
 
       this.token = response.data.token;
@@ -124,7 +124,9 @@ class Api {
     if (isAuthNeed) {
       if (!this.token) {
         this.getRefreshToken();
-        this.addRequestToQueue({ method, uri, config, cb });
+        this.addRequestToQueue({
+ method, uri, config, cb
+});
         return false;
       }
     }
@@ -169,10 +171,11 @@ class Api {
       .catch(error => {
         console.log('request error', error);
         if (error.status !== 401) {
-          this.addRequestToQueue({ method, uri, config, cb });
+          this.addRequestToQueue({
+ method, uri, config, cb
+});
           this.getRefreshToken();
         }
-
 
 
         store.commit('admin/LOADING_ERROR', error);
@@ -187,4 +190,3 @@ export default Api;
 //   token: localStorage.getItem('token'),
 //   refreshToken: localStorage.getItem('refreshToken'),
 // });
-

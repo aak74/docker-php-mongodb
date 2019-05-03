@@ -12,7 +12,9 @@
         <table class="v-datatable v-table theme--light" >
           <tbody>
             <tr v-for="field in fields">
-              <td class="layout px-0s table-controls" disabled><p>{{field.attrs.label}}:<span>{{field.value}}</span></p></td>
+              <td class="layout px-0s table-controls" disabled>
+                <p>{{ field.attrs.label }}:<span>{{ field.value }}</span></p>
+              </td>
             </tr>
             <tr>
               <BackupHistory :history="BackupHistory"/>
@@ -27,72 +29,73 @@
 </template>
 
 <script>
-import BackupHistory from './BackupHistory'
-import chart from './charts'
-
+import BackupHistory from './BackupHistory.vue';
+import chart from './charts.vue';
 
 export default {
-  props: {
-    data: {
-      type: Object
-    },
-    schema: {
-      type: Object
-    },
-
-  },
-  data(){
-      return{
-           update:false,
-           project:this.projectData,
-      }
-  },
+  name: 'InfoBlock',
   components: {
     chart,
     BackupHistory,
   },
-  methods:{
-      fetchData(){
-        if (this.projectId){
-          this.$store.dispatch('getProject', this.projectId);
-        }
-      },
+  props: {
+    data: {
+      type: Object,
+    },
+    schema: {
+      type: Object,
+    },
+  },
+  data() {
+    return {
+      update:false,
+      project:this.projectData,
+    };
+  },
+  methods: {
+    fetchData() {
+      if (this.projectId) {
+        this.$store.dispatch('getProject', this.projectId);
+      }
+    },
   },
   computed: {
-    lenght(){
-      return this.data.history[3]
+    lenght() {
+      return this.data.history[3];
     },
-    progress(){
-      if(!this.lenght){
-        return true
+    progress() {
+      if (!this.lenght) {
+        return true;
       }
-      return false
+      return false;
     },
-    BackupHistory(){
-      return this.data.backup
+    BackupHistory() {
+      return this.data.backup;
     },
-    projectData(){
-       return this.data
+    projectData() {
+      return this.data;
     },
-    projectId(){
+    projectId() {
       return this.$route.params.id;
     },
-    history(){
-      if(this.data){
-      return this.data.history || []
+    history() {
+      if (this.data) {
+        return this.data.history || [];
       }
+      return [];
     },
-    dataCollection(){
-      if(this.data){
-        if (this.update === false){
+    dataCollection() {
+      if (this.data) {
+        if (this.update === false) {
           this.update = true;
           setInterval(this.fetchData, 2000);
         }
-        return this.history || []
+        return this.history || [];
       }
+      return [];
     },
     fields() {
-      if (this.update){
+      if (this.update) {
         return this.schema.fields.reduce((carry, item) => {
           carry.push({
             value: this.data[item.model],
@@ -100,22 +103,19 @@ export default {
           });
           return carry;
         }, []);
-    }
+      }
+      return [];
     },
     buttons() {
-      return [
-        {
-          color: 'success',
-          title: 'Update',
-          // disabled: true,
-        }
-      ];
+      return [{
+        color: 'success',
+        title: 'Update',
+      }];
     },
-  }
-}
-
-//============================================================
+  },
+};
 </script>
+
 <style>
 p{
   font-style: italic;

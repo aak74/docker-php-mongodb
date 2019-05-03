@@ -79,8 +79,12 @@
                   ></v-text-field>
                   </div>
                   <div v-if="!showPassword">
-                  <!--<chart  :chart-data="dataCollection" :width="600" :height="200"></chart>-->
-                  <chart v-if="dataCollection" :chart-data="dataCollection" :width="600" :height="200"></chart>
+                  <chart
+                    v-if="dataCollection"
+                    :chart-data="dataCollection"
+                    :width="600"
+                    :height="200"
+                  />
                   </div>
                 </v-form>
               </v-card-text>
@@ -136,17 +140,21 @@
 <script>
 /* eslint no-underscore-dangle: ["error",{"allow":["_id"]}] */
 
-import DataTable from '../components/admin/DataTable';
-import chart from '../components/charts';
+import DataTable from '../components/admin/DataTable.vue';
+import chart from '../components/charts.vue';
 
 export default {
   name: 'Projects',
+  components: {
+    DataTable,
+    chart,
+  },
   data() {
     return {
-      data:Object,
-      autoupdate:'',
-      update:true,
-      SSH:false,
+      data: Object,
+      autoupdate: '',
+      update: true,
+      SSH: false,
       showDialog: false,
       formValid: false,
       showPassword: true,
@@ -175,17 +183,13 @@ export default {
       modalAction: '',
     };
   },
-  components: {
-    DataTable,
-    chart,
-  },
   methods: {
     sendRequest() {
       this.$store.dispatch('loadProjects');
     },
-    loadProject(){
+    loadProject() {
       this.$store.dispatch('getProject', this.id);
-      this.data = this.$store.state.project.current
+      this.data = this.$store.state.project.current;
     },
     clickItem(item) {
       this.id = item._id;
@@ -204,11 +208,11 @@ export default {
       this.url = '';
       this.text = '';
       this.password = '';
-      this.host = '',
-      this.user = '',
-      this.port = '',
-      this.passwordSSH = '',
-      this.path = '',
+      this.host = '';
+      this.user = '';
+      this.port = '';
+      this.passwordSSH = '';
+      this.path = '';
       this.showRules = true;
       this.disableInput = false;
       this.showDialog = true;
@@ -223,11 +227,11 @@ export default {
       this.url = item.url;
       this.text = item.text;
       this.password = item.password;
-      this.host = item.host,
-      this.user = item.user,
-      this.port = item.port,
-      this.passwordSSH = item.passwordSSH,
-      this.path = item.path,
+      this.host = item.host;
+      this.user = item.user;
+      this.port = item.port;
+      this.passwordSSH = item.passwordSSH;
+      this.path = item.path;
       this.disableInput = false;
       this.showDialog = true;
       this.showPassword = true;
@@ -279,52 +283,81 @@ export default {
     },
     addProject() {
       console.log('Проект добавлен', this.name, this.url);
-      this.$store.dispatch('addProject', { name: this.name, url: this.url, text: this.text, password: this.password, host: this.host, user: this.user,
-        port: this.port, passwordSSH: this.passwordSSH, path: this.path,});
+      this.$store.dispatch('addProject', {
+        name: this.name,
+        url: this.url,
+        text: this.text,
+        password: this.password,
+        host: this.host,
+        user: this.user,
+        port: this.port,
+        passwordSSH: this.passwordSSH,
+        path: this.path,
+      });
       this.showDialog = false;
       this.sendRequest();
     },
 
     deleteProject() {
-      //console.log('Проект удалён', this.name, this.url, this.id, this.password);
-      this.$store.dispatch('deleteProject', { name: this.name, url: this.url, id: this.id, text: this.text, password: this.password });
+      // console.log('Проект удалён', this.name, this.url, this.id, this.password);
+      this.$store.dispatch('deleteProject', {
+        name: this.name,
+        url: this.url,
+        id: this.id,
+        text: this.text,
+        password: this.password,
+      });
       this.showDialog = false;
       this.sendRequest();
     },
 
     saveProject() {
-      console.log('Проект сохранен', this.id, this.name, this.url , this.text, this.password);
-      this.$store.dispatch('saveProject', { id:this.id, name: this.name, url: this.url, text: this.text, password: this.password, host: this.host, user: this.user,
-        port: this.port, passwordSSH: this.passwordSSH, path: this.path,});
+      console.log('Проект сохранен');
+      this.$store.dispatch('saveProject', {
+        id: this.id,
+        name: this.name,
+        url: this.url,
+        text: this.text,
+        password: this.password,
+        host: this.host,
+        user: this.user,
+        port: this.port,
+        passwordSSH: this.passwordSSH,
+        path: this.path,
+      });
       this.showDialog = false;
       this.sendRequest();
     },
 
     backupProject() {
-      console.log('Запрос на создание бэкапа добавлен в очередь', { name: this.name, url: this.url, id: this.id, text: this.text, password: this.password });
-      this.$store.dispatch('backupProject', this.id,this.password);
+      console.log('Запрос на создание бэкапа добавлен в очередь');
+      this.$store.dispatch('backupProject', this.id, this.password);
       this.showDialog = false;
     },
 
     InfoProject() {
-      setTimeout(function() {
+      /*
+      setTimeout(() => {
         clearInterval(this.autoupdate);
-        alert( 'стоп' );
+        alert('стоп');
       }, 0);
       this.showDialog = false;
+      */
     },
   },
   computed: {
-    history(){
-      return this.data.history || []
+    history() {
+      return this.data.history || [];
     },
-    dataCollection(){
-      if (this.update === false){
+    dataCollection() {
+      /*
+      if (this.update === false) {
         this.update = true;
         console.log('включил автообновление');
-        this.autoupdate= setInterval( this.loadProject, 2000);
+        this.autoupdate = setInterval(this.loadProject, 2000);
       }
-      return this.history || []
+      */
+      return this.history || [];
     },
     controls() {
       return this.$store.state.ui.defaultControls;
@@ -339,7 +372,7 @@ export default {
       return this.$store.getters.projects;
     },
     headers() {
-      return [{ text: 'Название', value: 'name' }, { text: 'URL', value: 'url', sortable: false },];
+      return [{ text: 'Название', value: 'name' }, { text: 'URL', value: 'url', sortable: false }];
     },
     /**
      * преобразует значение по ключу заголовка (headers)

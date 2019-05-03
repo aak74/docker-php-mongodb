@@ -54,47 +54,40 @@
 <script>
 export default {
   name: 'UsersPage',
-  data(){
-      return{
-           userName:'',
-           update:false,
-      }
+  data() {
+    return {
+      userName: '',
+      update: false,
+    };
   },
-  components: {
-  },
-  methods:{
-    deleteUser(id){
-      this.$store.dispatch('userDelete',id);
+  methods: {
+    deleteUser(id) {
+      this.$store.dispatch('userDelete', id);
       this.$store.dispatch('users');
     },
-    block(id){
-      this.$store.dispatch('block',id);
+    block(id) {
+      this.$store.dispatch('block', id);
       this.$store.dispatch('users');
     },
-    unblock(id){
-      this.$store.dispatch('unblock',id);
+    unblock(id) {
+      this.$store.dispatch('unblock', id);
       this.$store.dispatch('users');
     },
-    isSearhing(UserNameString){
-      const ad =this.userName;
-      if ((UserNameString.search(ad))!=(-1)){
-        return true
-      }
-      return false
+    isSearhing(UserNameString) {
+      return (UserNameString.search(this.userName) !== -1);
     },
   },
   computed: {
-    users(){
+    users() {
       return this.$store.state.users;
-    }
+    },
   },
-  mounted(){
+  mounted() {
     this.$store.dispatch('users');
   },
-}
-
-//============================================================
+};
 </script>
+
 <style>
 .head{
   margin-top:15px;
