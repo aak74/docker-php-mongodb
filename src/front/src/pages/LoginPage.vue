@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import FormLogin from '../components/FormLogin';
-import FormLoginOut from '../components/FormLoginOut';
+import FormLogin from '../components/FormLogin.vue';
+import FormLoginOut from '../components/FormLoginOut.vue';
 
 export default {
   name: 'Login',
@@ -19,28 +19,28 @@ export default {
     user() {
       return this.$store.state.login;
     },
-    isLoginIn(){
-      if (localStorage.getItem('isLogin')==='true'){
-        return true
+    isLoginIn() {
+      if (localStorage.getItem('isLogin') === 'true') {
+        return true;
       }
-      return false
+      return false;
     },
   },
-  methods:{
-      isLogin(){
-        const user = localStorage.getItem('UserName');
-        const FirstLogin = localStorage.getItem('FirstLogin');
-        //const isLogin = localStorage.getItem('isLogin');
-        localStorage.removeItem('FirstLogin');
-        if (FirstLogin){
-          this.$router.push('Welcome');
-        }
-        if(!this.isLoginIn){
-          console.log(user);
-          return false
-        }
-        return true
-      },
-  }
+  methods: {
+    isLogin() {
+      const user = localStorage.getItem('UserName');
+      const FirstLogin = localStorage.getItem('FirstLogin');
+      // const isLogin = localStorage.getItem('isLogin');
+      localStorage.removeItem('FirstLogin');
+      if (FirstLogin) {
+        this.$router.push('Welcome');
+      }
+      if (!this.isLoginIn) {
+        console.log(user);
+        return false;
+      }
+      return true;
+    },
+  },
 };
 </script>

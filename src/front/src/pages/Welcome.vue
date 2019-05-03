@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import WelcomePage from '../components/WelcomePage';
+import WelcomePage from '../components/WelcomePage.vue';
 
 export default {
   name: 'Welcome',
-  components:{
+  components: {
     WelcomePage,
-  }
+  },
 };
 </script>

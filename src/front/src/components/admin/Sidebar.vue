@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import MenuItems from './MenuItems';
-import ExtraMenuItem from './ExtraMenuItem';
-import SidebarToggler from './SidebarToggler';
+import MenuItems from './MenuItems.vue';
+import ExtraMenuItem from './ExtraMenuItem.vue';
+import SidebarToggler from './SidebarToggler.vue';
 
 export default {
   name: 'Sidebar',

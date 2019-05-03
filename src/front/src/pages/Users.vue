@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import UsersPage from '../components/UsersPage';
+import UsersPage from '../components/UsersPage.vue';
 
 export default {
   name: 'Users',
-  components:{
+  components: {
     UsersPage,
-  }
+  },
 };
 </script>

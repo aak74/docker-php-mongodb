@@ -17,29 +17,28 @@
 </template>
 
 <script>
-import MenuItem from './MenuItem';
+import MenuItem from './MenuItem.vue';
 
 export default {
   name: 'MenuItems',
   components: {
     MenuItem,
   },
-  data(){
-    return{
-      users:{
+  data() {
+    return {
+      users: {
         icon: 'account_box',
         title: 'Пользователи',
         link: '/users',
         description: null,
       },
-    }
+    };
   },
-  computed:{
-    isAdmin(){
-      return this.$store.state.isAdmin
+  computed: {
+    isAdmin() {
+      return this.$store.state.isAdmin;
     },
   },
   props: ['items', 'mini'],
-
 };
 </script>

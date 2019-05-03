@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import DataTable from '../components/admin/DataTable';
+import DataTable from '../components/admin/DataTable.vue';
 
 export default {
   name: 'Entity',
@@ -45,7 +45,6 @@ export default {
     },
 
     controls() {
-    
       return this.$store.state.ui.defaultControls;
     },
 

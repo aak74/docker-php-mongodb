@@ -5,12 +5,12 @@
 </template>
 
 <script>
-import BlockedPage from '../components/BlockedPage';
+import BlockedPage from '../components/BlockedPage.vue';
 
 export default {
   name: 'Blocked',
-  components:{
+  components: {
     BlockedPage,
-  }
+  },
 };
 </script>

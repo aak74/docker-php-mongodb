@@ -37,7 +37,7 @@ export default {
   },
 
   LOADED_PROJECTS(state, data) {
-    console.log('LOADED', data)
+    console.log('LOADED', data);
     if (data) {
       state.projects = data.map(elem => {
         if (elem.status && elem.status.lastUpdate) {
@@ -145,7 +145,7 @@ export default {
   BLOCKED(state, data) {
     router.replace('/Blocked');
   },
-
+/*
   DELETED_USER(state, data) {
   },
 
@@ -154,4 +154,5 @@ export default {
 
   UNBLOCK_USER(state, data) {
   },
+*/
 };

@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import Dashboard from '../pages/Dashboard';
-import Projects from '../pages/Projects';
-import Project from '../pages/Project';
-import ServerStatus from '../pages/ServerStatus';
-import Login from '../pages/LoginPage';
-import Welcome from '../pages/Welcome';
-import Users from '../pages/Users';
-import Blocked from '../pages/Blocked';
+import Dashboard from '../pages/Dashboard.vue';
+import Projects from '../pages/Projects.vue';
+import Project from '../pages/Project.vue';
+import ServerStatus from '../pages/ServerStatus.vue';
+import Login from '../pages/LoginPage.vue';
+import Welcome from '../pages/Welcome.vue';
+import Users from '../pages/Users.vue';
+import Blocked from '../pages/Blocked.vue';
 
 Vue.use(Router);
 

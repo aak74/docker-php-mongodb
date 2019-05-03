@@ -5,16 +5,16 @@
 </template>
 
 <script>
-import UniForm from '../components/UniForm';
-import infoBlock from '../components/infoBlock';
+// import UniForm from '../components/UniForm.vue';
+import infoBlock from '../components/infoBlock.vue';
 
 export default {
   name: 'Project',
   components: {
-    UniForm,
+    // UniForm,
     infoBlock,
   },
-  beforeRouteEnter (to, from, next) {
+  beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.fetchData(to.params.id);
     });
@@ -32,6 +32,6 @@ export default {
     projectScheme() {
       return this.$store.state.project.schema;
     },
-  }
+  },
 };
 </script>

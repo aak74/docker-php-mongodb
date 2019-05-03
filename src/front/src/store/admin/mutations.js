@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign, no-console */
 
-import Entity from '../../pages/Entity';
+import Entity from '../../pages/Entity.vue';
 import router from '../../router';
 import entityMethods from './entity';
 

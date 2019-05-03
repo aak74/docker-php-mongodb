@@ -2,86 +2,82 @@
 import { Line } from 'vue-chartjs'
 
 export default {
-extends: Line,
-props: {
-  chartData: {
-    type: Array,
-  }
-},
-name:'charts',
+  name: 'charts',
+  extends: Line,
+  props: {
+    chartData: {
+      type: Array,
+    },
+  },
 
- data(){
-      return{
-           dataChartsTime:[],
-           dataChartsPing:[],
-           status:true
-      }
+  data() {
+    return {
+      dataChartsTime: [],
+      dataChartsPing: [],
+      status: true,
+    };
   },
+
   watch: {
-      chartData() {
-        const currectData=this.fillData;
-        if (this.status === true){
-          this.renderChart(currectData, this.fillOptions);
-          this.status = false;
-        }
+    chartData() {
+      const currectData = this.fillData;
+      if (this.status === true) {
+        this.renderChart(currectData, this.fillOptions);
+        this.status = false;
       }
+    },
   },
-computed: {
-  fillData () {
+  computed: {
+    fillData() {
       const EnterDate = this.chartData;
-      let i=0;
-      let y=0;//кол во удаленных
+      let i = 0;
+      let y = 0; // кол во удаленных
       EnterDate.forEach(item => {
-          if (this.dataChartsTime[i]!== item.lastUpdate){
-            if(this.dataChartsTime[i]!== undefined){
-              this.dataChartsTime.shift();
-            }
-            this.dataChartsTime.push(new Date(item.lastUpdate));
+        if (this.dataChartsTime[i] !== item.lastUpdate) {
+          if (this.dataChartsTime[i] !== undefined) {
+            this.dataChartsTime.shift();
           }
-          if (this.dataChartsPing[i+y]!== item.ping){
-            if(this.dataChartsPing[i-y]!== undefined){
-              this.dataChartsPing.shift();
-              y++;
-              this.status=true;
-            }
-            this.dataChartsPing.push(item.ping);
+          this.dataChartsTime.push(new Date(item.lastUpdate));
+        }
+        if (this.dataChartsPing[i + y] !== item.ping) {
+          if (this.dataChartsPing[i - y] !== undefined) {
+            this.dataChartsPing.shift();
+            y += 1;
+            this.status = true;
           }
-          i++
+          this.dataChartsPing.push(item.ping);
+        }
+        i += 1;
       });
+
       const datacollection = {
-      labels: this.dataChartsTime,
-      datasets: [
-        {
+        labels: this.dataChartsTime,
+        datasets: [{
           label: 'Ping',
-          backgroundColor: "rgba(255,99,132,0.2)",
-          borderColor: "rgba(255,99,132,1)",
+          backgroundColor: 'rgba(255,99,132,0.2)',
+          borderColor: 'rgba(255,99,132,1)',
           data: this.dataChartsPing,
           fill: false,
-        }
-      ]
-    }
-    return datacollection;
-  },
-  fillOptions () {
-    const GOptions= {
-    //showLines: true, // disable for all datasets'
-    animation: false,
-    scales:
-    {
-        xAxes: [{
-            display: false
         }],
-        yAxes: [{
+      };
+      return datacollection;
+    },
+
+    fillOptions() {
+      return {
+        animation: false,
+        scales: {
+          xAxes: [{
             display: false,
-
-        }]
-    }
-    }
-    return GOptions
+          }],
+          yAxes: [{
+            display: false,
+          }],
+        },
+      };
+    },
   },
-},
-
-}
+};
 </script>
 <style>
 canvas{

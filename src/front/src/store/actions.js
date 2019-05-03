@@ -2,7 +2,7 @@ import api from '../api';
 // import Token from '../service/Token';
 
 const loadStatus = ({ commit }) => {
-  api.get('status/', null, (response) => {
+  api.get('status/', null, response => {
     commit('STATUS_LOADED', response.data);
   });
 };
@@ -153,5 +153,5 @@ export default {
   block,
   unblock,
   isAdmin,
-  login
+  login,
 };
