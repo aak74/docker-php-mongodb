@@ -1,26 +1,26 @@
 /* eslint-disable no-new, no-consistent-return, no-console */
 
 import Vue from 'vue';
-// import Vuetify from 'vuetify';
-// import 'vuetify/dist/vuetify.min.css';
+import Vuetify from 'vuetify';
+import 'vuetify/dist/vuetify.min.css';
 import Notifications from 'vue-notification';
 import Msg from 'vue-message';
 
-import './plugins/vuetify';
+// import './plugins/vuetify';
+import './plugins/ioc';
 import './plugins/ctrl';
 import App from './App.vue';
 import store from './store';
 import router from './router';
 
-
-// Vue.use(Vuetify);
+Vue.use(Vuetify);
 Vue.use(Notifications);
 Vue.use(Msg);
 
 Vue.config.devtools = true;
 Vue.config.productionTip = false;
 
-new Vue({
+window.$vue = new Vue({
   debug: true,
   el: '#app',
   router,

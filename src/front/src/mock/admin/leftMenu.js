@@ -5,9 +5,9 @@ function UserName() {
   }
   return 'Войти';
 }
+
 function EnableMenuItems() {
-  const user = localStorage.getItem('UserName');
-  if (user) {
+  if (localStorage.getItem('token')) {
     return [
       {
         icon: 'perm_identity',
@@ -35,10 +35,10 @@ function EnableMenuItems() {
     ];
   }
   return [{
-  icon : 'input',
-  title : UserName(),
-  link: '/login',
-  description: null,
+    icon: 'input',
+    title: UserName(),
+    link: '/login',
+    description: null,
   }];
 }
 

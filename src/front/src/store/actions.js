@@ -51,17 +51,8 @@ const backupProject = ({ commit }, id) => {
     );
 };
 
-const signIn = ({ commit }, login) => {
-  api.getLogin('post', 'user/login', login)
-    .then(data => {
-      commit('SIGN_IN', data);
-    })
-    .catch(error => {
-      commit('SIGN_IN_FAIL', error);
-    });
-};
-
 const login = ({ commit }, login) => {
+  debugger;
   api.login(login)
     .then(data => {
       commit('SIGN_IN', data);
@@ -143,7 +134,6 @@ export default {
   saveProject,
   backupProject,
   getProject,
-  signIn,
   register,
   auth,
   users,

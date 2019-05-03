@@ -1,7 +1,7 @@
 <template>
     <div class="container">
       <div class="v-card__text ">
-        <div class="layout row align-end justify-center" >
+        <div class="layout row align-end" >
           <div class="flex xs3 " >
               <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
                 <div class="v-input__control">
@@ -24,7 +24,7 @@
               </div>
             <div class="justify-center v-dialog__container">
               <button @click="register" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark lighten-2"> Регистрация   </button>
-              <button @click="signIn" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark  lighten-2"> Войти </button>
+              <button @click="login" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark  lighten-2"> Войти </button>
             </div>
             <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
               <div class="v-input__control" >
@@ -71,11 +71,9 @@ export default {
       this.fail = true;
     },
 
-    signIn() {
+    login() {
       console.log('login');
-      this.$store.dispatch('signIn', this.user);
-      this.fail = false;
-      setTimeout(this.setTrue, 800);
+      this.$store.dispatch('login', this.user);
     },
 
     auth() {

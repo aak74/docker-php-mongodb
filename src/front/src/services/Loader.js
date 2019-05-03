@@ -2,9 +2,9 @@
 import axios from 'axios';
 
 class Loader {
-  constructor(options = {}) {
+  constructor({ token }, options = {}) {
+    this.token = token;
     this.client = options.client || axios.create();
-    this.token = options.token;
     this.urls = options.urls || {
       login: 'auth/login',
       refreshToken: 'auth/refresh',
@@ -75,7 +75,7 @@ class Loader {
     try {
       response = await this.client.request(params);
     } catch (error) {
-      // console.log('request error', error, (error.response.status == 401));
+      console.log('request error', error, (error.response.status == 401));
       if (error.response.status !== 401) {
         throw error;
       }

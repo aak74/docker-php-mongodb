@@ -13,6 +13,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "awilix": "^4.2.2",
     "axios": "^0.18.0",
     "chart.js": "^2.8.0",
     "dayjs": "^1.8.13",
