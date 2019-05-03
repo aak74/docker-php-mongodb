@@ -22,15 +22,15 @@ const ctx = {
     refreshToken: '/auth/refresh',
   },
 };
+
 beforeEach(() => {
   const client = axios.create();
   ctx.mock = new MockAdapter(client);
 
   const token = new Token(ctx.TOKEN);
 
-  ctx.loader = new Loader({
+  ctx.loader = new Loader({ token }, {
     client,
-    token,
     urls: ctx.urls,
     server: {
       prefix: '',
