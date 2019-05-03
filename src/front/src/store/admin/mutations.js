@@ -32,7 +32,7 @@ const LOADED_ENTITIES = (state, entities) => {
 };
 
 const LOADED_LEFT_MENU = (state, menuItems) => {
-  // console.log('LOADED_LEFT_MENU', menuItems, state);
+  console.log('LOADED_LEFT_MENU', menuItems, state);
   state.leftMenu = menuItems;
   const routes = menuItems.reduce((carry, groupMenu) => {
     // console.log('reduce', carry, groupMenu);
@@ -41,7 +41,12 @@ const LOADED_LEFT_MENU = (state, menuItems) => {
       return carry;
     }
     return groupMenu.items.reduce((gmCarry, menuItem) => {
-      if (!menuItem.entityName || !entityMethods.getEntityByName(state, menuItem.entityName)) {
+      // console.log(menuItem, !menuItem.isUnauthorized, state.isUnauthorized);
+
+      if ((!menuItem.isUnauthorized && state.isUnauthorized)
+        || !menuItem.entityName
+        || !entityMethods.getEntityByName(state, menuItem.entityName)
+      ) {
         return gmCarry;
       }
       gmCarry.push({
@@ -52,12 +57,8 @@ const LOADED_LEFT_MENU = (state, menuItems) => {
       });
       return gmCarry;
     }, carry);
-    // return carry;
   }, []);
-  // debugger;
   router.addRoutes(routes);
-  // console.log('LOADED_LEFT_MENU 2', routes, router);
-  // console.log('LOADED_LEFT_MENU 2', routes, router.options.routes);
 };
 
 export default {

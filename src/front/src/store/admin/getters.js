@@ -3,14 +3,24 @@
 export default {
   leftMenu(state) {
     return state.leftMenu.map(group => {
-      if (group.items && group.items.map) {
-        group.items.map(item => {
-          if (!item.description) {
-            item.description = item.title;
-          }
-          return item;
-        });
+      if (!group.items || !group.items.reduce) {
+        return group;
       }
+      group.items = group.items.reduce((carry, item) => {
+        // console.log('item', item.isUnauthorized, state.isUnauthorized);
+        if (!item.isUnauthorized && state.isUnauthorized) {
+          return carry;
+        }
+        if (item.isUnauthorized && !state.isUnauthorized) {
+          return carry;
+        }
+
+        if (!item.description) {
+          item.description = item.title;
+        }
+        carry.push(item);
+        return carry;
+      }, []);
       return group;
     });
   },
@@ -29,7 +39,9 @@ export default {
 
     const headers = state.data.headers[state.currentEntity].slice();
     if (state.ui.defaultControls && state.ui.defaultControls.length) {
-      headers.push({ text: 'Actions', value: 'actions', sortable: false, invisible: true });
+      headers.push({
+        text: 'Actions', value: 'actions', sortable: false, invisible: true,
+      });
     }
     return headers;
   },

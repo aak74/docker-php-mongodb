@@ -52,7 +52,6 @@ const backupProject = ({ commit }, id) => {
 };
 
 const login = ({ commit }, login) => {
-  debugger;
   api.login(login)
     .then(data => {
       commit('SIGN_IN', data);
