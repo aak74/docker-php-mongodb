@@ -11,25 +11,27 @@ function getResponse(data) {
   };
 }
 
-const context = {};
-beforeEach(() => {
-  const client = axios.create();
-  context.mock = new MockAdapter(client);
-
-  const token = new Token({
-    token: 'TOKEN',
-    refreshToken: 'REFRESH_TOKEN',
-  });
-
-  context.urls = {
+const ctx = {
+  LOGIN_REQUEST: { login: 'foo', password: 'foo' },
+  LOGIN_RESPONSE: getResponse({ token: 'TOKEN', refreshToken: 'REFRESH_TOKEN' }),
+  REFRESH_REQUEST: { refreshToken: 'REFRESH_TOKEN' },
+  REFRESH_RESPONSE: getResponse({ token: 'TOKEN2', refreshToken: 'REFRESH_TOKEN2' }),
+  TOKEN: { token: 'TOKEN', refreshToken: 'REFRESH_TOKEN' },
+  urls: {
     login: '/auth/login',
     refreshToken: '/auth/refresh',
-  };
+  },
+};
+beforeEach(() => {
+  const client = axios.create();
+  ctx.mock = new MockAdapter(client);
 
-  context.loader = new Loader({
+  const token = new Token(ctx.TOKEN);
+
+  ctx.loader = new Loader({
     client,
     token,
-    urls: context.urls,
+    urls: ctx.urls,
     server: {
       prefix: '',
       timeout: 5,
@@ -38,61 +40,91 @@ beforeEach(() => {
 });
 
 test('validateRequest throw error without method', () => {
-  expect(context.loader.validateRequest).toThrowError(Error);
+  expect(ctx.loader.validateRequest).toThrowError(Error);
 });
 
 test('validateRequest throw error without uri', () => {
   const t = () => {
-    context.loader.validateRequest('get');
+    ctx.loader.validateRequest('get');
   };
   expect(t).toThrowError(Error);
 });
 
+test('Login captures token information', async () => {
+  const { mock, loader } = ctx;
+
+  mock.onPost(ctx.urls.login, ctx.LOGIN_REQUEST).reply(200, ctx.LOGIN_RESPONSE);
+  mock.onGet('/users').reply(200, []);
+
+  await loader.login(ctx.LOGIN_REQUEST);
+  await loader.get('/users');
+
+  expect(mock.history.get.length).toBe(1);
+  expect(mock.history.get[0].headers.Authorization).toBe(`Bearer ${ctx.LOGIN_RESPONSE.data.token}`);
+});
+
+test('Logout removes token information', async () => {
+  const { mock, loader } = ctx;
+
+  mock.onGet('/users').reply(200, []);
+
+  await loader.logout();
+  await loader.get('users');
+
+  expect(mock.history.get.length).toBe(1);
+  expect(mock.history.get[0].headers.Authorization).toBeFalsy();
+});
+
 test('Correctly retries request when got 401 with new token', async () => {
-  const { mock, loader } = context;
-  const LOGIN_REQUEST = {
-    login: 'foo',
-    password: 'foo',
-  };
-
-  const LOGIN_RESPONSE = {
-    token: 'TOKEN',
-    refreshToken: 'REFRESH_TOKEN',
-  };
-
-  const REFRESH_REQUEST = {
-    refreshToken: LOGIN_RESPONSE.refreshToken,
-  };
-
-  const REFRESH_RESPONSE = {
-    token: 'TOKEN2',
-    refreshToken: 'REFRESH_TOKEN2',
-  };
-
-  mock.onPost(context.urls.login, LOGIN_REQUEST).reply(200, getResponse(LOGIN_RESPONSE));
-  // mock.onPost('/auth/refresh').reply(200, getResponse(REFRESH_RESPONSE));
-  // console.log('mock', mock.handlers.post);
+  const { mock, loader } = ctx;
 
   mock
-    .onPost(context.urls.refreshToken, REFRESH_REQUEST)
-    .reply(200, getResponse(REFRESH_RESPONSE));
-  // .replyOnce(200, getResponse(REFRESH_RESPONSE));
+    .onPost(ctx.urls.refreshToken, ctx.REFRESH_REQUEST)
+    .replyOnce(200, ctx.REFRESH_RESPONSE);
 
   mock.onGet('/users').reply(config => {
     const { Authorization: auth } = config.headers;
-    if (auth === `Bearer ${LOGIN_RESPONSE.token}`) {
+    if (auth === `Bearer ${ctx.LOGIN_RESPONSE.data.token}`) {
       return [401];
     }
 
-    if (auth === `Bearer ${REFRESH_RESPONSE.token}`) {
+    if (auth === `Bearer ${ctx.REFRESH_RESPONSE.data.token}`) {
       return [200, []];
     }
     return [401];
   });
 
-  await loader.login(LOGIN_REQUEST);
   await loader.get('/users');
 
   expect(mock.history.get.length).toBe(2);
-  expect(mock.history.get[1].headers.Authorization).toBe(`Bearer ${REFRESH_RESPONSE.token}`);
+  expect(mock.history.get[1].headers.Authorization).toBe(`Bearer ${ctx.REFRESH_RESPONSE.data.token}`);
+});
+
+test('Does not refresh token more than once', async () => {
+  const { mock, loader } = ctx;
+
+  mock
+    .onPost(ctx.urls.refreshToken, ctx.REFRESH_REQUEST)
+    .replyOnce(200, ctx.REFRESH_RESPONSE);
+
+  mock.onGet('/users').reply(config => {
+    const { Authorization: auth } = config.headers;
+    if (auth === `Bearer ${ctx.LOGIN_RESPONSE.data.token}`) {
+      return [401];
+    }
+
+    if (auth === `Bearer ${ctx.REFRESH_RESPONSE.data.token}`) {
+      return [200, []];
+    }
+    return [401];
+  });
+
+  await Promise.all([loader.get('/users'), loader.get('/users')]);
+  expect(mock.history.post.filter(({ url }) => url === ctx.urls.refreshToken).length).toBe(1);
+});
+
+test('Correctly fails request when got non-401 error', async () => {
+  const { mock, loader } = ctx;
+  mock.onGet('/users').reply(404);
+  await expect(loader.get('users')).rejects.toThrow('Request failed with status code 404');
 });

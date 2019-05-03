@@ -75,13 +75,14 @@ class Loader {
     try {
       response = await this.client.request(params);
     } catch (error) {
-      // console.log('request error', error);
-      if (error.status !== 401) {
-        this.addRequestToQueue({
-          method, uri, config, cb,
-        });
-        await this.getRefreshToken();
+      // console.log('request error', error, (error.response.status == 401));
+      if (error.response.status !== 401) {
+        throw error;
       }
+      this.addRequestToQueue({
+        method, uri, config, cb,
+      });
+      await this.getRefreshToken();
       // store.commit('admin/LOADING_ERROR', error);
       return;
     }
@@ -119,7 +120,6 @@ class Loader {
       method,
       url,
       data: config.data || null,
-      headers: {},
       // headers: {
       //   Accept: 'application/json',
       //   'Content-Type': 'application/json',
@@ -127,8 +127,8 @@ class Loader {
       timeout: config.timeout || this.server.timeout,
     };
 
-    if (uri !== this.urls.refreshToken) {
-      params.headers.Authorization = `Bearer ${this.token.token}`;
+    if (uri !== this.urls.refreshToken && this.token.token) {
+      params.headers = { Authorization: `Bearer ${this.token.token}` };
     }
 
     return params;
