@@ -12,11 +12,11 @@ class TokenBase {
   }
 
   set token(token) {
-    this.beforeSetToken(token);
+    this.saveToken(token);
     this._token = token;
   }
 
-  beforeSetToken() {
+  saveToken() {
   }
 
   get refreshToken() {
@@ -24,11 +24,11 @@ class TokenBase {
   }
 
   set refreshToken(refreshToken) {
-    this.beforeSetRefreshToken(refreshToken);
+    this.saveRefreshToken(refreshToken);
     this._refreshToken = refreshToken;
   }
 
-  beforeSetRefreshToken() {
+  saveRefreshToken() {
   }
 }
 
