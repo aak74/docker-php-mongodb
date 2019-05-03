@@ -1,6 +1,6 @@
 const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
+// const http = require('http');
+// const socketIO = require('socket.io');
 const bodyParser = require('body-parser');
 
 // var httpServer = ;
@@ -80,7 +80,9 @@ class Router {
     //   res.header("Access-Control-Allow-Headers", "X-Requested-With");
     // });
 
-    this.app.post('/auth/user', bodyParser.json(), async (req, res) => {
+
+    this.app.post('/auth/login', bodyParser.json(), async (req, res) => {
+      console.log('/auth/login', req.body);
       if (!req.body.login || !req.body.password) {
         res.status(400).json({ message: 'Bad request'});
         return;
