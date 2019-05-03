@@ -1,7 +1,7 @@
 import { createContainer, asValue, asClass } from 'awilix';
 
-import Loader from '../services/Loader';
-import Token from '../services/TokenLS';
+import Loader from './Loader';
+import Token from './TokenLS';
 
 // const token = new Token();
 // const loader = new Loader({ token });
@@ -9,13 +9,15 @@ import Token from '../services/TokenLS';
 // console.log({ createContainer });
 
 
-window.$container = createContainer();
+const container = createContainer();
 
-window.$container.register({
+container.register({
   token: asClass(Token),
   loader: asClass(Loader),
 });
 
-const loader = window.$container.resolve('loader');
-loader.login({ login: 'foo', password: 'foo' });
+// const loader = window.$container.resolve('loader');
+// loader.login({ login: 'foo', password: 'foo' });
 // window.$container.build();
+
+export default container;

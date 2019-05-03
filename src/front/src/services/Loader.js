@@ -11,7 +11,7 @@ class Loader {
     };
     this.server = options.server || {
       prefix: '/api/v1/',
-      timeout: 5,
+      timeout: 30000,
     };
 
     this.credentials = options.credentials || {
@@ -26,7 +26,7 @@ class Loader {
     // console.log('api login', credentials);
     return new Promise(async (resolve, reject) => {
       const data = await this.post(this.urls.login, { data: credentials });
-      // console.log('login data', data);
+      console.log('login data', data);
 
       // debugger;
       this.updateTokens(data);
@@ -75,8 +75,8 @@ class Loader {
     try {
       response = await this.client.request(params);
     } catch (error) {
-      console.log('request error', error, (error.response.status == 401));
-      if (error.response.status !== 401) {
+      // console.log('request error', error);
+      if (!error.response || (error.response.status !== 401)) {
         throw error;
       }
       this.addRequestToQueue({

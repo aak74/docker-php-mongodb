@@ -10,7 +10,6 @@
       <template v-for="(item, index) in menu.items">
         <menu-item :mini="mini" :item="item" :key="index"/>
       </template>
-      <menu-item v-if="isAdmin" :mini="mini" :item="users" :key="index"/>
     </v-list>
     <v-divider></v-divider>
   </div>
@@ -23,21 +22,6 @@ export default {
   name: 'MenuItems',
   components: {
     MenuItem,
-  },
-  data() {
-    return {
-      users: {
-        icon: 'account_box',
-        title: 'Пользователи',
-        link: '/users',
-        description: null,
-      },
-    };
-  },
-  computed: {
-    isAdmin() {
-      return this.$store.state.isAdmin;
-    },
   },
   props: ['items', 'mini'],
 };

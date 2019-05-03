@@ -83,19 +83,11 @@ export default {
     console.log('SERVERS STATUSE LOADED - ', data);
   },
 
-  SIGN_IN(state, data) {
-    state.login = data;
-    const JWTtoken = `${state.login.data.token}`;
-    const refreshtTtoken = state.login.data.refreshToken;
-    const name = `${state.login.data.name}`;
-    localStorage.setItem('token', JWTtoken);
-    localStorage.setItem('refreshToken', refreshtTtoken);
-    localStorage.setItem('UserName', name);
-    localStorage.setItem('FirstLogin', false);
-    localStorage.setItem('isLogin', true);
+  LOGIN_SUCCESS(state) {
+    state.admin.isUnauthorized = false;
   },
 
-  SIGN_IN_REFRESH(state, data) {
+  LOGIN_REFRESH(state, data) {
     state.login = data;
     const JWTtoken = `${state.login.data.token}`;
     const refreshtTtoken = state.login.data.refreshToken;
@@ -105,7 +97,7 @@ export default {
     localStorage.setItem('UserName', name);
   },
 
-  SIGN_IN_FAIL() {
+  LOGIN_FAIL() {
     console.log('LOGIN FAIL');
     localStorage.setItem('loginProcces', false);
   },

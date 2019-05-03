@@ -99,8 +99,9 @@ class Router {
       }
 
       const token = this.getToken(user);
-      const refreshToken = this.getRefreshToken(user, token);
-      res.json({ 
+      const refreshToken = this.getRefreshToken(user);
+      
+      res.status(200).json({ 
         status: 'ok',
         data: {
           token, 

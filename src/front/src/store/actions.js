@@ -1,22 +1,22 @@
-import api from '../api';
-// import Token from '../service/Token';
+import container from '../services/Container';
+
+const loader = container.resolve('loader');
 
 const loadStatus = ({ commit }) => {
-  api.get('status/', null, response => {
+  loader.get('status/', null, response => {
     commit('STATUS_LOADED', response.data);
   });
 };
 
 const loadProjects = ({ commit }) => {
   console.log('loadProjects');
-
-  api.get('projects', {}, data => {
+  loader.get('projects').then(data => {
     commit('LOADED_PROJECTS', data);
   });
 };
 
 const getProject = ({ commit }, id) => {
-  api.getData('get', `projects/${id}`)
+  loader.get('get', `projects/${id}`)
     .then(data => {
       commit('LOADED_PROJECT', data, data);
       // console.log(data);
@@ -24,52 +24,52 @@ const getProject = ({ commit }, id) => {
 };
 
 const addProject = ({ commit }, data) => {
-  api.request('post', 'projects/', data)
+  loader.request('post', 'projects/', data)
     .then(
       commit('ADDED_PROJECT', data),
     );
 };
 
 const deleteProject = ({ commit }, data) => {
-  api.request('delete', `projects/${data.id}`, data)
+  loader.request('delete', `projects/${data.id}`, data)
     .then(
       commit('DELETED_PROJECT', data),
     );
 };
 
 const saveProject = ({ commit }, data) => {
-  api.request('post', `projects/${data.id}`, data)
+  loader.request('post', `projects/${data.id}`, data)
     .then(
       commit('SAVED_PROJECT', data),
     );
 };
 
 const backupProject = ({ commit }, id) => {
-  api.request('get', `projects/${id}/backup`, id)
+  loader.request('get', `projects/${id}/backup`, id)
     .then(
       commit('BACKUP_TASK_SENDED', id),
     );
 };
 
-const login = ({ commit }, login) => {
-  api.login(login)
-    .then(data => {
-      commit('SIGN_IN', data);
+const login = ({ commit }, credentials) => {
+  loader.login(credentials)
+    .then(() => {
+      commit('LOGIN_SUCCESS');
     })
     .catch(error => {
-      commit('SIGN_IN_FAIL', error);
+      commit('LOGIN_FAIL', error);
     });
 };
 
 const auth = ({ commit }) => {
-  api.getLogin('get', 'secret')
+  loader.getLogin('get', 'secret')
     .then(data => {
       commit('AUTH', data);
     });
 };
 
 const refreshOperation = ({ commit }, refreshDATA) => {
-  api.request(refreshDATA.METHOD, refreshDATA.URI, refreshDATA.DATA)
+  loader.request(refreshDATA.METHOD, refreshDATA.URI, refreshDATA.DATA)
     .then(res => {
       commit('isAdmin', res);
       commit('USERS', res);
@@ -83,7 +83,7 @@ const refreshOperation = ({ commit }, refreshDATA) => {
 };
 
 const register = ({ commit }, data) => {
-  api.request('post', 'user/register', data)
+  loader.request('post', 'user/register', data)
     .then(requestData => {
       commit('REGISTER', requestData);
     })
@@ -93,33 +93,33 @@ const register = ({ commit }, data) => {
 };
 
 const isAdmin = ({ commit }) => {
-  api.request('get', 'isAdmin/')
+  loader.request('get', 'isAdmin/')
     .then(requestData => {
       commit('isAdmin', requestData);
     });
 };
 
 const users = ({ commit }) => {
-  api.request('get', 'users')
+  loader.request('get', 'users')
     .then(data => {
       commit('USERS', data);
     });
 };
 
 const userDelete = ({ commit }, id) => {
-  api.request('delete', `user/${id}`)
+  loader.request('delete', `user/${id}`)
     .then(data => {
       commit('DELETED_USER', data);
     });
 };
 const block = ({ commit }, id) => {
-  api.request('delete', `block/user/${id}`)
+  loader.request('delete', `block/user/${id}`)
     .then(data => {
       commit('BLOCK_USER', data);
     });
 };
 const unblock = ({ commit }, id) => {
-  api.request('delete', `unblock/user/${id}`)
+  loader.request('delete', `unblock/user/${id}`)
     .then(data => {
       commit('UNBLOCK_USER', data);
     });

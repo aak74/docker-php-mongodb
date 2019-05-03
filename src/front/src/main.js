@@ -7,7 +7,7 @@ import Notifications from 'vue-notification';
 import Msg from 'vue-message';
 
 // import './plugins/vuetify';
-import './plugins/ioc';
+// import './plugins/ioc';
 import './plugins/ctrl';
 import App from './App.vue';
 import store from './store';
@@ -29,8 +29,14 @@ window.$vue = new Vue({
   template: '<App/>',
 });
 
-// store.dispatch('login', { login: 'ak', password: 'Woodae23!' });
 store.dispatch('admin/loadAll');
+store.dispatch('login', { login: 'foo', password: 'foo' });
+/*
+if (store.state.admin.isUnauthorized) {
+  router.push('/login');
+} else {
+}
+*/
 // store.dispatch('isAdmin');
 
 // store.dispatch('socket/connect');
