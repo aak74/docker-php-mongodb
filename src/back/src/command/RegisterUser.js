@@ -12,13 +12,17 @@ class RegisterUser {
   }
 
   async execute(params) {
-    const resultsignIn = await this.userModel.signIn(params);
-    if(!resultsignIn){
-      params.blocked = false;
-      const result = await this.userModel.register(params);
-      return { login:'registered'}
+    const result = await this.userModel.findOne(params);
+    if (!result){
+      try {
+        await this.userModel.insertOne(params);
+      } catch (err) {
+        this.logger.error('Register error', err);
+        return false;
+      }
+      return true;
     }
-    return {login:'failed'}
+    return false;
   }
 }
 

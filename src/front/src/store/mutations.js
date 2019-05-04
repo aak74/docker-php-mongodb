@@ -83,8 +83,10 @@ export default {
     console.log('SERVERS STATUSE LOADED - ', data);
   },
 
-  LOGIN_SUCCESS(state) {
+  LOGIN_SUCCESS(state, login) {
     state.admin.isUnauthorized = false;
+    state.admin.login = login;
+    router.push('/');
   },
 
   LOGIN_REFRESH(state, data) {
@@ -106,13 +108,8 @@ export default {
     console.log('AUTH', data);
   },
 
-  REGISTER(state, data) {
-    console.log('REGISTER', data.data.status);
-    if (data.data.status === 'failed') {
-      state.register = false;
-    } else {
-      state.register = true;
-    }
+  REGISTER(state) {
+    state.registered = true;
   },
 
   isAdmin(state, data) {
@@ -123,9 +120,8 @@ export default {
     }
   },
 
-  REGISTER_FAIL(state, data) {
-    state.register = false;
-    console.log('REGISTER_FAIL', data);
+  REGISTER_FAIL(state) {
+    state.registered = false;
   },
 
   USERS(state, data) {

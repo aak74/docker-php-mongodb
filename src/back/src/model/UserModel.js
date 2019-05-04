@@ -7,20 +7,6 @@ class UserModel extends Model {
     super({ db, collectionName: 'users' })
   }
 
-  async register(params) {
-    const result = await this.db.get()
-      .collection(this.collectionName)
-      .insertOne(params);
-    return result;
-  }
-
-  async signIn(params) {
-    const result = await this.db.get()
-      .collection(this.collectionName)
-      .findOne(params);
-    return result;
-  }
-
   async delete(id) {
     const result = await this.db.get()
       .collection(this.collectionName)

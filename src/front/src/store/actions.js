@@ -54,7 +54,7 @@ const backupProject = ({ commit }, id) => {
 const login = ({ commit }, credentials) => {
   loader.login(credentials)
     .then(() => {
-      commit('LOGIN_SUCCESS');
+      commit('LOGIN_SUCCESS', credentials.login);
     })
     .catch(error => {
       commit('LOGIN_FAIL', error);
@@ -83,12 +83,13 @@ const refreshOperation = ({ commit }, refreshDATA) => {
 };
 
 const register = ({ commit }, data) => {
-  loader.request('post', 'user/register', data)
-    .then(requestData => {
-      commit('REGISTER', requestData);
+  loader.request('post', 'user/register', { data })
+    .then(() => {
+      commit('REGISTER');
     })
     .catch(error => {
-      commit('REGISTER_FAIL', error);
+      console.log('Register error', error);
+      commit('REGISTER_FAIL');
     });
 };
 

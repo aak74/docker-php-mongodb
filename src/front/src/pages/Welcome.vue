@@ -1,16 +1,16 @@
 <template>
   <div>
-      <WelcomePage/>
+      <welcome/>
   </div>
 </template>
 
 <script>
-import WelcomePage from '../components/WelcomePage.vue';
+import Welcome from '../components/Welcome.vue';
 
 export default {
   name: 'Welcome',
   components: {
-    WelcomePage,
+    Welcome,
   },
 };
 </script>

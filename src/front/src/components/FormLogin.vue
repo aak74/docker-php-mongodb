@@ -1,45 +1,30 @@
 <template>
-    <div class="container">
-      <div class="v-card__text ">
-        <div class="layout row align-end" >
-          <div class="flex xs3 " >
-              <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
-                <div class="v-input__control">
-                  <v-text-field
-                    v-model="user.login"
-                    prepend-inner-icon ="perm_identity"
-                    label="Имя пользователя"
-                  ></v-text-field>
-                </div>
-              </div>
-              <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
-                <div class="v-input__control" >
-                  <v-text-field
-                    v-model="user.password"
-                    prepend-inner-icon ="build"
-                    label="Пароль"
-                    type="password"
-                  ></v-text-field>
-                </div>
-              </div>
-            <div class="justify-center v-dialog__container">
-              <button @click="register" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark lighten-2"> Регистрация   </button>
-              <button @click="login" v-bind:class="{green :fail, red:!fail}" class="mb15 v-btn theme--dark  lighten-2"> Войти </button>
-            </div>
-            <div class="v-input v-text-field v-input--is-label-active v-input--is-dirty theme--light ">
-              <div class="v-input__control" >
-                <div>
-                  <p v-bind:class="{reg_succes :isReg, reg_failed:!isReg}" class="v-text-field__slot">{{regComputed}}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+  <v-flex md4>
+    <v-text-field
+      v-model="user.login"
+      prepend-inner-icon ="perm_identity"
+      label="Имя пользователя"
+      :rules="requiredRules"
+    ></v-text-field>
+    <v-text-field
+      v-model="user.password"
+      prepend-inner-icon ="build"
+      label="Пароль"
+      type="password"
+      :rules="requiredRules"
+    ></v-text-field>
+    <div>
+      <v-btn color="success" @click="login">
+        Войти
+      </v-btn>
+      <v-btn @click="register">
+        Регистрация
+      </v-btn>
     </div>
+  </v-flex>
 </template>
-<script>
 
+<script>
 export default {
   name: 'Login',
   data() {
@@ -48,36 +33,17 @@ export default {
         login: '',
         password: '',
       },
+      requiredRules: [
+        v => !!v || 'Поле обязательно для заполнения',
+      ],
       fail: true,
     };
   },
-  computed: {
-    isReg() {
-      return this.$store.state.register;
-    },
 
-    regComputed() {
-      if (this.$store.state.register === undefined) {
-        return '';
-      }
-      if (!this.$store.state.register) {
-        return 'Произошла ошибка во время регистрации';
-      }
-      return 'Регистрация успешна';
-    },
-  },
   methods: {
-    setTrue() {
-      this.fail = true;
-    },
-
     login() {
       console.log('login');
       this.$store.dispatch('login', this.user);
-    },
-
-    auth() {
-      console.log(this.$store.state);
     },
 
     register() {
@@ -86,14 +52,3 @@ export default {
   },
 };
 </script>
-<style>
-.input_manager{
- width: 50%;
-}
-.reg_failed{
-  color:lightcoral;
-}
-.reg_succes{
-  color: lawngreen;
-}
-</style>

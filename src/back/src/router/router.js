@@ -159,7 +159,7 @@ class Router {
 
     this.app.post('/user/register', bodyParser.json(), async (req, res) => {
       const result = await this.userController.register(req.body);
-      res.send({ status: result.login });
+      res.send({ status: 'ok', data: result.login });
     });
 
     this.app.delete('user/:id', async (req, res) => {
