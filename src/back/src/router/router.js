@@ -22,10 +22,7 @@ const isAdmin = function(id){
 var Auth = null;
 
 const authMiddleware = (req, res, next) => {
-  console.log('authMiddleware', req);
-  
   Auth.auth(req, res, next);
-  // next();
 };
 
 class Router {
@@ -50,8 +47,6 @@ class Router {
 
 
   getToken(login) {
-    console.log('getToken');
-    
     return this.auth.getToken(login);
   }
 
@@ -82,9 +77,9 @@ class Router {
 
 
     this.app.post('/auth/login', bodyParser.json(), async (req, res) => {
-      console.log('/auth/login', req.body);
+      // console.log('/auth/login', req.body);
       if (!req.body.login || !req.body.password) {
-        res.status(400).json({ message: 'Bad request'});
+        res.status(400).json({ status: 'error', message: 'Empty login or password'});
         return;
       }
 
@@ -94,7 +89,7 @@ class Router {
       });
       
       if (!user) {
-        res.status(404).json({ message: 'User or password not found' });
+        res.status(404).json({ status: 'error', message: 'Login or password not found' });
         return;
       }
 
@@ -113,7 +108,7 @@ class Router {
 
     this.app.post('/auth/refreshToken', bodyParser.json(), authMiddleware, async (req, res) => {
     // this.app.post('/auth/refreshToken', async (req, res) => {
-      console.log('refreshToken', req.body);
+      // console.log('refreshToken', req.body);
       if (!req.user) {
         res.json({ message: 'User not found' });
         return;
@@ -201,7 +196,9 @@ class Router {
     });
 
 
-    this.app.get('/projects', authMiddleware, bodyParser.json(), async (req, res) => {
+    this.app.get('/projects', authMiddleware, async (req, res) => {
+      // this.logger.debug('/projects', req.user);      
+
       const data = await this.projectController.getList(req.user.id);
       res.send({
         status: 'ok',
@@ -243,7 +240,7 @@ class Router {
     });
 
     this.app.post('/projects/:id', async (req, res) => {
-      console.log(`post /projects/${req.params.id}`);
+      // console.log(`post /projects/${req.params.id}`);
       
       const _ = await this.projectController.update({
         _id: req.params.id,

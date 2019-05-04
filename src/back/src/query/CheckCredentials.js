@@ -10,7 +10,7 @@ class CheckCredentials {
   }
 
   async get(params) {
-    this.logger.debug('CheckCredentials', params);
+    // this.logger.debug('CheckCredentials', params);
     const result = await this.userModel.findOne(params);
     if (!result) {
       return false;

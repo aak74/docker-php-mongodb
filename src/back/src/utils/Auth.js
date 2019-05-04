@@ -46,8 +46,13 @@ class Auth {
     const strategy = new passportJWT.Strategy(
       this.options, 
       (payload, cb) => {
-        cb(false, payload.data);
-      });
+        const user = {
+          id: payload.data._id,
+          login: payload.data.login,
+        };
+        cb(null, user);
+      }
+    );
     passport.use(strategy);
   }
 
