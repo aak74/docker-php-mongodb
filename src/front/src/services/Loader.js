@@ -7,7 +7,7 @@ class Loader {
     this.client = options.client || axios.create();
     this.urls = options.urls || {
       login: 'auth/login',
-      refreshToken: 'auth/refresh',
+      refreshToken: 'auth/refreshToken',
     };
     this.server = options.server || {
       prefix: '/api/v1/',
@@ -79,6 +79,9 @@ class Loader {
       if (!error.response || (error.response.status !== 401)) {
         throw error;
       }
+      if (!this.token.refreshToken) {
+        throw error;
+      }
       this.addRequestToQueue({
         method, uri, config, cb,
       });
@@ -144,7 +147,7 @@ class Loader {
     }
     this.refreshRequest = true;
 
-    // console.log('getRefreshToken', this.urls.refreshToken);
+    console.log('getRefreshToken', this.token);
     if (!this.token.refreshToken) {
       await this.login(this.credentials);
       this.executeRequests();

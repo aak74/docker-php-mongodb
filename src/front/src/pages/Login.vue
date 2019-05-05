@@ -43,7 +43,7 @@ export default {
   methods: {
     login() {
       console.log('login');
-      this.$store.dispatch('login', this.user);
+      this.$store.dispatch('admin/login', this.user);
     },
 
     register() {

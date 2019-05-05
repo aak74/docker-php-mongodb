@@ -3,6 +3,9 @@
 import router from '../../router';
 import getLeftMenu from '../../services/GetLeftMenu';
 import mockLeftMenu from '../../mock/admin/leftMenu';
+import container from '../../services/Container';
+
+const loader = container.resolve('loader');
 
 const SET_CURRENT_ENTITY = (state, entity) => {
   // console.log('SET_CURRENT_ENTITY', entity);
@@ -32,7 +35,7 @@ const LOADED_ENTITIES = (state, entities) => {
 };
 
 const LOADED_LEFT_MENU = (state, menuItems) => {
-  console.log('LOADED_LEFT_MENU', menuItems, state);
+  // console.log('LOADED_LEFT_MENU', menuItems, state);
   state.leftMenu = getLeftMenu(menuItems, state.isUnauthorized);
 };
 
@@ -41,7 +44,7 @@ const LOGIN_SUCCESS = (state, login) => {
   state.isUnauthorized = false;
   state.login = login;
   LOADED_LEFT_MENU(state, mockLeftMenu);
-  console.log({ router });
+  // console.log({ router });
   if (router.currentRoute.name === 'Login') {
     router.push('/');
   }
@@ -53,7 +56,10 @@ export default {
   },
 
   LOGOUT(state) {
-    console.log('LOGOUT', state);
+    state.isUnauthorized = true;
+    LOADED_LEFT_MENU(state, mockLeftMenu);
+    loader.logout();
+    router.push('/login');
   },
 
   LOADING_ERROR(state, error) {
@@ -97,8 +103,14 @@ export default {
   LOADING_SUCCESS,
   SET_CURRENT_ENTITY,
   LOADED_LEFT_MENU,
+
   TOKEN_VALID(state, user) {
     LOGIN_SUCCESS(state, user.login);
+  },
+
+  TOKEN_INVALID() {
+    console.log('TOKEN_INVALID');
+    router.push('/login');
   },
 
   LOGIN_SUCCESS,

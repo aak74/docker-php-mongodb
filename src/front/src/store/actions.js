@@ -51,16 +51,6 @@ const backupProject = ({ commit }, id) => {
     );
 };
 
-const login = ({ commit }, credentials) => {
-  loader.login(credentials)
-    .then(() => {
-      commit('LOGIN_SUCCESS', credentials.login);
-    })
-    .catch(error => {
-      commit('LOGIN_FAIL', error);
-    });
-};
-
 const auth = ({ commit }) => {
   loader.getLogin('get', 'secret')
     .then(data => {
@@ -143,5 +133,4 @@ export default {
   block,
   unblock,
   isAdmin,
-  login,
 };

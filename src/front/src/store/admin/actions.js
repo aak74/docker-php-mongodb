@@ -53,11 +53,27 @@ const checkToken = ({ commit }) => {
   loader.get('auth/checkToken')
     .then(user => {
       commit('TOKEN_VALID', user);
+    })
+    .catch(err => {
+      console.log('checkToken error', err);
+      if (err.response.status === 401) {
+        commit('TOKEN_INVALID');
+      }
     });
 };
 
+const login = ({ commit }, credentials) => {
+  loader.login(credentials)
+    .then(() => {
+      commit('LOGIN_SUCCESS', credentials.login);
+    })
+    .catch(error => {
+      commit('LOGIN_FAIL', error);
+    });
+};
 export default {
   loadAll,
   loadEntity,
   checkToken,
+  login,
 };

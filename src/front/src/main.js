@@ -29,6 +29,7 @@ window.$vue = new Vue({
   template: '<App/>',
 });
 
+store.dispatch('admin/checkToken');
 store.dispatch('admin/loadAll');
 // store.dispatch('login', { login: 'foo', password: 'foo' });
 /*

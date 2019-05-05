@@ -5,7 +5,8 @@ import Dashboard from '../pages/Dashboard.vue';
 import Projects from '../pages/Projects.vue';
 import Project from '../pages/Project.vue';
 import ServerStatus from '../pages/ServerStatus.vue';
-import Login from '../pages/LoginPage.vue';
+import Login from '../pages/Login.vue';
+import Logout from '../pages/Logout.vue';
 import Welcome from '../pages/Welcome.vue';
 import Users from '../pages/Users.vue';
 import Blocked from '../pages/Blocked.vue';
@@ -37,6 +38,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/logout',
+    name: 'Logout',
+    component: Logout,
   },
   {
     path: '/Welcome',
