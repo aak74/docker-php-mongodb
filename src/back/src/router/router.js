@@ -105,6 +105,9 @@ class Router {
       });
     });
 
+    this.app.get('/auth/checkToken', authMiddleware, async (req, res) => {
+      res.status(200).json({ status: 'ok' , data: req.user });
+    });
 
     this.app.post('/auth/refreshToken', bodyParser.json(), authMiddleware, async (req, res) => {
     // this.app.post('/auth/refreshToken', async (req, res) => {

@@ -1,7 +1,7 @@
 /* eslint-disable no-cond-assign */
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import store from ".";
+// import store from '.';
 import router from '../router';
 
 dayjs.extend(relativeTime);
@@ -82,13 +82,6 @@ export default {
 
   SERVERS_STATUS_LOADED(_, data) {
     console.log('SERVERS STATUSE LOADED - ', data);
-  },
-
-  LOGIN_SUCCESS(state, login) {
-    state.admin.isUnauthorized = false;
-    state.admin.login = login;
-    store.dispatch('admin/loadLeftMenu');
-    // router.push('/');
   },
 
   LOGIN_REFRESH(state, data) {

@@ -1,9 +1,11 @@
-import api from '../../api';
 import entity from './entity';
 
 import mockEntities from '../../mock/admin/entities';
 import mockExtraMenuItem from '../../mock/admin/extraMenuItem';
 import mockLeftMenu from '../../mock/admin/leftMenu';
+import container from '../../services/Container';
+
+const loader = container.resolve('loader');
 
 const loadEntitiesFromMock = ({ commit }) => {
   commit('LOADED_ALL', {
@@ -14,14 +16,10 @@ const loadEntitiesFromMock = ({ commit }) => {
 };
 
 const loadEntitiesFromBackend = ({ commit }) => {
-  api.getData('get', 'admin/all/')
+  loader.get('admin/all/')
     .then(data => {
       commit('LOADED_ALL', data);
     });
-};
-
-const loadLeftMenu = ({ commit }) => {
-  commit('LOADED_LEFT_MENU', mockLeftMenu);
 };
 
 /**
@@ -44,15 +42,22 @@ const loadAll = store => {
  */
 const loadEntity = (store, { entityName }) => {
   // console.log('loadEntity', store.state, payload);
-  api.getData('get', entity.getApiPathByEntityName(store.state, entityName))
+  loader.getData('get', entity.getApiPathByEntityName(store.state, entityName))
     .then(data => {
       // console.log('resolve', data);
       store.commit('LOADED_ENTITY', { data, entityName });
     });
 };
 
+const checkToken = ({ commit }) => {
+  loader.get('auth/checkToken')
+    .then(user => {
+      commit('TOKEN_VALID', user);
+    });
+};
+
 export default {
   loadAll,
   loadEntity,
-  loadLeftMenu,
+  checkToken,
 };

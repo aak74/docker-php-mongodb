@@ -1,9 +1,8 @@
 /* eslint-disable no-param-reassign, no-console */
 
-import Entity from '../../pages/Entity.vue';
 import router from '../../router';
-import entityMethods from './entity';
 import getLeftMenu from '../../services/GetLeftMenu';
+import mockLeftMenu from '../../mock/admin/leftMenu';
 
 const SET_CURRENT_ENTITY = (state, entity) => {
   // console.log('SET_CURRENT_ENTITY', entity);
@@ -35,31 +34,17 @@ const LOADED_ENTITIES = (state, entities) => {
 const LOADED_LEFT_MENU = (state, menuItems) => {
   console.log('LOADED_LEFT_MENU', menuItems, state);
   state.leftMenu = getLeftMenu(menuItems, state.isUnauthorized);
-  const routes = menuItems.reduce((carry, groupMenu) => {
-    // console.log('reduce', carry, groupMenu);
+};
 
-    if (!groupMenu.items || !groupMenu.items.reduce) {
-      return carry;
-    }
-    return groupMenu.items.reduce((gmCarry, menuItem) => {
-      // console.log(menuItem, !menuItem.isUnauthorized, state.isUnauthorized);
 
-      if ((!menuItem.isUnauthorized && state.isUnauthorized)
-        || !menuItem.entityName
-        || !entityMethods.getEntityByName(state, menuItem.entityName)
-      ) {
-        return gmCarry;
-      }
-      gmCarry.push({
-        path: `/${menuItem.link}`,
-        name: menuItem.routeName,
-        meta: { entityName: menuItem.entityName },
-        component: Entity,
-      });
-      return gmCarry;
-    }, carry);
-  }, []);
-  router.addRoutes(routes);
+const LOGIN_SUCCESS = (state, login) => {
+  state.isUnauthorized = false;
+  state.login = login;
+  LOADED_LEFT_MENU(state, mockLeftMenu);
+  console.log({ router });
+  if (router.currentRoute.name === 'Login') {
+    router.push('/');
+  }
 };
 
 export default {
@@ -112,4 +97,9 @@ export default {
   LOADING_SUCCESS,
   SET_CURRENT_ENTITY,
   LOADED_LEFT_MENU,
+  TOKEN_VALID(state, user) {
+    LOGIN_SUCCESS(state, user.login);
+  },
+
+  LOGIN_SUCCESS,
 };
