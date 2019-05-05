@@ -58,18 +58,6 @@ class Loader extends EventEmitter {
 
   async request(method, uri, config, cb) {
     this.validateRequest(method, uri);
-    /*
-    const isAuthNeed = (uri.indexOf(this.urls.authBase) === -1);
-    if (isAuthNeed) {
-      if (!this.token) {
-        this.getRefreshToken();
-        this.addRequestToQueue({
-          method, uri, config, cb,
-        });
-        return false;
-      }
-    }
-    */
 
     const params = this.getParams(method, uri, config);
 
@@ -92,18 +80,19 @@ class Loader extends EventEmitter {
       });
       await this.getRefreshToken();
       // store.commit('admin/LOADING_ERROR', error);
-      return;
+      return false;
     }
     // console.log({ response });
 
     if (response) {
       if (response.data.status !== 'ok') {
         // store.commit('admin/LOADING_ERROR', { message: 'Response status is not ok', code: 406 });
-        return;
+        return false;
       }
 
       return response.data.data;
     }
+    return false;
   }
 
   validateRequest(method, uri) {

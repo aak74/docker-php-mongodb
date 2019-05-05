@@ -11,7 +11,7 @@
         </div>
         <table class="v-datatable v-table theme--light" >
           <tbody>
-            <tr v-for="field in fields">
+            <tr v-for="field in fields" :key="field.attrs.label">
               <td class="layout px-0s table-controls" disabled>
                 <p>{{ field.attrs.label }}:<span>{{ field.value }}</span></p>
               </td>
@@ -48,8 +48,8 @@ export default {
   },
   data() {
     return {
-      update:false,
-      project:this.projectData,
+      update: false,
+      project: this.projectData,
     };
   },
   methods: {
@@ -117,12 +117,12 @@ export default {
 </script>
 
 <style>
-p{
+p {
   font-style: italic;
   font-weight: bold;
   font-size: 16px;
 }
-span{
+span {
   font-style: normal;
   font-weight: normal;
   font-size: 15px;

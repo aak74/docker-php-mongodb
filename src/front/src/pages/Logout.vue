@@ -1,7 +1,7 @@
 <template>
   <v-card elevation=0>
     <v-card-text>
-      {{ login }}, Вы хотите выйти из аккаунта?</h2>
+      {{ login }}, Вы хотите выйти из аккаунта?
     </v-card-text>
     <v-card-actions>
       <v-btn
@@ -15,18 +15,17 @@
 </template>
 
 <script>
-
 export default {
   name: 'Logout',
   computed: {
     login() {
       return this.$store.state.admin.login;
-    }
+    },
   },
   methods: {
     logout() {
       this.$store.commit('admin/LOGOUT');
-    }
+    },
   },
 };
 </script>

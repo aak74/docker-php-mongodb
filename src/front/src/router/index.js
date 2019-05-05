@@ -7,7 +7,6 @@ import Project from '../pages/Project.vue';
 import ServerStatus from '../pages/ServerStatus.vue';
 import Login from '../pages/Login.vue';
 import Logout from '../pages/Logout.vue';
-import Welcome from '../pages/Welcome.vue';
 import Users from '../pages/Users.vue';
 import Blocked from '../pages/Blocked.vue';
 
@@ -43,11 +42,6 @@ const routes = [
     path: '/logout',
     name: 'Logout',
     component: Logout,
-  },
-  {
-    path: '/Welcome',
-    name: 'Welcome',
-    component: Welcome,
   },
   {
     path: '/Users',

@@ -1,16 +1,16 @@
 <template>
   <div>
-      <welcome/>
+    <h2>Добро пожаловать {{ login }}</h2>
   </div>
 </template>
 
 <script>
-import Welcome from '../components/Welcome.vue';
-
 export default {
   name: 'Dashboard',
-  components: {
-    Welcome,
+  data() {
+    return {
+      login: this.$store.state.admin.login,
+    };
   },
 };
 </script>

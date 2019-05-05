@@ -2,136 +2,22 @@
   <div>
     <v-container>
       <h2>Проекты</h2>
-      <v-layout row align-end>
-        <v-flex xs6>
-          <v-dialog
-            v-model="showDialog"
-            width="500"
-          >
-            <v-btn
-              slot="activator"
-              color="green lighten-2"
-              @click="addItem"
-              class="mb15"
-              dark
-            >
-              Добавить
-            </v-btn>
-            <v-card>
-              <v-card-title
-                class="headline grey lighten-2"
-                primary-title
-              >
-                {{ modalTitle }}
-              </v-card-title>
-              <v-card-text>
-                <v-form v-model="formValid">
-                  <v-text-field
-                    v-model="name"
-                    label="Название"
-                    :rules="nameRules"
-                    :disabled="disableInput"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="url"
-                    label="URL"
-                    :rules="urlRules"
-                    :disabled="disableInput"
-                    required
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="text"
-                    label="text"
-
-                    :disabled="disableInput"
-
-                  ></v-text-field>
-                  <label v-if="showPassword" class="checkbox">SSH
-                    <input type="checkbox" id="checkbox"  for="checkbox" v-model="SSH">
-                    <span class="checkmark"></span>
-                  </label>
-                  <div v-if="SSH">
-                    <v-text-field
-                    v-model="host"
-                    label="host"
-                    v-if="showPassword"
-                  ></v-text-field>
-                    <v-text-field
-                    v-model="user"
-                    label="user"
-                    v-if="showPassword"
-                  ></v-text-field>
-                    <v-text-field
-                    v-model="port"
-                    label="port"
-                    v-if="showPassword"
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="passwordSSH"
-                    label="password for SSH"
-                    v-if="showPassword"
-                  ></v-text-field>
-                  <v-text-field
-                    v-model="path"
-                    label="path"
-                    v-if="showPassword"
-                  ></v-text-field>
-                  </div>
-                  <div v-if="!showPassword">
-                  <chart
-                    v-if="dataCollection"
-                    :chart-data="dataCollection"
-                    :width="600"
-                    :height="200"
-                  />
-                  </div>
-                </v-form>
-              </v-card-text>
-              <v-divider></v-divider>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                  color="red"
-                  flat
-                  @click="showDialog = false"
-                  v-if="showPassword"
-                >
-                  Отмена
-                </v-btn>
-                <v-btn
-                  color="green"
-                  flat
-                  @click="confirmModalAction"
-                  :disabled="!formValid"
-                >
-                  {{ modalSubmitButton }}
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-btn
-            color="blue lighten-2"
-            @click="sendRequest"
-            class="mb15"
-            dark
-          >
-            Обновить
-          </v-btn>
-        </v-flex>
-      </v-layout>
+      <projects-actions
+        @add="add"
+        @refresh="refresh"
+      />
       <data-table
-      :headers="headers"
-      :items="items"
-      :loading="false"
-      v-if="isShow"
-      :transforms="transforms"
-      :hide-actions="false"
-      :controls="controls"
-      @click="clickItem"
-      @editItem="editItem"
-      @deleteItem="deleteItem"
-      @backupItem="backupItem"
+        :headers="headers"
+        :items="items"
+        :loading="false"
+        v-if="isShow"
+        :transforms="transforms"
+        :hide-actions="false"
+        :controls="controls"
+        @click="clickItem"
+        @editItem="editItem"
+        @deleteItem="deleteItem"
+        @backupItem="backupItem"
       />
     </v-container>
   </div>
@@ -140,51 +26,18 @@
 <script>
 /* eslint no-underscore-dangle: ["error",{"allow":["_id"]}] */
 
+import ProjectsActions from '../components/ProjectsActions.vue';
 import DataTable from '../components/admin/DataTable.vue';
-import chart from '../components/charts.vue';
 
 export default {
   name: 'Projects',
   components: {
     DataTable,
-    chart,
+    ProjectsActions,
   },
-  data() {
-    return {
-      data: Object,
-      autoupdate: '',
-      update: true,
-      SSH: false,
-      showDialog: false,
-      formValid: false,
-      showPassword: true,
-      id: '',
-      name: '',
-      nameRules: [
-        v => !!v || 'Название обязательно',
-      ],
-      url: '',
-      urlRules: [
-        v => !!v || 'URL адрес обязателен',
-      ],
-      text: '',
-      password: '',
-      passwordRules: [
-        v => !!v || 'Пароль обязателен',
-      ],
-      host: '',
-      user: '',
-      port: '',
-      passwordSSH: '',
-      path: '',
-      disableInput: false,
-      modalTitle: 'Добавить новый проект',
-      modalSubmitButton: 'Добавить',
-      modalAction: '',
-    };
-  },
+
   methods: {
-    sendRequest() {
+    refresh() {
       this.$store.dispatch('loadProjects');
     },
     loadProject() {
@@ -200,7 +53,7 @@ export default {
       this.showPassword = false;
       document.location.href = `/projects/${item._id}`;
     },
-    addItem() {
+    add() {
       this.modalTitle = 'Добавить новый проект';
       this.modalSubmitButton = 'Добавить';
       this.modalAction = 'Add';
@@ -295,7 +148,7 @@ export default {
         path: this.path,
       });
       this.showDialog = false;
-      this.sendRequest();
+      this.refresh();
     },
 
     deleteProject() {
@@ -308,7 +161,7 @@ export default {
         password: this.password,
       });
       this.showDialog = false;
-      this.sendRequest();
+      this.refresh();
     },
 
     saveProject() {
@@ -326,7 +179,7 @@ export default {
         path: this.path,
       });
       this.showDialog = false;
-      this.sendRequest();
+      this.refresh();
     },
 
     backupProject() {
@@ -387,7 +240,7 @@ export default {
     },
   },
   created() {
-    this.sendRequest();
+    this.refresh();
   },
   mounted() {
     document.addEventListener('keydown', e => {
