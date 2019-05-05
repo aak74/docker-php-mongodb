@@ -1,4 +1,4 @@
-import { createContainer, asValue, asClass } from 'awilix';
+import { createContainer, asClass, Lifetime } from 'awilix';
 
 import Loader from './Loader';
 import Token from './TokenLS';
@@ -13,11 +13,11 @@ const container = createContainer();
 
 container.register({
   token: asClass(Token),
-  loader: asClass(Loader),
+  loader: asClass(Loader).setLifetime(Lifetime.SINGLETON),
 });
 
-// const loader = window.$container.resolve('loader');
-// loader.login({ login: 'foo', password: 'foo' });
-// window.$container.build();
+// const loader = container.resolve('loader');
+
+// export loader;
 
 export default container;

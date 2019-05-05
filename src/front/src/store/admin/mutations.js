@@ -62,6 +62,12 @@ export default {
     router.push('/login');
   },
 
+  TOKEN_REFRESHED(state, user) {
+    console.log('TOKEN_REFRESHED');
+
+    LOGIN_SUCCESS(state, user.login);
+  },
+
   LOADING_ERROR(state, error) {
     console.error('LOADING_ERROR', error);
     state.status.loading = false;
@@ -105,6 +111,7 @@ export default {
   LOADED_LEFT_MENU,
 
   TOKEN_VALID(state, user) {
+    debugger;
     LOGIN_SUCCESS(state, user.login);
   },
 

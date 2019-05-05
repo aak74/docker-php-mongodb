@@ -1,8 +1,10 @@
 /* eslint-disable class-methods-use-this */
 import axios from 'axios';
+import EventEmitter from 'eventemitter3';
 
-class Loader {
+class Loader extends EventEmitter {
   constructor({ token }, options = {}) {
+    super();
     this.token = token;
     this.client = options.client || axios.create();
     this.urls = options.urls || {
@@ -24,9 +26,9 @@ class Loader {
 
   async login(credentials) {
     // console.log('api login', credentials);
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async resolve => {
       const data = await this.post(this.urls.login, { data: credentials });
-      console.log('login data', data);
+      // console.log('login data', data);
 
       // debugger;
       this.updateTokens(data);
@@ -75,13 +77,16 @@ class Loader {
     try {
       response = await this.client.request(params);
     } catch (error) {
-      // console.log('request error', error);
+      // console.log('request error', error, this.token);
       if (!error.response || (error.response.status !== 401)) {
         throw error;
       }
+      // console.log('');
+
       if (!this.token.refreshToken) {
         throw error;
       }
+      // debugger;
       this.addRequestToQueue({
         method, uri, config, cb,
       });
@@ -134,6 +139,10 @@ class Loader {
       params.headers = { Authorization: `Bearer ${this.token.token}` };
     }
 
+    if (uri === this.urls.refreshToken && this.token.refreshToken) {
+      params.headers = { Authorization: `Bearer ${this.token.refreshToken}` };
+    }
+
     return params;
   }
 
@@ -156,19 +165,22 @@ class Loader {
 
     let data = null;
     try {
-      data = await this.post(this.urls.refreshToken, { data: { refreshToken: this.token.refreshToken } });
+      data = await this.post(this.urls.refreshToken);
     } catch (error) {
       console.log('getRefreshToken error', error);
       return;
     }
-    // console.log('getRefreshToken data', data);
+    console.log('getRefreshToken data', data);
     this.updateTokens(data);
     this.executeRequests();
     this.refreshRequest = false;
+    console.log('getRefreshToken before emit');
+    this.emit('refreshToken', data.user);
   }
 
   executeRequests() {
     let request = null;
+    // eslint-disable-next-line no-cond-assign
     while (request = this.requests.shift()) {
       this.request(request.method, request.uri, request.config, request.cb);
     }

@@ -46,12 +46,20 @@ class Router {
   }
 
 
-  getToken(login) {
-    return this.auth.getToken(login);
+  getToken(user) {
+    return this.auth.getToken(user);
   }
 
-  getRefreshToken(login) {
-    return this.auth.getRefreshToken(login);
+  getRefreshToken(user) {
+    return this.auth.getRefreshToken(user);
+  }
+
+  getTokensAndUser(user) {
+    return {
+      token: this.getToken(user),
+      refreshToken: this.getRefreshToken(user),
+      user,
+    };
   }
 
   async run() {
@@ -93,15 +101,9 @@ class Router {
         return;
       }
 
-      const token = this.getToken(user);
-      const refreshToken = this.getRefreshToken(user);
-      
       res.status(200).json({ 
         status: 'ok',
-        data: {
-          token, 
-          refreshToken 
-        }
+        data: this.getTokensAndUser(user)
       });
     });
 
@@ -109,33 +111,18 @@ class Router {
       res.status(200).json({ status: 'ok' , data: req.user });
     });
 
-    this.app.post('/auth/refreshToken', bodyParser.json(), authMiddleware, async (req, res) => {
+    this.app.post('/auth/refreshToken', authMiddleware, async (req, res) => {
     // this.app.post('/auth/refreshToken', async (req, res) => {
-      // console.log('refreshToken', req.body);
+      this.logger.debug('refreshToken', req.user);
       if (!req.user) {
         res.json({ message: 'User not found' });
         return;
       }
 
-      if (req.user.tokenToRefresh === req.body.token) {
-        const self = this;
-
-        const params = {
-          login: req.user.login,
-        };
-        const user = await self.userController.login(params);
-        if (user.blocked) {
-          res.json({ message: 'blocked', name: user.login, token, refreshToken });
-          return;
-        }
-
-        const token = this.getToken(user);
-        const refreshToken = this.getRefreshToken(user, token);
-
-        res.json({ message: 'ok', name: user.login, token, refreshToken });
-        return;
-      }
-      res.send({ status: 'failed' });
+      res.status(200).json({ 
+        status: 'ok',
+        data: this.getTokensAndUser(req.user)
+      });
     });
     
     this.app.get('/users', async (req, res) => {

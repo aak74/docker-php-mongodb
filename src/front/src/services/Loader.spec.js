@@ -15,7 +15,7 @@ const ctx = {
   LOGIN_REQUEST: { login: 'foo', password: 'foo' },
   LOGIN_RESPONSE: getResponse({ token: 'TOKEN', refreshToken: 'REFRESH_TOKEN' }),
   REFRESH_REQUEST: { refreshToken: 'REFRESH_TOKEN' },
-  REFRESH_RESPONSE: getResponse({ token: 'TOKEN2', refreshToken: 'REFRESH_TOKEN2' }),
+  REFRESH_RESPONSE: getResponse({ token: 'TOKEN2', refreshToken: 'REFRESH_TOKEN2', user: { login: 'foo', id: 1 } }),
   TOKEN: { token: 'TOKEN', refreshToken: 'REFRESH_TOKEN' },
   urls: {
     login: '/auth/login',
@@ -79,7 +79,7 @@ test('Correctly retries request when got 401 with new token', async () => {
   const { mock, loader } = ctx;
 
   mock
-    .onPost(ctx.urls.refreshToken, ctx.REFRESH_REQUEST)
+    .onPost(ctx.urls.refreshToken)
     .replyOnce(200, ctx.REFRESH_RESPONSE);
 
   mock.onGet('/users').reply(config => {
@@ -104,7 +104,7 @@ test('Does not refresh token more than once', async () => {
   const { mock, loader } = ctx;
 
   mock
-    .onPost(ctx.urls.refreshToken, ctx.REFRESH_REQUEST)
+    .onPost(ctx.urls.refreshToken)
     .replyOnce(200, ctx.REFRESH_RESPONSE);
 
   mock.onGet('/users').reply(config => {
@@ -127,4 +127,38 @@ test('Correctly fails request when got non-401 error', async () => {
   const { mock, loader } = ctx;
   mock.onGet('/users').reply(404);
   await expect(loader.get('users')).rejects.toThrow('Request failed with status code 404');
+});
+
+test('Refresh token with refreshToken in header', async () => {
+  const { mock, loader } = ctx;
+
+  mock.onPost(ctx.urls.refreshToken)
+    .reply(config => {
+      const { Authorization: auth } = config.headers;
+      if (auth === `Bearer ${ctx.LOGIN_RESPONSE.data.refreshToken}`) {
+        return [200, []];
+      }
+      return [401];
+    });
+
+  await loader.post(ctx.urls.refreshToken);
+
+  expect(mock.history.post.length).toBe(1);
+  expect(mock.history.post[0].headers.Authorization).toBe(`Bearer ${ctx.LOGIN_RESPONSE.data.refreshToken}`);
+});
+
+test('Emit event refreshToken after refreshToken', async () => {
+  const { mock, loader } = ctx;
+
+  mock
+    .onPost(ctx.urls.refreshToken)
+    .replyOnce(200, ctx.REFRESH_RESPONSE);
+
+  let userLogin = '';
+  loader.on('refreshToken', user => {
+    userLogin = user.login;
+  });
+  await loader.getRefreshToken();
+
+  expect(userLogin).toBe(ctx.REFRESH_RESPONSE.data.user.login);
 });

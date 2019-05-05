@@ -50,8 +50,11 @@ const loadEntity = (store, { entityName }) => {
 };
 
 const checkToken = ({ commit }) => {
+  console.log('checkToken 0', user);
   loader.get('auth/checkToken')
     .then(user => {
+      console.log('checkToken', user);
+
       commit('TOKEN_VALID', user);
     })
     .catch(err => {
@@ -71,9 +74,17 @@ const login = ({ commit }, credentials) => {
       commit('LOGIN_FAIL', error);
     });
 };
+
 export default {
   loadAll,
   loadEntity,
   checkToken,
   login,
+  setListeners({ commit }) {
+    console.log('setListeners');
+    loader.on('refreshToken', user => {
+      console.log('loader.on refreshToken');
+      commit('TOKEN_REFRESHED', user);
+    });
+  },
 };

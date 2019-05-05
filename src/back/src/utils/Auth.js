@@ -24,8 +24,8 @@ class Auth {
   getToken(payload) {
     return jwt.sign(
       {
-        // exp: Math.floor(Date.now() / 1000) + 5,
-        exp: Math.floor(Date.now() / 1000) + (60 * 60),
+        exp: Math.floor(Date.now() / 1000) + 15,
+        // exp: Math.floor(Date.now() / 1000) + (60 * 60),
         data: payload,
       },
       this.options.secretOrKey
