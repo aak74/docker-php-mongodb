@@ -50,16 +50,19 @@ const loadEntity = (store, { entityName }) => {
 };
 
 const checkToken = ({ commit }) => {
-  console.log('checkToken 0', user);
+  console.log('checkToken 0');
   loader.get('auth/checkToken')
     .then(user => {
       console.log('checkToken', user);
-
-      commit('TOKEN_VALID', user);
+      if (!user) {
+        commit('TOKEN_INVALID');
+      } else {
+        commit('TOKEN_VALID', user);
+      }
     })
     .catch(err => {
       console.log('checkToken error', err);
-      if (err.response.status === 401) {
+      if (err.response && err.response.status === 401) {
         commit('TOKEN_INVALID');
       }
     });

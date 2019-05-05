@@ -111,7 +111,7 @@ export default {
   LOADED_LEFT_MENU,
 
   TOKEN_VALID(state, user) {
-    debugger;
+    // debugger;
     LOGIN_SUCCESS(state, user.login);
   },
 

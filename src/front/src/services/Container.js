@@ -12,7 +12,7 @@ import Token from './TokenLS';
 const container = createContainer();
 
 container.register({
-  token: asClass(Token),
+  token: asClass(Token).setLifetime(Lifetime.SINGLETON),
   loader: asClass(Loader).setLifetime(Lifetime.SINGLETON),
 });
 
