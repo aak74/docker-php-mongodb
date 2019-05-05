@@ -30,7 +30,7 @@ export default [
         title: 'Войти',
         link: '/login',
         description: null,
-        isUnauthorized: true,
+        forUnauthorized: true,
       },
     ],
   },

@@ -30,7 +30,7 @@ window.$vue = new Vue({
 });
 
 store.dispatch('admin/loadAll');
-store.dispatch('login', { login: 'foo', password: 'foo' });
+// store.dispatch('login', { login: 'foo', password: 'foo' });
 /*
 if (store.state.admin.isUnauthorized) {
   router.push('/login');

@@ -5,22 +5,23 @@ import mockEntities from '../../mock/admin/entities';
 import mockExtraMenuItem from '../../mock/admin/extraMenuItem';
 import mockLeftMenu from '../../mock/admin/leftMenu';
 
-const loadEntitiesFromMock = store => {
-  setTimeout(() => {
-    // store.commit('LOADED_ENTITIES', mockEntities);
-    store.commit('LOADED_ALL', {
-      entities: mockEntities,
-      extraMenuItem: mockExtraMenuItem,
-      leftMenu: mockLeftMenu,
-    });
-  }, 200);
+const loadEntitiesFromMock = ({ commit }) => {
+  commit('LOADED_ALL', {
+    entities: mockEntities,
+    extraMenuItem: mockExtraMenuItem,
+    leftMenu: mockLeftMenu,
+  });
 };
 
-const loadEntitiesFromBackend = store => {
+const loadEntitiesFromBackend = ({ commit }) => {
   api.getData('get', 'admin/all/')
     .then(data => {
-      store.commit('LOADED_ALL', data);
+      commit('LOADED_ALL', data);
     });
+};
+
+const loadLeftMenu = ({ commit }) => {
+  commit('LOADED_LEFT_MENU', mockLeftMenu);
 };
 
 /**
@@ -28,7 +29,7 @@ const loadEntitiesFromBackend = store => {
  * @param {store} store
  */
 const loadAll = store => {
-  //console.log('loadAll', store, store.state.loadFromBackend);
+  // console.log('loadAll', store, store.state.loadFromBackend);
   if (!store.state.loadFromBackend) {
     loadEntitiesFromMock(store);
   } else {
@@ -53,4 +54,5 @@ const loadEntity = (store, { entityName }) => {
 export default {
   loadAll,
   loadEntity,
+  loadLeftMenu,
 };

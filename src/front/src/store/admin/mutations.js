@@ -3,6 +3,7 @@
 import Entity from '../../pages/Entity.vue';
 import router from '../../router';
 import entityMethods from './entity';
+import getLeftMenu from '../../services/GetLeftMenu';
 
 const SET_CURRENT_ENTITY = (state, entity) => {
   // console.log('SET_CURRENT_ENTITY', entity);
@@ -33,7 +34,7 @@ const LOADED_ENTITIES = (state, entities) => {
 
 const LOADED_LEFT_MENU = (state, menuItems) => {
   console.log('LOADED_LEFT_MENU', menuItems, state);
-  state.leftMenu = menuItems;
+  state.leftMenu = getLeftMenu(menuItems, state.isUnauthorized);
   const routes = menuItems.reduce((carry, groupMenu) => {
     // console.log('reduce', carry, groupMenu);
 
@@ -110,4 +111,5 @@ export default {
   // LOADED_ENTITIES,
   LOADING_SUCCESS,
   SET_CURRENT_ENTITY,
+  LOADED_LEFT_MENU,
 };

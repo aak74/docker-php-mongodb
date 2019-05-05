@@ -2,27 +2,7 @@
 
 export default {
   leftMenu(state) {
-    return state.leftMenu.map(group => {
-      if (!group.items || !group.items.reduce) {
-        return group;
-      }
-      group.items = group.items.reduce((carry, item) => {
-        // console.log('item', item.isUnauthorized, state.isUnauthorized);
-        if (!item.isUnauthorized && state.isUnauthorized) {
-          return carry;
-        }
-        if (item.isUnauthorized && !state.isUnauthorized) {
-          return carry;
-        }
-
-        if (!item.description) {
-          item.description = item.title;
-        }
-        carry.push(item);
-        return carry;
-      }, []);
-      return group;
-    });
+    return state.leftMenu;
   },
 
   items(state) {
