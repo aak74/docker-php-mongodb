@@ -7,9 +7,11 @@ function stringify(data) {
 }
 
 class Loader extends EventEmitter {
-  constructor({ token, urls, server, client, tokenNames }) {
+  constructor({
+    token, urls, server, client, tokenNames,
+  }) {
     super();
-    
+
     this.token = token;
     this.client = client || axios.create();
     this.urls = urls || {
@@ -36,7 +38,7 @@ class Loader extends EventEmitter {
   * @param {Boolean} needToSave
   * @example
   *   // for body params
-  *   login({ login: 'foo', password: 'bar' }) 
+  *   login({ login: 'foo', password: 'bar' })
   *   // for x-www-form-urlencoded params
   *   login({ data: { login: 'foo', password: 'bar' }, form: true })
   */
@@ -62,8 +64,6 @@ class Loader extends EventEmitter {
   }
 
   getTokensObject(tokens) {
-    console.log('getTokensObject', tokens);
-    
     return {
       token: tokens[this.tokenNames.token],
       refreshToken: tokens[this.tokenNames.refreshToken],

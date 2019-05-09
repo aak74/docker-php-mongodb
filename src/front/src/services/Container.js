@@ -1,6 +1,6 @@
 import axios from 'axios';
 import {
- createContainer, asClass, Lifetime, asValue 
+  createContainer, asClass, Lifetime, asValue,
 } from 'awilix';
 
 import Loader from './Loader';
