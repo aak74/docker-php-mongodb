@@ -1,23 +1,20 @@
-import { createContainer, asClass, Lifetime } from 'awilix';
+import axios from 'axios';
+import {
+ createContainer, asClass, Lifetime, asValue 
+} from 'awilix';
 
 import Loader from './Loader';
 import Token from './TokenLS';
 
-// const token = new Token();
-// const loader = new Loader({ token });
-
-// console.log({ createContainer });
-
-
 const container = createContainer();
 
 container.register({
+  urls: asValue({ login: 'token', refreshToken: '' }),
+  server: asValue({ prefix: '/api/v1/', timeout: 30000 }),
+  tokenNames: asValue({ token: 'token', refreshToken: 'refreshToken' }),
+  client: asValue(axios),
   token: asClass(Token).setLifetime(Lifetime.SINGLETON),
   loader: asClass(Loader).setLifetime(Lifetime.SINGLETON),
 });
-
-// const loader = container.resolve('loader');
-
-// export loader;
 
 export default container;

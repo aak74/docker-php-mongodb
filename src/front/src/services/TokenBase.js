@@ -5,6 +5,7 @@ class TokenBase {
   constructor({ token, refreshToken }) {
     this._token = token;
     this._refreshToken = refreshToken;
+    this.needToSave = false;
   }
 
   get token() {
@@ -12,7 +13,9 @@ class TokenBase {
   }
 
   set token(token) {
-    this.saveToken(token);
+    if (this.needToSave) {
+      this.saveToken(token);
+    }
     this._token = token;
   }
 
@@ -24,11 +27,17 @@ class TokenBase {
   }
 
   set refreshToken(refreshToken) {
-    this.saveRefreshToken(refreshToken);
+    if (this.needToSave) {
+      this.saveRefreshToken(refreshToken);
+    }
     this._refreshToken = refreshToken;
   }
 
   saveRefreshToken() {
+  }
+
+  setNeedToSave(needToSave) {
+    this.needToSave = needToSave;
   }
 }
 

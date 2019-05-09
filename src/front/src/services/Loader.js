@@ -2,37 +2,55 @@
 import axios from 'axios';
 import EventEmitter from 'eventemitter3';
 
+function stringify(data) {
+  return Object.keys(data).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(data[k])}`).join('&');
+}
+
 class Loader extends EventEmitter {
-  constructor({ token }, options = {}) {
+  constructor({ token, urls, server, client, tokenNames }) {
     super();
+    
     this.token = token;
-    this.client = options.client || axios.create();
-    this.urls = options.urls || {
+    this.client = client || axios.create();
+    this.urls = urls || {
       login: 'auth/login',
       refreshToken: 'auth/refreshToken',
     };
-    this.server = options.server || {
+    this.server = server || {
       prefix: '/api/v1/',
       timeout: 30000,
     };
 
-    this.credentials = options.credentials || {
-      login: 'foo',
-      password: 'foo',
+    this.tokenNames = tokenNames || {
+      token: 'token',
+      refreshToken: 'refreshToken',
     };
 
     this.requests = [];
   }
 
-  async login(credentials) {
-    // console.log('api login', credentials);
+  /**
+  * @param {Object} credentials
+  * @config {Object} credentials
+  * @config { data: credentials, form: true }
+  * @param {Boolean} needToSave
+  * @example
+  *   // for body params
+  *   login({ login: 'foo', password: 'bar' }) 
+  *   // for x-www-form-urlencoded params
+  *   login({ data: { login: 'foo', password: 'bar' }, form: true })
+  */
+  async login(credentials, needToSave) {
+    const params = (credentials && credentials.form)
+      ? credentials
+      : { data: credentials };
+    // console.log('api login', params);
     return new Promise(async resolve => {
-      const data = await this.post(this.urls.login, { data: credentials });
-      // console.log('login data', data);
-
-      // debugger;
-      this.updateTokens(data);
-      resolve();
+      const data = await this.post(this.urls.login, params);
+      console.log('login data', data);
+      this.setNeedToSave(needToSave);
+      this.updateTokens(this.getTokensObject(data));
+      resolve(data);
     });
   }
 
@@ -41,6 +59,19 @@ class Loader extends EventEmitter {
       token: null,
       refreshToken: null,
     });
+  }
+
+  getTokensObject(tokens) {
+    console.log('getTokensObject', tokens);
+    
+    return {
+      token: tokens[this.tokenNames.token],
+      refreshToken: tokens[this.tokenNames.refreshToken],
+    };
+  }
+
+  setNeedToSave(needToSave) {
+    this.token.setNeedToSave(needToSave);
   }
 
   updateTokens({ token, refreshToken }) {
@@ -69,28 +100,28 @@ class Loader extends EventEmitter {
       if (!error.response || (error.response.status !== 401)) {
         throw error;
       }
-      // console.log('');
 
-      if (!this.token.refreshToken) {
-        throw error;
+      if (!this.urls.refreshToken || !this.token.refreshToken) {
+        this.emit('Unauthorized');
+        return false;
       }
-      // debugger;
+
       this.addRequestToQueue({
         method, uri, config, cb,
       });
       await this.getRefreshToken();
-      // store.commit('admin/LOADING_ERROR', error);
       return false;
     }
     // console.log({ response });
 
     if (response) {
-      if (response.data.status !== 'ok') {
-        // store.commit('admin/LOADING_ERROR', { message: 'Response status is not ok', code: 406 });
+      if (response.data.status && response.data.status !== 'ok') {
         return false;
       }
 
-      return response.data.data;
+      return response.data.data
+        ? response.data.data
+        : response.data;
     }
     return false;
   }
@@ -117,21 +148,22 @@ class Loader extends EventEmitter {
       method,
       url,
       data: config.data || null,
-      // headers: {
-      //   Accept: 'application/json',
-      //   'Content-Type': 'application/json',
-      // },
+      headers: {},
       timeout: config.timeout || this.server.timeout,
     };
 
     if (uri !== this.urls.refreshToken && this.token.token) {
-      params.headers = { Authorization: `Bearer ${this.token.token}` };
+      params.headers.Authorization = `Bearer ${this.token.token}`;
     }
 
     if (uri === this.urls.refreshToken && this.token.refreshToken) {
-      params.headers = { Authorization: `Bearer ${this.token.refreshToken}` };
+      params.headers.Authorization = `Bearer ${this.token.refreshToken}`;
     }
 
+    if (config.form) {
+      params.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      params.data = stringify(params.data);
+    }
     return params;
   }
 
@@ -145,11 +177,9 @@ class Loader extends EventEmitter {
     }
     this.refreshRequest = true;
 
-    console.log('getRefreshToken', this.token);
     if (!this.token.refreshToken) {
-      await this.login(this.credentials);
-      this.executeRequests();
-      // throw new Error('Refresh Token doesn`t exists');
+      this.emit('Unauthorized');
+      return;
     }
 
     let data = null;
@@ -159,11 +189,9 @@ class Loader extends EventEmitter {
       console.log('getRefreshToken error', error);
       return;
     }
-    console.log('getRefreshToken data', data);
     this.updateTokens(data);
     this.executeRequests();
     this.refreshRequest = false;
-    console.log('getRefreshToken before emit');
     this.emit('refreshToken', data.user);
   }
 

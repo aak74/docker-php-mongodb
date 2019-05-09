@@ -21,3 +21,20 @@ test('Token and RefreshToken are same as set after constructor', async () => {
   token.refreshToken = 'newRefreshToken';
   expect(token.refreshToken).toBe('newRefreshToken');
 });
+
+test('Save token by default', async () => {
+  const token = new Token({ token: 'token', refreshToken: 'refreshToken' });
+  token.saveToken = jest.fn();
+  token.token = 'newToken';
+   
+  expect(token.saveToken.mock.calls.length).toBe(0);
+});
+
+test('Save token only after setNeedToSave', async () => {
+  const token = new Token({ token: 'token', refreshToken: 'refreshToken' });
+  token.setNeedToSave(true);
+  token.saveToken = jest.fn();
+  token.token = 'newToken';
+   
+  expect(token.saveToken.mock.calls.length).toBe(1);
+});
