@@ -9,7 +9,7 @@ const loadStatus = ({ commit }) => {
 };
 
 const loadProjects = ({ commit }) => {
-  console.log('loadProjects');
+  // console.log('loadProjects');
   loader.get('projects').then(data => {
     commit('LOADED_PROJECTS', data);
   });

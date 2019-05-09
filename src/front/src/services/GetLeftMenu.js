@@ -1,5 +1,5 @@
 export default (allMenuItems, isUnauthorized) => {
-  console.log('getLeftMenu', allMenuItems);
+  // console.log('getLeftMenu', allMenuItems);
   if (!allMenuItems || !allMenuItems.map) {
     throw new Error('Bad parameters');
   }

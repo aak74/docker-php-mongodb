@@ -57,17 +57,17 @@ export default {
         {
           type: 'input',
           inputType: 'text',
-          label: 'Name',
+          label: 'Название',
           model: 'name',
-          placeholder: 'Project name',
+          placeholder: 'Название проекта',
           required: true,
         },
         {
           type: 'input',
           inputType: 'text',
-          label: 'Url',
+          label: 'URL',
           model: 'url',
-          placeholder: 'Enter url',
+          placeholder: 'url для отслеживания доступности',
           required: true,
         },
         {
@@ -75,10 +75,10 @@ export default {
           inputType: 'textarea',
           label: 'Описание',
           model: 'text',
-          placeholder: 'Enter url',
+          placeholder: 'Краткое описание проекта',
           required: true,
         },
-        /* {
+        {
           type: 'input',
           inputType: 'password',
           label: 'Password',
@@ -88,6 +88,7 @@ export default {
           hint: 'Minimum 6 characters',
           // validator: VueFormGenerator.validators.string
         },
+        /*
         {
           type: 'checkbox',
           label: 'isActive',

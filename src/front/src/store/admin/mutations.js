@@ -92,7 +92,7 @@ export default {
   },
 
   LOADED_WORKLOG(state, payload) {
-    console.log('LOADED_WORKLOG', payload);
+    // console.log('LOADED_WORKLOG', payload);
 
     state.data.worklog = payload.worklog;
     state.data.incomesByMonth = payload.incomesByMonth;
@@ -111,7 +111,7 @@ export default {
   },
 
   TOKEN_INVALID() {
-    console.log('TOKEN_INVALID');
+    // console.log('TOKEN_INVALID');
     router.push('/login');
   },
 

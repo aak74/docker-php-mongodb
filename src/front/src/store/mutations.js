@@ -8,7 +8,7 @@ dayjs.extend(relativeTime);
 
 export default {
   STATUS_LOADED(state, payload) {
-    console.log('STATUS_LOADED', payload);
+    // console.log('STATUS_LOADED', payload);
 
     state.appStatus = payload;
   },
@@ -38,7 +38,7 @@ export default {
   },
 
   LOADED_PROJECTS(state, data) {
-    console.log('LOADED', data);
+    // console.log('LOADED', data);
     if (data) {
       state.projects = data.map(elem => {
         if (elem.status && elem.status.lastUpdate) {
@@ -58,7 +58,7 @@ export default {
   },
 
   LOADED_PROJECT(state, data) {
-    console.log('LOADED_PROJECT', data);
+    // console.log('LOADED_PROJECT', data);
     if (data) {
       state.project.current = data;
     }
@@ -95,7 +95,7 @@ export default {
   },
 
   LOGIN_FAIL() {
-    console.log('LOGIN FAIL');
+    // console.log('LOGIN FAIL');
     localStorage.setItem('loginProcces', false);
   },
 

@@ -1,29 +1,44 @@
 <template>
-  <div>
-    <component
-      v-for="field in fields"
-      :is="'form-' + field.attrs.type"
-      :field="field"
-    />
-    <form-buttons :buttons="buttons" />
-  </div>
+  <v-card>
+    <v-card-title class="headline">{{ title }}</v-card-title>
+    <v-card-text>
+      <component
+        v-for="field in fields"
+        :key="field.model"
+        :is="'form-' + field.attrs.type"
+        :field="field"
+      />
+    </v-card-text>
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <form-button
+        v-for="button in buttons"
+        :key="button.emit"
+        :button="button"
+        @click="emit($event)"
+      />
+    </v-card-actions>
+  </v-card>
 </template>
 
 <script>
-import FormButtons from './FormButtons.vue';
+import FormButton from './FormButton.vue';
 import FormInput from './FormInput.vue';
 import FormCheckbox from './FormCheckbox.vue';
 
 export default {
   props: [
     'data',
-    'schema'
+    'schema',
+    'title',
+    'buttons',
   ],
   components: {
-    FormButtons,
+    FormButton,
     FormInput,
     FormCheckbox,
   },
+
   computed: {
     fields() {
       return this.schema.fields.reduce((carry, item) => {
@@ -35,15 +50,12 @@ export default {
         return carry;
       }, []);
     },
-    buttons() {
-      return [
-        {
-          color: 'success',
-          title: 'Update',
-          // disabled: true,
-        }
-      ];
+  },
+
+  methods: {
+    emit(event) {
+      this.$emit('emit', event);
     },
-  }
-}
+  },
+};
 </script>

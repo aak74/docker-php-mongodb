@@ -50,10 +50,10 @@ const loadEntity = (store, { entityName }) => {
 };
 
 const checkToken = ({ commit }) => {
-  console.log('checkToken 0');
+  // console.log('checkToken 0');
   loader.get('auth/checkToken')
     .then(user => {
-      console.log('checkToken', user);
+      // console.log('checkToken', user);
       if (!user) {
         commit('TOKEN_INVALID');
       } else {
@@ -61,7 +61,7 @@ const checkToken = ({ commit }) => {
       }
     })
     .catch(err => {
-      console.log('checkToken error', err);
+      // console.log('checkToken error', err);
       if (err.response && err.response.status === 401) {
         commit('TOKEN_INVALID');
       }
@@ -69,10 +69,8 @@ const checkToken = ({ commit }) => {
 };
 
 const login = ({ commit, state }, credentials) => {
-  console.log('login', credentials);
   loader.login(credentials, state.user.isRemember)
-    .then(data => {
-      console.log('actions login', { data });
+    .then(() => {
       commit('LOGIN_SUCCESS', credentials.login);
     })
     .catch(err => {
@@ -93,9 +91,9 @@ export default {
   login,
   logout,
   setListeners({ commit }) {
-    console.log('setListeners');
+    // console.log('setListeners');
     loader.on('refreshToken', user => {
-      console.log('loader.on refreshToken');
+      // console.log('loader.on refreshToken');
       commit('TOKEN_REFRESHED', user);
     });
   },

@@ -1,5 +1,6 @@
 <template>
   <v-btn
+    :data-emit="button.emit"
     :color="button.color"
     :disabled="button.disabled"
     @click="click"
@@ -12,11 +13,9 @@ export default {
     'button',
   ],
   methods: {
-    click() {
-      console.log('button click');
-
-      this.$emit('click');
-    }
-  }
-}
+    click(event) {
+      this.$emit('click', event.target.parentNode.dataset.emit);
+    },
+  },
+};
 </script>

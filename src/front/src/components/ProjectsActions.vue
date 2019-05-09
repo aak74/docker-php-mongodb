@@ -1,32 +1,34 @@
 <template>
   <v-layout row align-end>
-    <v-flex xs6>
-      <v-btn
-        slot="activator"
-        color="green lighten-2"
-        @click="emit('add')"
-        class="mb15"
-        dark
-      >
-        Добавить
-      </v-btn>
-      <v-btn
-        color="blue lighten-2"
-        @click="emit('refresh')"
-        class="mb15"
-        dark
-      >
-        Обновить
-      </v-btn>
-    </v-flex>
+    <v-dialog v-model="dialog" persistent max-width="400">
+      <template v-slot:activator="{ on }">
+        <v-btn color="green" dark v-on="on">Добавить</v-btn>
+      </template>
+      <project-form
+        @emit="emit"
+      />
+    </v-dialog>
+    <v-btn
+      color="blue lighten-2"
+      @click="refresh"
+      dark
+    >
+      Обновить
+    </v-btn>
   </v-layout>
 </template>
 
 <script>
+import ProjectForm from './ProjectForm.vue';
+
 export default {
   name: 'ProjectsActions',
+  components: {
+    ProjectForm,
+  },
   data() {
     return {
+      dialog: false,
       data: Object,
       autoupdate: '',
       update: true,
@@ -59,6 +61,15 @@ export default {
       modalAction: '',
     };
   },
+  methods: {
+    emit(event) {
+      this.dialog = false;
+      this.$emit(event);
+    },
 
+    refresh() {
+      this.$emit('refresh');
+    },
+  },
 };
 </script>
