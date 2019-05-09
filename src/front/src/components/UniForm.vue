@@ -42,7 +42,7 @@ export default {
   computed: {
     fields() {
       return this.schema.fields.reduce((carry, item) => {
-        console.log(item);
+        // console.log(item);
         carry.push({
           value: this.data[item.model],
           attrs: Object.assign({}, item),
