@@ -9,7 +9,7 @@ export default {
   name: 'Dashboard',
   data() {
     return {
-      login: this.$store.state.admin.login,
+      login: this.$store.state.admin.user.login,
     };
   },
 };

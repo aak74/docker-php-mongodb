@@ -27,9 +27,9 @@ export default {
   loadFromBackend: false,
   // isUnauthorized: false,
   isUnauthorized: true,
-  login: 'Guest',
   user: {
     login: 'foo',
     password: 'foo',
+    isRemember: true,
   },
 };

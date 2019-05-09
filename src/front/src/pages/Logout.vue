@@ -19,12 +19,12 @@ export default {
   name: 'Logout',
   computed: {
     login() {
-      return this.$store.state.admin.login;
+      return this.$store.state.admin.user.login;
     },
   },
   methods: {
     logout() {
-      this.$store.commit('admin/LOGOUT');
+      this.$store.dispatch('admin/logout');
     },
   },
 };

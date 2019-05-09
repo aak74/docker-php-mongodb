@@ -1,11 +1,7 @@
 /* eslint-disable no-param-reassign, no-console */
-
 import router from '../../router';
 import getLeftMenu from '../../services/GetLeftMenu';
 import mockLeftMenu from '../../mock/admin/leftMenu';
-import container from '../../services/Container';
-
-const loader = container.resolve('loader');
 
 const SET_CURRENT_ENTITY = (state, entity) => {
   // console.log('SET_CURRENT_ENTITY', entity);
@@ -58,7 +54,6 @@ export default {
   LOGOUT(state) {
     state.isUnauthorized = true;
     LOADED_LEFT_MENU(state, mockLeftMenu);
-    loader.logout();
     router.push('/login');
   },
 

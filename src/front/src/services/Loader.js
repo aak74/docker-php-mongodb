@@ -57,6 +57,7 @@ class Loader extends EventEmitter {
   }
 
   logout() {
+    this.setNeedToSave(true);
     this.updateTokens({
       token: null,
       refreshToken: null,

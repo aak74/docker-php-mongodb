@@ -68,14 +68,22 @@ const checkToken = ({ commit }) => {
     });
 };
 
-const login = ({ commit }, credentials) => {
-  loader.login(credentials)
-    .then(() => {
+const login = ({ commit, state }, credentials) => {
+  console.log('login', credentials);
+  loader.login(credentials, state.user.isRemember)
+    .then(data => {
+      console.log('actions login', { data });
       commit('LOGIN_SUCCESS', credentials.login);
     })
-    .catch(error => {
-      commit('LOGIN_FAIL', error);
+    .catch(err => {
+      console.log({ err });
+      commit('LOGIN_FAIL', err);
     });
+};
+
+const logout = ({ commit }) => {
+  loader.logout();
+  commit('LOGOUT');
 };
 
 export default {
@@ -83,6 +91,7 @@ export default {
   loadEntity,
   checkToken,
   login,
+  logout,
   setListeners({ commit }) {
     console.log('setListeners');
     loader.on('refreshToken', user => {
