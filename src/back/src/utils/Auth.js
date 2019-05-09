@@ -4,9 +4,10 @@ const passport = require('passport');
 const passportJWT = require('passport-jwt');
 
 class Auth {
-  constructor({ logger, userModel }) {
+  constructor({ logger, userModel, tokenTTL }) {
     this.logger = logger;
     this.userModel = userModel;
+    this.tokenTTL = tokenTTL;
     this.init();
   }
 
@@ -24,7 +25,7 @@ class Auth {
   getToken(payload) {
     return jwt.sign(
       {
-        exp: Math.floor(Date.now() / 1000) + 15,
+        exp: Math.floor(Date.now() / 1000) + this.tokenTTL.token,
         // exp: Math.floor(Date.now() / 1000) + (60 * 60),
         data: payload,
       },
@@ -35,7 +36,7 @@ class Auth {
   getRefreshToken(payload) {
     return jwt.sign(
       {
-        exp: Math.floor(Date.now() / 1000) + (60 * 60 * 30),
+        exp: Math.floor(Date.now() / 1000) + this.tokenTTL.refreshToken,
         data: payload,
       },
       this.options.secretOrKey
@@ -47,7 +48,7 @@ class Auth {
       this.options, 
       (payload, cb) => {
         const user = {
-          id: payload.data._id,
+          id: payload.data._id || payload.data.id,
           login: payload.data.login,
         };
         cb(null, user);

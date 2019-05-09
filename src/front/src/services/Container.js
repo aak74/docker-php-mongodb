@@ -9,7 +9,7 @@ import Token from './TokenLS';
 const container = createContainer();
 
 container.register({
-  urls: asValue({ login: 'token', refreshToken: '' }),
+  urls: asValue({ login: 'auth/login', refreshToken: 'auth/refreshToken' }),
   server: asValue({ prefix: '/api/v1/', timeout: 30000 }),
   tokenNames: asValue({ token: 'token', refreshToken: 'refreshToken' }),
   client: asValue(axios),

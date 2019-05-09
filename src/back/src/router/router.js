@@ -187,9 +187,19 @@ class Router {
 
 
     this.app.get('/projects', authMiddleware, async (req, res) => {
-      // this.logger.debug('/projects', req.user);      
-
-      const data = await this.projectController.getList(req.user.id);
+      // this.logger.debug('/projects', req.user);
+      if (!req.user.id) {
+        res.status(404).send({ status: 'ok', data: [] });
+        return;
+      }
+      let data;
+      try {
+        data = await this.projectController.getList(req.user.id);
+      } catch (err) {
+        this.logger.error('err', err)
+        res.status(500).send({ status: 'error' });
+        return;
+      }
       res.send({
         status: 'ok',
         data,

@@ -28,4 +28,8 @@ export default {
   // isUnauthorized: false,
   isUnauthorized: true,
   login: 'Guest',
+  user: {
+    login: 'foo',
+    password: 'foo',
+  },
 };

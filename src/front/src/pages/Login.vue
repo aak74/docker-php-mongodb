@@ -29,10 +29,7 @@ export default {
   name: 'Login',
   data() {
     return {
-      user: {
-        login: '',
-        password: '',
-      },
+      user: this.$store.state.admin.user,
       requiredRules: [
         v => !!v || 'Поле обязательно для заполнения',
       ],

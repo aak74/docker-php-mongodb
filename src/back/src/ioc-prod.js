@@ -1,44 +1,18 @@
 const { asClass, asValue, Lifetime } = require('awilix');
 const axios = require('axios');
-// const path = require('path');
 
-// const auth = require('./auth/authorize');
 const router = require('./router/router.js');
 const config = require('./config');
 
 const IoC = require('./IoC');
 const ioc = new IoC;
 
-// const app = express();
-// const httpServer = http.createServer(app);
-
-// const io = socketIO(httpServer);
-
-// app.use(express.static(path.join(__dirname, 'static')));
-
-// app.enable('trust proxy');
-// app.use(bodyParser.json());
-
-// passport.use(auth);
-// app.use(passport.initialize());
-// app.use(bodyParser.urlencoded({
-//   extended: true,
-// }));
-// app.use(bodyParser.json());  
-
 ioc.register({
   excludes: asValue([]),
+  tokenTTL: asValue({ token: 3600, refreshToken: 3600 * 24 * 30 }),
   config: asValue(config),
   httpClient: asValue(axios),
-  // httpServer: asValue(app),
-  // http: asValue(httpServer),
-  // socketIO: asValue(io),
   router: asClass(router),
-  // app: asClass(app),
-  // jwt: asValue(jwt),
-  // passport: asValue(passport),
-  // passportJWT: asValue(passportJWT),
-  // bodyParser: asValue(bodyParser),
 });
 
 const container = ioc.loadModules([
