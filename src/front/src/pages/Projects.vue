@@ -38,7 +38,7 @@ export default {
 
   methods: {
     refresh() {
-      this.$store.dispatch('loadProjects');
+      this.$store.dispatch('getProjects');
     },
     loadProject() {
       this.$store.dispatch('getProject', this.id);
@@ -153,13 +153,7 @@ export default {
 
     deleteProject() {
       // console.log('Проект удалён', this.name, this.url, this.id, this.password);
-      this.$store.dispatch('deleteProject', {
-        name: this.name,
-        url: this.url,
-        id: this.id,
-        text: this.text,
-        password: this.password,
-      });
+      this.$store.dispatch('deleteProject', this.id);
       this.showDialog = false;
       this.refresh();
     },

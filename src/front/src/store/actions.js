@@ -1,75 +1,48 @@
 import container from '../services/Container';
 
 const loader = container.resolve('loader');
+const projectModel = container.resolve('projectModel');
 
-const loadStatus = ({ commit }) => {
-  loader.get('status/', null, response => {
-    commit('STATUS_LOADED', response.data);
-  });
-};
-
-const loadProjects = ({ commit }) => {
-  // console.log('loadProjects');
-  loader.get('projects').then(data => {
+const getProjects = ({ commit }) => {
+  // console.log('getProjects');
+  projectModel.getList().then(data => {
     commit('LOADED_PROJECTS', data);
   });
 };
 
 const getProject = ({ commit }, id) => {
-  loader.get('get', `projects/${id}`)
+  projectModel.getOne(id)
     .then(data => {
       commit('LOADED_PROJECT', data, data);
-      // console.log(data);
     });
 };
 
 const addProject = ({ commit }, data) => {
-  loader.request('post', 'projects/', data)
+  projectModel.add(data)
     .then(
       commit('ADDED_PROJECT', data),
     );
 };
 
-const deleteProject = ({ commit }, data) => {
-  loader.request('delete', `projects/${data.id}`, data)
+const deleteProject = ({ commit }, id) => {
+  projectModel.delete(id)
     .then(
-      commit('DELETED_PROJECT', data),
+      commit('DELETED_PROJECT', id),
     );
 };
 
 const saveProject = ({ commit }, data) => {
-  loader.request('post', `projects/${data.id}`, data)
+  projectModel.save(data)
     .then(
       commit('SAVED_PROJECT', data),
     );
 };
 
 const backupProject = ({ commit }, id) => {
-  loader.request('get', `projects/${id}/backup`, id)
+  projectModel.backup(id)
     .then(
       commit('BACKUP_TASK_SENDED', id),
     );
-};
-
-const auth = ({ commit }) => {
-  loader.getLogin('get', 'secret')
-    .then(data => {
-      commit('AUTH', data);
-    });
-};
-
-const refreshOperation = ({ commit }, refreshDATA) => {
-  loader.request(refreshDATA.METHOD, refreshDATA.URI, refreshDATA.DATA)
-    .then(res => {
-      commit('isAdmin', res);
-      commit('USERS', res);
-      commit('DELETED_USER', res);
-      commit('BLOCK_USER', res);
-      commit('UNBLOCK_USER', res);
-      commit('getProject', res);
-      commit('loadProjects', res);
-      commit('LOADED_PROJECTS', res.data.data);
-    });
 };
 
 const register = ({ commit }, data) => {
@@ -117,19 +90,15 @@ const unblock = ({ commit }, id) => {
 };
 
 export default {
-  loadStatus,
-  loadProjects,
+  getProjects,
   addProject,
   deleteProject,
   saveProject,
   backupProject,
   getProject,
   register,
-  auth,
   users,
   userDelete,
-  // refreshToken,
-  refreshOperation,
   block,
   unblock,
   isAdmin,

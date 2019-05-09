@@ -13,6 +13,6 @@
 export default {
   props: [
     'field',
-  ]
-}
+  ],
+};
 </script>

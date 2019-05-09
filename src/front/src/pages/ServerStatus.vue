@@ -83,7 +83,7 @@ export default {
       return `http://${url}`;
     },
     updateServersStatus() {
-      this.$store.dispatch('loadProjects');
+      this.$store.dispatch('getProjects');
       this.timerId = setTimeout(() => {
         this.updateServersStatus();
       }, 5000);
