@@ -13,15 +13,15 @@ class Model {
   }
 
   add(data) {
-    this.loader.post(`${this.baseUrl}`, { data });
+    return this.loader.post(`${this.baseUrl}`, { data });
   }
 
   save(data) {
-    this.loader.post(`${this.baseUrl}/${data.id}`, { data });
+    return this.loader.post(`${this.baseUrl}/${data.id}`, { data });
   }
 
   delete(id) {
-    this.loader.request('delete', `${this.baseUrl}/${id}`);
+    return this.loader.request('delete', `${this.baseUrl}/${id}`);
   }
 }
 

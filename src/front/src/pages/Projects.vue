@@ -2,220 +2,139 @@
   <div>
     <v-container>
       <h2>Проекты</h2>
-      <projects-actions
-        @add="add"
-        @refresh="refresh"
-      />
+      <v-layout row align-end>
+        <v-dialog v-model="dialog" persistent max-width="400">
+          <template v-slot:activator="{ on }">
+            <v-btn color="green" dark v-on="on">Добавить</v-btn>
+          </template>
+          <project-form
+            @emit="emit"
+          />
+        </v-dialog>
+        <v-btn
+          color="blue lighten-2"
+          @click="refresh"
+          dark
+        >
+          Обновить
+        </v-btn>
+      </v-layout>
       <data-table
         :headers="headers"
         :items="items"
         :loading="false"
-        v-if="isShow"
         :transforms="transforms"
         :hide-actions="false"
         :controls="controls"
-        @click="clickItem"
-        @editItem="editItem"
+        @click="edit"
+        @editItem="edit"
         @deleteItem="deleteItem"
-        @backupItem="backupItem"
+        @backup="backup"
       />
+      <v-dialog
+        v-model="showDeleteDialog"
+        max-width="300"
+      >
+        <v-card>
+          <v-card-title class="headline">Удалить проект?</v-card-title>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              @click="showDeleteDialog = false"
+            >
+              Нет
+            </v-btn>
+            <v-btn
+              color="green"
+              dark
+              @click="deleteProject"
+            >
+              Да
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-container>
   </div>
 </template>
 
 <script>
-/* eslint no-underscore-dangle: ["error",{"allow":["_id"]}] */
-
-import ProjectsActions from '../components/ProjectsActions.vue';
+import ProjectForm from '../components/ProjectForm.vue';
 import DataTable from '../components/admin/DataTable.vue';
 
 export default {
   name: 'Projects',
   components: {
     DataTable,
-    ProjectsActions,
+    ProjectForm,
+  },
+
+  data() {
+    return {
+      dialog: false,
+      showDeleteDialog: false,
+      id: null,
+    };
   },
 
   methods: {
     refresh() {
       this.$store.dispatch('getProjects');
     },
+
     loadProject() {
       this.$store.dispatch('getProject', this.id);
       this.data = this.$store.state.project.current;
     },
-    clickItem(item) {
-      this.id = item._id;
-      this.name = item.name;
-      this.url = item.url;
-      this.text = item.text;
-      this.disableInput = false;
-      this.showPassword = false;
-      document.location.href = `/projects/${item._id}`;
-    },
+
     add() {
-      this.modalTitle = 'Добавить новый проект';
-      this.modalSubmitButton = 'Добавить';
-      this.modalAction = 'Add';
-      this.name = '';
-      this.url = '';
-      this.text = '';
-      this.password = '';
-      this.host = '';
-      this.user = '';
-      this.port = '';
-      this.passwordSSH = '';
-      this.path = '';
-      this.showRules = true;
-      this.disableInput = false;
-      this.showDialog = true;
-      this.showPassword = true;
+      console.log('Projects add');
+
     },
-    editItem(item) {
-      this.modalTitle = 'Редактировать проект';
-      this.modalSubmitButton = 'Сохранить';
-      this.modalAction = 'Edit';
-      this.id = item._id;
-      this.name = item.name;
-      this.url = item.url;
-      this.text = item.text;
-      this.password = item.password;
-      this.host = item.host;
-      this.user = item.user;
-      this.port = item.port;
-      this.passwordSSH = item.passwordSSH;
-      this.path = item.path;
-      this.disableInput = false;
-      this.showDialog = true;
-      this.showPassword = true;
+
+    edit() {
     },
+
     deleteItem(item) {
-      this.modalTitle = 'Удалить проект';
-      this.modalSubmitButton = 'Удалить';
-      this.modalAction = 'Delete';
+      console.log('deleteItem', item);
       this.id = item._id;
-      this.name = item.name;
-      this.url = item.url;
-      this.text = item.text;
-      this.password = '';
-      this.disableInput = true;
-      this.showDialog = true;
-      this.showPassword = true;
-    },
-    backupItem(item) {
-      this.modalTitle = 'Подвердите действие';
-      this.modalSubmitButton = 'OK';
-      this.modalAction = 'Backup';
-      this.id = item._id;
-      this.password = item.password;
-      this.disableInput = true;
-      this.showDialog = false;
-      this.backupProject();
-    },
-    confirmModalAction() {
-      const action = this.modalAction;
-      switch (action) {
-        default:
-          break;
-        case 'Add':
-          this.addProject();
-          break;
-        case 'Edit':
-          this.saveProject();
-          break;
-        case 'Delete':
-          this.deleteProject();
-          break;
-        case 'Backup':
-          this.backupProject();
-          break;
-        case 'Info':
-          this.InfoProject();
-          break;
-      }
-    },
-    addProject() {
-      console.log('Проект добавлен', this.name, this.url);
-      this.$store.dispatch('addProject', {
-        name: this.name,
-        url: this.url,
-        text: this.text,
-        password: this.password,
-        host: this.host,
-        user: this.user,
-        port: this.port,
-        passwordSSH: this.passwordSSH,
-        path: this.path,
-      });
-      this.showDialog = false;
-      this.refresh();
+      this.showDeleteDialog = true;
     },
 
-    deleteProject() {
-      // console.log('Проект удалён', this.name, this.url, this.id, this.password);
+    deleteProject(item) {
+      this.showDeleteDialog = false;
+      // console.log('deleteItem', item);
       this.$store.dispatch('deleteProject', this.id);
-      this.showDialog = false;
-      this.refresh();
     },
 
-    saveProject() {
-      console.log('Проект сохранен');
-      this.$store.dispatch('saveProject', {
-        id: this.id,
-        name: this.name,
-        url: this.url,
-        text: this.text,
-        password: this.password,
-        host: this.host,
-        user: this.user,
-        port: this.port,
-        passwordSSH: this.passwordSSH,
-        path: this.path,
-      });
-      this.showDialog = false;
-      this.refresh();
+    backup() {
     },
 
-    backupProject() {
-      console.log('Запрос на создание бэкапа добавлен в очередь');
-      this.$store.dispatch('backupProject', this.id, this.password);
-      this.showDialog = false;
+    addProject() {
     },
 
-    InfoProject() {
-      /*
-      setTimeout(() => {
-        clearInterval(this.autoupdate);
-        alert('стоп');
-      }, 0);
-      this.showDialog = false;
-      */
+    save() {
+      this.$store.dispatch('saveProject');
+    },
+
+    backup() {
+      this.$store.dispatch('backupProject', this.id);
+    },
+
+    emit(event) {
+      console.log('actions emit', event);
+      this.dialog = false;
+      if (event === 'save') {
+        this.save();
+      }
     },
   },
+
   computed: {
-    history() {
-      return this.data.history || [];
-    },
-    dataCollection() {
-      /*
-      if (this.update === false) {
-        this.update = true;
-        console.log('включил автообновление');
-        this.autoupdate = setInterval(this.loadProject, 2000);
-      }
-      */
-      return this.history || [];
-    },
     controls() {
       return this.$store.state.ui.defaultControls;
     },
-    isShow() {
-      return true;
-    },
     items() {
-      return this.$store.getters.projects;
-    },
-    totalItems() {
       return this.$store.getters.projects;
     },
     headers() {
@@ -235,15 +154,6 @@ export default {
   },
   created() {
     this.refresh();
-  },
-  mounted() {
-    document.addEventListener('keydown', e => {
-      if (this.showDialog === true && e.keyCode === 27) {
-        this.showDialog = false;
-      } else if (this.showDialog === true && this.formValid === true && e.keyCode === 13) {
-        this.confirmModalAction();
-      }
-    });
   },
 };
 </script>

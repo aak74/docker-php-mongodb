@@ -36,6 +36,8 @@ class  ProjectModel {
   }
 
   async delete(params) {
+    console.log('ctrl', params);
+    
     return await this.deleteProject.execute(params);
   }
 

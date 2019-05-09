@@ -248,25 +248,20 @@ class Router {
       res.send({ status: 'ok' });
     });
 
-    this.app.delete(
-      '/projects/:id', 
-      async (req, res) => {
-        const result = await this.projectController.delete({
-          _id: req.params.id,
-          // password: req.body.password,
-        });
-        
-        // console.log('delete', result);
-        if (result){
-          // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно удален'}); 
-          res.send({ status: 'ok' });
-          return;
-        }
-        // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' не удален'});
-        res.send({ status: 'error' });
-
+    this.app.delete('/projects/:id', async (req, res) => {
+      console.log('/projects/:id', req.query, req.params);
+      
+      const result = await this.projectController.delete({ _id: req.params.id });
+      
+      // console.log('delete', result);
+      if (result) {
+        // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно удален'}); 
+        res.send({ status: 'ok' });
+        return;
       }
-    );
+      // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' не удален'});
+      res.send({ status: 'error' });
+    });
 
     this.app.post('/projects', authMiddleware, bodyParser.json(), async (req, res) => {
       // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});

@@ -17,24 +17,26 @@ const getProject = ({ commit }, id) => {
     });
 };
 
-const addProject = ({ commit }, data) => {
-  projectModel.add(data)
-    .then(
-      commit('ADDED_PROJECT', data),
-    );
-};
-
 const deleteProject = ({ commit }, id) => {
+  console.log('deleteProject', id);
   projectModel.delete(id)
     .then(
       commit('DELETED_PROJECT', id),
     );
 };
 
-const saveProject = ({ commit }, data) => {
-  projectModel.save(data)
+const saveProject = ({ commit, state }, data) => {
+  console.log('saveProject');
+  if (state.project.current.id) {
+    projectModel.save(data)
+      .then(
+        commit('SAVED_PROJECT', data),
+      );
+    return;
+  }
+  projectModel.add(data)
     .then(
-      commit('SAVED_PROJECT', data),
+      commit('ADDED_PROJECT', data),
     );
 };
 
@@ -91,7 +93,6 @@ const unblock = ({ commit }, id) => {
 
 export default {
   getProjects,
-  addProject,
   deleteProject,
   saveProject,
   backupProject,
