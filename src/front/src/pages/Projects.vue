@@ -3,14 +3,13 @@
     <v-container>
       <h2>Проекты</h2>
       <v-layout row align-end>
-        <v-dialog v-model="dialog" persistent max-width="400">
-          <template v-slot:activator="{ on }">
-            <v-btn color="green" dark v-on="on">Добавить</v-btn>
-          </template>
-          <project-form
-            @emit="emit"
-          />
-        </v-dialog>
+        <v-btn
+          color="green"
+          @click="add"
+          dark
+        >
+          Добавить
+        </v-btn>
         <v-btn
           color="blue lighten-2"
           @click="refresh"
@@ -54,6 +53,12 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-dialog v-model="dialog.show" persistent max-width="400">
+        <project-form
+          :title="dialog.title"
+          @emit="emit"
+        />
+      </v-dialog>
     </v-container>
   </div>
 </template>
@@ -71,7 +76,10 @@ export default {
 
   data() {
     return {
-      dialog: false,
+      dialog: {
+        title: null,
+        show: false,
+      },
       showDeleteDialog: false,
       id: null,
     };
@@ -88,42 +96,42 @@ export default {
     },
 
     add() {
-      console.log('Projects add');
-
+      this.dialog.title = 'Добавление проекта';
+      this.dialog.show = true;
     },
 
     edit() {
+      // todo Загрузить проект перед открытием
+      this.dialog.title = 'Редактирование проекта';
+      this.dialog.show = true;
     },
 
     deleteItem(item) {
       console.log('deleteItem', item);
+      // eslint-disable-next-line
       this.id = item._id;
       this.showDeleteDialog = true;
     },
 
-    deleteProject(item) {
+    deleteProject() {
       this.showDeleteDialog = false;
-      // console.log('deleteItem', item);
       this.$store.dispatch('deleteProject', this.id);
     },
 
     backup() {
     },
 
-    addProject() {
-    },
-
     save(data) {
       this.$store.dispatch('saveProject', data);
     },
 
-    backup() {
+    backupProject() {
       this.$store.dispatch('backupProject', this.id);
     },
 
     emit(event) {
       console.log('actions emit', event);
-      this.dialog = false;
+      this.dialog.show = false;
       if (event.name === 'save') {
         this.save(event.data);
       }

@@ -1,6 +1,6 @@
 <template>
   <uni-form
-    title="Добавление нового проекта"
+    :title="title"
     :data="currentProject"
     :schema="projectScheme"
     :buttons="buttons"
@@ -13,6 +13,9 @@ import UniForm from './UniForm.vue';
 
 export default {
   name: 'ProjectForm',
+  props: [
+    'title',
+  ],
   components: {
     UniForm,
   },
