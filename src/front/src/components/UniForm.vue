@@ -65,7 +65,7 @@ export default {
     change(field) {
       this.current[field.attrs.model] = field.value;
       console.log('change', field, this.current);
-    }
+    },
   },
 };
 </script>
