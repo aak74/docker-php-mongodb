@@ -19,7 +19,7 @@ export default [
     type: 'input',
     inputType: 'textarea',
     label: 'Описание',
-    model: 'text',
+    model: 'description',
     placeholder: 'Краткое описание проекта',
     required: true,
   },

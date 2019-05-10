@@ -4,6 +4,7 @@
     v-model="field.value"
     :disabled="field.attrs.disabled"
     :readonly="field.attrs.readonly"
+    @change="$emit('change', field)"
   />
 </template>
 

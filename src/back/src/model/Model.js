@@ -15,14 +15,13 @@ class Model {
   }
 
   find(filter, projection) {
-    //console.log('Model find', filter, projection);
-    if (filter)
-    {
-      filter = {id: filter};
-    }
     return this.db.get()
       .collection(this.collectionName)
       .find(this.getFilter(filter)).project(projection);
+  }
+
+  findById(filter, projection) {
+    return this.find({ _id: filter }, projection);
   }
 
   async findOne(filter) {
@@ -33,11 +32,6 @@ class Model {
   }
 
   async findOneAndUpdate(filter, update, params) {
-    filter={
-      _id: filter._id,
-      password:update.password
-      }
-     //console.log('findOneAndUpdate', filter, update);
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
@@ -53,9 +47,6 @@ class Model {
   }
 
   async findOneAndInsert(filter, update, params) {
-    filter={
-      _id: filter._id,
-      }
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
@@ -65,6 +56,7 @@ class Model {
         params
       )
       .catch(err => {
+        console.log('findOneAndInsert error', err);
       });
     return result;
   }

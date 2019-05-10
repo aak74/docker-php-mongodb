@@ -194,7 +194,7 @@ class Router {
       }
       let data;
       try {
-        data = await this.projectController.getList(req.user.id);
+        data = await this.projectController.getList({ userId: req.user.id });
       } catch (err) {
         this.logger.error('err', err)
         res.status(500).send({ status: 'error' });
@@ -265,9 +265,9 @@ class Router {
 
     this.app.post('/projects', authMiddleware, bodyParser.json(), async (req, res) => {
       // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
-      const dataProject = req.body;
-      dataProject.id = req.user.id;
-      const _ = await this.projectController.create(req.body);
+      const data = req.body;
+      data.userId = req.user.id;
+      const _ = await this.projectController.create(data);
       res.send({ status: 'ok' });
     });
 

@@ -6,12 +6,8 @@ class GetProjects {
     this.projectModel = projectModel;
   }
 
-  async get(filter, projection) {
-    const result = await this.projectModel.getList(filter, projection);
-    for (var key in result) {
-      result[key].password='******';
-      }
-    return result;
+  get(filter, projection) {
+    return this.projectModel.getList(filter, projection);
   }
 }
 

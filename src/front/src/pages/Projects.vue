@@ -113,8 +113,8 @@ export default {
     addProject() {
     },
 
-    save() {
-      this.$store.dispatch('saveProject');
+    save(data) {
+      this.$store.dispatch('saveProject', data);
     },
 
     backup() {
@@ -124,8 +124,8 @@ export default {
     emit(event) {
       console.log('actions emit', event);
       this.dialog = false;
-      if (event === 'save') {
-        this.save();
+      if (event.name === 'save') {
+        this.save(event.data);
       }
     },
   },

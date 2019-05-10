@@ -7,6 +7,7 @@
         :key="field.model"
         :is="'form-' + field.attrs.type"
         :field="field"
+        @change="change"
       />
     </v-card-text>
     <v-card-actions>
@@ -38,7 +39,11 @@ export default {
     FormInput,
     FormCheckbox,
   },
-
+  data() {
+    return {
+      current: {},
+    };
+  },
   computed: {
     fields() {
       return this.schema.reduce((carry, item) => {
@@ -53,9 +58,14 @@ export default {
   },
 
   methods: {
-    emit(event) {
-      this.$emit('emit', event);
+    emit(name) {
+      this.$emit('emit', { name, data: this.current });
     },
+
+    change(field) {
+      this.current[field.attrs.model] = field.value;
+      console.log('change', field, this.current);
+    }
   },
 };
 </script>
