@@ -206,20 +206,20 @@ class Router {
       });
     });
     
-    this.app.get('/projects/:id', async (req, res) => {
+    this.app.get('/projects/:id', authMiddleware, async (req, res) => {
     // this.app.get('/projects/:id', async (req, res) => {
-      // console.log('projects/id', req.params, req.user);
+      console.log('projects/id', req.params, req.user);
       
       const data = await this.projectController.get({
         _id: req.params.id,
         userId: req.user.id
       });
 
-      const History = await this.historyController.getHistory({
-        id: req.params.id
-      });
-      data.history = History.history;
-      data.backup= History.historyBackup;
+      // const History = await this.historyController.getHistory({
+      //   id: req.params.id
+      // });
+      // data.history = History.history;
+      // data.backup= History.historyBackup;
       res.send({
         status: 'ok',
         data,
@@ -239,16 +239,13 @@ class Router {
       });
     });
 
-    this.app.post('/projects/:id', async (req, res) => {
-      // console.log(`post /projects/${req.params.id}`);
-      
-      const _ = await this.projectController.update({
-        _id: req.params.id,
-      }, req.body);
+    this.app.post('/projects/:id', authMiddleware, bodyParser.json(), async (req, res) => {
+      console.log('updateProject');
+      await this.projectController.update({ _id: req.params.id }, req.body);
       res.send({ status: 'ok' });
     });
 
-    this.app.delete('/projects/:id', async (req, res) => {
+    this.app.delete('/projects/:id', authMiddleware, bodyParser.json(), async (req, res) => {
       console.log('/projects/:id', req.query, req.params);
       
       const result = await this.projectController.delete({ _id: req.params.id });
@@ -265,9 +262,11 @@ class Router {
 
     this.app.post('/projects', authMiddleware, bodyParser.json(), async (req, res) => {
       // this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
+      console.log('createProject');
+      
       const data = req.body;
       data.userId = req.user.id;
-      const _ = await this.projectController.create(data);
+      await this.projectController.create(data);
       res.send({ status: 'ok' });
     });
 
@@ -289,6 +288,7 @@ class Router {
 
     this.app.get(
       '/projects/:id/backup',
+      authMiddleware,
       async (req, res) => {
         this.io.sockets.in(req.user.login).emit('message', {msg: 'Проект поставлен на бэкап'});
         try {

@@ -44,20 +44,20 @@ services:
       RABBITMQ_PORT: ${RABBITMQ_PORT}
     restart: always
 
-  backup:
-    build: ./src/backup-runner/
-    volumes:
-      - ./src/backup:/app/service
-      - ./src/backup-runner/:/app/runner
-      - ./logs:/var/log/php
-      - ${BACKUP_FOLDER}:/backup
-    environment:
-      RABBITMQ_USER: ${RABBITMQ_USER}
-      RABBITMQ_PASS: ${RABBITMQ_PASS}
-      RABBITMQ_VHOST: ${RABBITMQ_VHOST}
-      RABBITMQ_HOST: ${RABBITMQ_HOST}
-      RABBITMQ_PORT: ${RABBITMQ_PORT}
-    restart: always
+  # backup:
+  #   build: ./src/backup-runner/
+  #   volumes:
+  #     - ./src/backup:/app/service
+  #     - ./src/backup-runner/:/app/runner
+  #     - ./logs:/var/log/php
+  #     - ${BACKUP_FOLDER}:/backup
+  #   environment:
+  #     RABBITMQ_USER: ${RABBITMQ_USER}
+  #     RABBITMQ_PASS: ${RABBITMQ_PASS}
+  #     RABBITMQ_VHOST: ${RABBITMQ_VHOST}
+  #     RABBITMQ_HOST: ${RABBITMQ_HOST}
+  #     RABBITMQ_PORT: ${RABBITMQ_PORT}
+  #   restart: always
 
   mongo:
     image: mongo:3-stretch

@@ -3,41 +3,39 @@ import container from '../services/Container';
 const loader = container.resolve('loader');
 const projectModel = container.resolve('projectModel');
 
-const getProjects = ({ commit }) => {
-  // console.log('getProjects');
-  projectModel.getList().then(data => {
-    commit('LOADED_PROJECTS', data);
-  });
+const getProjects = async ({ commit }) => {
+  console.log('getProjects');
+  const data = await projectModel.getList();
+  commit('LOADED_PROJECTS', data);
 };
 
-const getProject = ({ commit }, id) => {
-  projectModel.getOne(id)
+const getProject = async ({ commit }, id) => {
+  const p = projectModel.getOne(id)
     .then(data => {
       commit('LOADED_PROJECT', data, data);
     });
+  console.log('getProject', p, id);
+  return p;
 };
 
-const deleteProject = ({ commit }, id) => {
+const deleteProject = async ({ commit }, id) => {
   console.log('deleteProject', id);
-  projectModel.delete(id)
-    .then(
-      commit('DELETED_PROJECT', id),
-    );
+  await projectModel.delete(id);
+  commit('DELETED_PROJECT', id);
+  getProjects({ commit });
 };
 
-const saveProject = ({ commit, state }, data) => {
-  console.log('saveProject');
-  if (state.project.current.id) {
-    projectModel.save(data)
-      .then(
-        commit('SAVED_PROJECT', data),
-      );
-    return;
+const saveProject = async ({ commit, state }, data) => {
+  const fullData = Object.assign(state.project.current, data);
+  // eslint-disable-next-line no-underscore-dangle
+  if (state.project.current._id) {
+    await projectModel.save(fullData);
+    commit('SAVED_PROJECT', fullData);
+  } else {
+    await projectModel.add(fullData);
+    commit('ADDED_PROJECT', fullData);
   }
-  projectModel.add(data)
-    .then(
-      commit('ADDED_PROJECT', data),
-    );
+  getProjects({ commit });
 };
 
 const backupProject = ({ commit }, id) => {

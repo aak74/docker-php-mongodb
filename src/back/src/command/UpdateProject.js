@@ -12,10 +12,7 @@ class UpdateProject {
   }
 
   async execute(filter, update) {
-    const id = update.id;
-    delete(update.id);
     await this.projectModel.findOneAndUpdate(filter, update);
-    update._id = id;
     this.publishMessage.execute({ queue: 'projectUpdated', msg: update });
     return true;
   }

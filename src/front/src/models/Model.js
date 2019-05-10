@@ -18,7 +18,8 @@ class Model {
   }
 
   save(data) {
-    return this.loader.post(`${this.baseUrl}/${data.id}`, { data });
+    // eslint-disable-next-line no-underscore-dangle
+    return this.loader.post(`${this.baseUrl}/${data._id}`, { data });
   }
 
   delete(id) {

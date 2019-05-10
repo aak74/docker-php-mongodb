@@ -32,6 +32,9 @@ class Model {
   }
 
   async findOneAndUpdate(filter, update, params) {
+    console.log('findOneAndUpdate', filter, update, params);
+    
+    delete(update._id);
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
