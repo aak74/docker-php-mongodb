@@ -1,8 +1,13 @@
 import Model from './Model';
+import schema from './schemas/ProjectSchema';
 
 class Project extends Model {
   constructor({ loader }) {
-    super({ loader, baseUrl: 'projects' });
+    super({
+      loader,
+      baseUrl: 'projects',
+      schema,
+    });
   }
 
   backup(id) {

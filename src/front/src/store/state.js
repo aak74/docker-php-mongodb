@@ -1,3 +1,7 @@
+import container from '../services/Container';
+
+const projectModel = container.resolve('projectModel');
+
 export default {
   login: {
 
@@ -52,51 +56,7 @@ export default {
     current: {
       history: {},
     },
-    schema: {
-      fields: [
-        {
-          type: 'input',
-          inputType: 'text',
-          label: 'Название',
-          model: 'name',
-          placeholder: 'Название проекта',
-          required: true,
-        },
-        {
-          type: 'input',
-          inputType: 'text',
-          label: 'URL',
-          model: 'url',
-          placeholder: 'url для отслеживания доступности',
-          required: true,
-        },
-        {
-          type: 'input',
-          inputType: 'textarea',
-          label: 'Описание',
-          model: 'text',
-          placeholder: 'Краткое описание проекта',
-          required: true,
-        },
-        {
-          type: 'input',
-          inputType: 'password',
-          label: 'Password',
-          model: 'password',
-          min: 6,
-          required: true,
-          hint: 'Minimum 6 characters',
-          // validator: VueFormGenerator.validators.string
-        },
-        /*
-        {
-          type: 'checkbox',
-          label: 'isActive',
-          model: 'isActive',
-          default: true,
-        }, */
-      ],
-    },
+    schema: projectModel.getSchema(),
   },
   ui: {
     defaultPagination: [20, 50, { text: 'All', value: -1 }],

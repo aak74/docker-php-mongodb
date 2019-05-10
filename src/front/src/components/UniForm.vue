@@ -41,7 +41,7 @@ export default {
 
   computed: {
     fields() {
-      return this.schema.fields.reduce((carry, item) => {
+      return this.schema.reduce((carry, item) => {
         // console.log(item);
         carry.push({
           value: this.data[item.model],

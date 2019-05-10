@@ -1,7 +1,8 @@
 class Model {
-  constructor({ loader, baseUrl }) {
+  constructor({ loader, baseUrl, schema }) {
     this.loader = loader;
     this.baseUrl = baseUrl;
+    this.schema = schema;
   }
 
   getList() {
@@ -22,6 +23,10 @@ class Model {
 
   delete(id) {
     return this.loader.request('delete', `${this.baseUrl}/${id}`);
+  }
+
+  getSchema() {
+    return this.schema;
   }
 }
 
