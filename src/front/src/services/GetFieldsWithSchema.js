@@ -1,5 +1,5 @@
 /**
- * Return merged schema with data
+ * Return injected data into schema
  * @param {Array} schema
  * @param {Oject} data
  */
@@ -7,18 +7,17 @@ function getFieldsWithSchema(schema, data) {
   if (!schema || !data) {
     throw new Error('Bad parameters');
   }
-  if (!schema.reduce) {
+  if (!Array.isArray(schema)) {
     throw new Error('Parameter schema must be an array');
   }
-
-  // console.log(data);
+  // console.log(schema, data);
 
   const result = schema.reduce((carry, item) => {
-    console.log(item, data[item.model]);
-    carry.push({
-      value: data[item.model],
-      attrs: Object.assign({}, item),
-    });
+    // console.log(item, data[item.model]);
+    if (item.fields) {
+      item.fields = getFieldsWithSchema(item.fields, data);
+    }
+    carry.push(Object.assign({}, item, { value: data[item.model] }));
     return carry;
   }, []);
   return result;

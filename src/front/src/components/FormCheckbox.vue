@@ -1,9 +1,9 @@
 <template>
   <v-checkbox
-    :label="field.attrs.label"
+    :label="field.label"
     v-model="field.value"
-    :disabled="field.attrs.disabled"
-    :readonly="field.attrs.readonly"
+    :disabled="field.disabled"
+    :readonly="field.readonly"
     @change="$emit('change', field)"
   />
 </template>

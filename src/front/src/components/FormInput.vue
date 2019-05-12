@@ -1,11 +1,11 @@
 <template>
   <v-text-field
     v-model="field.value"
-    :label="field.attrs.label"
-    :disabled="field.attrs.disabled"
-    :readonly="field.attrs.readonly"
-    :placeholder="field.attrs.placeholder"
-    :type="field.attrs.inputType"
+    :label="field.label"
+    :disabled="field.disabled"
+    :readonly="field.readonly"
+    :placeholder="field.placeholder"
+    :type="field.inputType"
     @change="$emit('change', field)"
   />
 </template>

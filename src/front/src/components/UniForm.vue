@@ -5,7 +5,7 @@
       <component
         v-for="field in fields"
         :key="field.model"
-        :is="'form-' + field.attrs.type"
+        :is="'form-' + field.type"
         :field="field"
         @change="change"
       />
@@ -26,6 +26,7 @@
 import FormButton from './FormButton.vue';
 import FormInput from './FormInput.vue';
 import FormCheckbox from './FormCheckbox.vue';
+import FormGroup from './FormGroup.vue';
 
 export default {
   props: [
@@ -37,6 +38,7 @@ export default {
     FormButton,
     FormInput,
     FormCheckbox,
+    FormGroup,
   },
   data() {
     return {
@@ -49,7 +51,7 @@ export default {
     },
 
     change(field) {
-      this.current[field.attrs.model] = field.value;
+      this.current[field.model] = field.value;
       console.log('change', field, this.current);
     },
   },
