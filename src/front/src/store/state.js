@@ -3,10 +3,11 @@ import container from '../services/Container';
 const projectModel = container.resolve('projectModel');
 
 export default {
-  login: {
-
+  current: {
+    fields: [],
+    data: [],
+    id: null,
   },
-  register: undefined,
   users: {},
   isAdmin: false,
   status: {
@@ -57,19 +58,5 @@ export default {
       history: {},
     },
     schema: projectModel.getSchema(),
-  },
-  ui: {
-    defaultPagination: [20, 50, { text: 'All', value: -1 }],
-    defaultControls: [
-      {
-        name: 'Edit', icon: 'edit', color: 'teal lighten-1', emit: 'editItem',
-      },
-      {
-        name: 'Delete', icon: 'delete', color: 'pink lighten-2', emit: 'deleteItem',
-      },
-      {
-        name: 'Backup', icon: 'backup', color: 'indigo lighten-2', emit: 'backupItem',
-      },
-    ],
   },
 };

@@ -29,9 +29,8 @@ import FormCheckbox from './FormCheckbox.vue';
 
 export default {
   props: [
-    'data',
-    'schema',
     'title',
+    'fields',
     'buttons',
   ],
   components: {
@@ -44,19 +43,6 @@ export default {
       current: {},
     };
   },
-  computed: {
-    fields() {
-      return this.schema.reduce((carry, item) => {
-        // console.log(item);
-        carry.push({
-          value: this.data[item.model],
-          attrs: Object.assign({}, item),
-        });
-        return carry;
-      }, []);
-    },
-  },
-
   methods: {
     emit(name) {
       this.$emit('emit', { name, data: this.current });

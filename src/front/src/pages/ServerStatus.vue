@@ -100,10 +100,10 @@ export default {
   },
   computed: {
     items() {
-      return this.$store.getters.projects;
+      return this.$store.state.projects;
     },
     totalItems() {
-      return this.$store.getters.projects;
+      return this.$store.state.projects;
     },
     headers() {
       return [{ text: 'Название', value: 'name' }, { text: 'URL', value: 'url', sortable: false }];

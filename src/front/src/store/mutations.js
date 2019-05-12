@@ -1,10 +1,23 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-cond-assign */
 import dayjs from 'dayjs';
-import relativeTime from 'dayjs/plugin/relativeTime';
+// import relativeTime from 'dayjs/plugin/relativeTime';
 // import store from '.';
 import router from '../router';
 
-dayjs.extend(relativeTime);
+// dayjs.extend(relativeTime);
+
+const getFieldsWithSchema = (schema, data) => {
+  const fields = schema.reduce((carry, item) => {
+    // console.log(item);
+    carry.push({
+      value: data[item.model],
+      attrs: Object.assign({}, item),
+    });
+    return carry;
+  }, []);
+  return fields;
+};
 
 export default {
   STATUS_LOADED(state, payload) {
@@ -60,8 +73,12 @@ export default {
   LOADED_PROJECT(state, data) {
     // console.log('LOADED_PROJECT', data);
     if (data) {
-      state.project.current = data;
+      state.current.data = data;
+      state.current.id = data._id;
     }
+    state.current.fields = getFieldsWithSchema(state.project.schema, data);
+    // console.log('LOADED_PROJECT 2', state.current.fields);
+    // debugger;
   },
 
   ADDED_PROJECT(_, data) {
@@ -127,6 +144,11 @@ export default {
 
   BLOCKED() {
     router.replace('/Blocked');
+  },
+
+  CLEAR_CURRENT(state) {
+    state.current.data = [];
+    state.current.fields = getFieldsWithSchema(state.project.schema, []);
   },
 /*
   DELETED_USER(state, data) {

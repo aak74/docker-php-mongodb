@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import container from '../services/Container';
 
 const loader = container.resolve('loader');
@@ -10,12 +11,14 @@ const getProjects = async ({ commit }) => {
 };
 
 const getProject = async ({ commit }, id) => {
-  const p = projectModel.getOne(id)
-    .then(data => {
-      commit('LOADED_PROJECT', data, data);
-    });
-  console.log('getProject', p, id);
-  return p;
+  const promise = new Promise(resolve => {
+    projectModel.getOne(id)
+      .then(data => {
+        commit('LOADED_PROJECT', data);
+        resolve();
+      });
+  });
+  return promise;
 };
 
 const deleteProject = async ({ commit }, id) => {
@@ -26,14 +29,17 @@ const deleteProject = async ({ commit }, id) => {
 };
 
 const saveProject = async ({ commit, state }, data) => {
-  const fullData = Object.assign(state.project.current, data);
-  // eslint-disable-next-line no-underscore-dangle
-  if (state.project.current._id) {
-    await projectModel.save(fullData);
-    commit('SAVED_PROJECT', fullData);
+  console.log('saveProject', data, state.current._id);
+
+  if (data._id) {
+    // data._id = state.current._id;
+    await projectModel.save(data);
+    commit('SAVED_PROJECT', data);
+    commit('CLEAR_CURRENT');
   } else {
-    await projectModel.add(fullData);
-    commit('ADDED_PROJECT', fullData);
+    await projectModel.add(data);
+    commit('ADDED_PROJECT', data);
+    commit('CLEAR_CURRENT');
   }
   getProjects({ commit });
 };

@@ -1,8 +1,7 @@
 <template>
   <uni-form
     :title="title"
-    :data="currentProject"
-    :schema="projectScheme"
+    :fields="fields"
     :buttons="buttons"
     @emit="emit"
   />
@@ -30,19 +29,15 @@ export default {
         {
           emit: 'save',
           color: 'success',
-          title: 'Добавить',
+          title: 'Сохранить',
         },
       ],
     };
   },
 
   computed: {
-    currentProject() {
-      return this.$store.state.project.current;
-    },
-
-    projectScheme() {
-      return this.$store.state.project.schema;
+    fields() {
+      return this.$store.state.current.fields;
     },
   },
 

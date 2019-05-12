@@ -63,6 +63,7 @@
 </template>
 
 <script>
+/* eslint-disable no-underscore-dangle */
 import ProjectForm from '../components/ProjectForm.vue';
 import DataTable from '../components/admin/DataTable.vue';
 
@@ -89,11 +90,6 @@ export default {
       this.$store.dispatch('getProjects');
     },
 
-    loadProject() {
-      this.$store.dispatch('getProject', this.id);
-      this.data = this.$store.state.project.current;
-    },
-
     add() {
       this.dialog.title = 'Добавление проекта';
       this.dialog.show = true;
@@ -101,24 +97,20 @@ export default {
 
     edit(item) {
       console.log('Projects edit', item);
-      // eslint-disable-next-line no-underscore-dangle
       this.$store.dispatch('getProject', item._id)
-        .then(response => {
-          console.log({ response });
+        .then(() => {
+          console.log('Projects getProject then');
           this.dialog.title = 'Редактирование проекта';
           this.dialog.show = true;
+          this.fields = this.$store.state.current.fields;
         })
         .catch(err => {
           console.log({ err });
         });
-
-
-      // todo Загрузить проект перед открытием
     },
 
     deleteItem(item) {
-      console.log('deleteItem', item);
-      // eslint-disable-next-line no-underscore-dangle
+      // console.log('deleteItem', item);
       this.id = item._id;
       this.showDeleteDialog = true;
     },
@@ -132,7 +124,8 @@ export default {
     },
 
     save(data) {
-      this.$store.dispatch('saveProject', data);
+      const fullData = Object.assign({}, this.$store.state.current.data, data);
+      this.$store.dispatch('saveProject', fullData);
     },
 
     backupProject() {
@@ -145,12 +138,13 @@ export default {
       if (event.name === 'save') {
         this.save(event.data);
       }
+      this.$store.commit('CLEAR_CURRENT');
     },
   },
 
   computed: {
     controls() {
-      return this.$store.state.ui.defaultControls;
+      return this.$store.state.admin.ui.defaultControls;
     },
     items() {
       return this.$store.state.projects;
