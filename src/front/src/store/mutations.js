@@ -3,21 +3,10 @@
 import dayjs from 'dayjs';
 // import relativeTime from 'dayjs/plugin/relativeTime';
 // import store from '.';
+import getFieldsWithSchema from '../services/GetFieldsWithSchema';
 import router from '../router';
 
 // dayjs.extend(relativeTime);
-
-const getFieldsWithSchema = (schema, data) => {
-  const fields = schema.reduce((carry, item) => {
-    // console.log(item);
-    carry.push({
-      value: data[item.model],
-      attrs: Object.assign({}, item),
-    });
-    return carry;
-  }, []);
-  return fields;
-};
 
 export default {
   STATUS_LOADED(state, payload) {
