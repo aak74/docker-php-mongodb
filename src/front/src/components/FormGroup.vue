@@ -10,7 +10,6 @@
         @change="$emit('change', field)"
       />
     </v-card-text>
-    </v-card-actions>
   </v-card>
 </template>
 
@@ -18,10 +17,9 @@
 import FormButton from './FormButton.vue';
 import FormInput from './FormInput.vue';
 import FormCheckbox from './FormCheckbox.vue';
-import FormGroup from './FormGroup.vue';
 
 export default {
-  name: FormGroup,
+  name: 'FormGroup',
   props: [
     'field',
   ],
@@ -29,7 +27,6 @@ export default {
     FormButton,
     FormInput,
     FormCheckbox,
-    FormGroup,
   },
 };
 </script>
