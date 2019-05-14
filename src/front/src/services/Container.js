@@ -3,7 +3,7 @@ import {
   createContainer, asClass, Lifetime, asValue,
 } from 'awilix';
 
-import Loader from './Loader';
+import Client from './Client';
 import Token from './TokenLS';
 import ProjectModel from '../models/Project';
 
@@ -13,9 +13,9 @@ container.register({
   urls: asValue({ login: 'auth/login', refreshToken: 'auth/refreshToken' }),
   server: asValue({ prefix: '/api/v1/', timeout: 30000 }),
   tokenNames: asValue({ token: 'token', refreshToken: 'refreshToken' }),
-  client: asValue(axios),
+  httpClient: asValue(axios),
   token: asClass(Token).setLifetime(Lifetime.SINGLETON),
-  loader: asClass(Loader).setLifetime(Lifetime.SINGLETON),
+  client: asClass(Client).setLifetime(Lifetime.SINGLETON),
   projectModel: asClass(ProjectModel).setLifetime(Lifetime.SINGLETON),
 });
 

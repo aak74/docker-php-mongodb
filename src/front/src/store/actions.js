@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import container from '../services/Container';
 
-const loader = container.resolve('loader');
+const client = container.resolve('client');
 const projectModel = container.resolve('projectModel');
 
 const getProjects = async ({ commit }) => {
@@ -52,7 +52,7 @@ const backupProject = ({ commit }, id) => {
 };
 
 const register = ({ commit }, data) => {
-  loader.request('post', 'user/register', { data })
+  client.request('post', 'user/register', { data })
     .then(() => {
       commit('REGISTER');
     })
@@ -63,33 +63,33 @@ const register = ({ commit }, data) => {
 };
 
 const isAdmin = ({ commit }) => {
-  loader.request('get', 'isAdmin/')
+  client.request('get', 'isAdmin/')
     .then(requestData => {
       commit('isAdmin', requestData);
     });
 };
 
 const users = ({ commit }) => {
-  loader.request('get', 'users')
+  client.request('get', 'users')
     .then(data => {
       commit('USERS', data);
     });
 };
 
 const userDelete = ({ commit }, id) => {
-  loader.request('delete', `user/${id}`)
+  client.request('delete', `user/${id}`)
     .then(data => {
       commit('DELETED_USER', data);
     });
 };
 const block = ({ commit }, id) => {
-  loader.request('delete', `block/user/${id}`)
+  client.request('delete', `block/user/${id}`)
     .then(data => {
       commit('BLOCK_USER', data);
     });
 };
 const unblock = ({ commit }, id) => {
-  loader.request('delete', `unblock/user/${id}`)
+  client.request('delete', `unblock/user/${id}`)
     .then(data => {
       commit('UNBLOCK_USER', data);
     });

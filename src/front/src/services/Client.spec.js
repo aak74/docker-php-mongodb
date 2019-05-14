@@ -1,7 +1,7 @@
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 
-import Loader from './Loader';
+import Client from './Client';
 import Token from './TokenBase';
 
 function getResponse(data) {
@@ -25,39 +25,39 @@ const ctx = {
 
 describe('General tests', () => {
   beforeEach(() => {
-    const client = axios.create();
-    ctx.mock = new MockAdapter(client);
+    const httpClient = axios.create();
+    ctx.mock = new MockAdapter(httpClient);
 
     const token = new Token(ctx.TOKEN);
 
-    ctx.loader = new Loader({
+    ctx.client = new Client({
       token,
       urls: ctx.urls,
       server: {
         prefix: '',
         timeout: 5,
       },
-      client,
+      httpClient,
     });
   });
 
   test('validateRequest throw error without method', () => {
-    expect(ctx.loader.validateRequest).toThrowError(Error);
+    expect(ctx.client.validateRequest).toThrowError(Error);
   });
 
   test('validateRequest throw error without uri', () => {
     const t = () => {
-      ctx.loader.validateRequest('get');
+      ctx.client.validateRequest('get');
     };
     expect(t).toThrowError(Error);
   });
 
   test('Login return tokens', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock.onPost(ctx.urls.login, ctx.LOGIN_REQUEST).reply(200, ctx.LOGIN_RESPONSE);
 
-    const response = await loader.login(ctx.LOGIN_REQUEST);
+    const response = await client.login(ctx.LOGIN_REQUEST);
 
     expect(mock.history.post.length).toBe(1);
     expect(response).toMatchObject({ token: 'TOKEN', refreshToken: 'REFRESH_TOKEN' });
@@ -65,7 +65,7 @@ describe('General tests', () => {
 
 
   test('Login return tokens for x-www-form-urlencoded', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock.onPost(ctx.urls.login)
       .reply(config => {
@@ -75,20 +75,20 @@ describe('General tests', () => {
         return [400];
       });
 
-    const response = await loader.login({ data: ctx.LOGIN_REQUEST, form: true });
+    const response = await client.login({ data: ctx.LOGIN_REQUEST, form: true });
 
     expect(mock.history.post.length).toBe(1);
     expect(response).toMatchObject({ token: 'TOKEN', refreshToken: 'REFRESH_TOKEN' });
   });
 
   test('Login captures token information', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock.onPost(ctx.urls.login, ctx.LOGIN_REQUEST).reply(200, ctx.LOGIN_RESPONSE);
     mock.onGet('/users').reply(200, []);
 
-    await loader.login(ctx.LOGIN_REQUEST);
-    await loader.get('/users');
+    await client.login(ctx.LOGIN_REQUEST);
+    await client.get('/users');
 
     expect(mock.history.post.length).toBe(1);
     expect(mock.history.get.length).toBe(1);
@@ -96,19 +96,19 @@ describe('General tests', () => {
   });
 
   test('Logout removes token information', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock.onGet('/users').reply(200, []);
 
-    await loader.logout();
-    await loader.get('users');
+    await client.logout();
+    await client.get('users');
 
     expect(mock.history.get.length).toBe(1);
     expect(mock.history.get[0].headers.Authorization).toBeFalsy();
   });
 
   test('Correctly retries request when got 401 with new token', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock
       .onPost(ctx.urls.refreshToken)
@@ -126,7 +126,7 @@ describe('General tests', () => {
       return [401];
     });
 
-    await loader.get('/users');
+    await client.get('/users');
 
     expect(mock.history.post.length).toBe(1);
     expect(mock.history.get.length).toBe(2);
@@ -134,7 +134,7 @@ describe('General tests', () => {
   });
 
   test('Does not refresh token more than once', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock
       .onPost(ctx.urls.refreshToken)
@@ -152,18 +152,18 @@ describe('General tests', () => {
       return [401];
     });
 
-    await Promise.all([loader.get('/users'), loader.get('/users')]);
+    await Promise.all([client.get('/users'), client.get('/users')]);
     expect(mock.history.post.filter(({ url }) => url === ctx.urls.refreshToken).length).toBe(1);
   });
 
   test('Correctly fails request when got non-401 error', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
     mock.onGet('/users').reply(404);
-    await expect(loader.get('users')).rejects.toThrow('Request failed with status code 404');
+    await expect(client.get('users')).rejects.toThrow('Request failed with status code 404');
   });
 
   test('Refresh token with refreshToken in header', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock.onPost(ctx.urls.refreshToken)
       .reply(config => {
@@ -174,104 +174,103 @@ describe('General tests', () => {
         return [401];
       });
 
-    await loader.post(ctx.urls.refreshToken);
+    await client.post(ctx.urls.refreshToken);
 
     expect(mock.history.post.length).toBe(1);
     expect(mock.history.post[0].headers.Authorization).toBe(`Bearer ${ctx.LOGIN_RESPONSE.data.refreshToken}`);
   });
 
   test('Emit event refreshToken after refreshing token', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock
       .onPost(ctx.urls.refreshToken)
       .replyOnce(200, ctx.REFRESH_RESPONSE);
 
     let userLogin = '';
-    loader.on('refreshToken', user => {
+    client.on('refreshToken', user => {
       userLogin = user.login;
     });
-    await loader.getRefreshToken();
+    await client.getRefreshToken();
 
     expect(userLogin).toBe(ctx.REFRESH_RESPONSE.data.user.login);
   });
 
   test('Request formed correctly for x-www-form-urlencoded', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock
       .onGet('/users')
       .reply(200, getResponse());
 
     const data = { a: 1, b: 2 };
-    await loader.get('/users', { data, form: true });
+    await client.get('/users', { data, form: true });
 
     expect(mock.history.get[0].headers['Content-Type']).toBe('application/x-www-form-urlencoded');
     expect(mock.history.get[0].data).toBe('a=1&b=2');
   });
 
   test('Request formed correctly for not x-www-form-urlencoded', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     mock
       .onPost('/data')
       .reply(200, getResponse());
 
     const data = { a: 1, b: 2 };
-    await loader.post('/data', { data });
+    await client.post('/data', { data });
 
-    expect(mock.history.post[0].data).toBe("{\"a\":1,\"b\":2}");
+    expect(mock.history.post[0].data).toBe('{"a":1,"b":2}');
   });
 
   test('Response with data in object return this data', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     const data = { status: 'ok', data: { a: 1, b: 2 } };
     mock
       .onPost('/data')
       .reply(200, data);
 
-    const response = await loader.post('/data');
+    const response = await client.post('/data');
 
     expect(response).toMatchObject(data.data);
   });
 
   test('Response without data in object return this very object', async () => {
-    const { mock, loader } = ctx;
+    const { mock, client } = ctx;
 
     const data = { a: 1, b: 2 };
     mock
       .onPost('/data')
       .reply(200, data);
 
-    const response = await loader.post('/data');
+    const response = await client.post('/data');
 
     expect(response).toMatchObject(data);
   });
-
 });
 
 describe('Custom tests', () => {
   test('Emit Unauthorized when empty refreshToken', async () => {
-    const client = axios.create();
-    const mock = new MockAdapter(client);
+    const httpClient = axios.create();
+    const mock = new MockAdapter(httpClient);
     const token = new Token({ token: 'TOKEN', refreshToken: null });
 
-    const loader = new Loader({
+    const client = new Client({
       token,
       urls: ctx.urls,
       server: {
         prefix: '',
         timeout: 5,
       },
-      client,
+      httpClient,
     });
 
     let isUnauthorized = false;
-    loader.on('Unauthorized', () => {
+    client.on('Unauthorized', () => {
       isUnauthorized = true;
     });
-    await loader.getRefreshToken();
+    await client.getRefreshToken();
 
     expect(isUnauthorized).toBeTruthy();
     expect(mock.history.post.length).toBe(0);
@@ -279,7 +278,7 @@ describe('Custom tests', () => {
 
   test('Renamed default token names', async () => {
     const token = new Token(ctx.TOKEN);
-    const loader = new Loader({
+    const client = new Client({
       token,
       urls: ctx.urls,
       server: {
@@ -288,12 +287,12 @@ describe('Custom tests', () => {
       },
     });
 
-    expect(loader.getTokensObject(ctx.TOKEN)).toMatchObject(ctx.TOKEN);
+    expect(client.getTokensObject(ctx.TOKEN)).toMatchObject(ctx.TOKEN);
   });
 
   test('Renamed custom token names', async () => {
     const token = new Token(ctx.TOKEN);
-    const loader = new Loader({
+    const client = new Client({
       token,
       urls: ctx.urls,
       server: {
@@ -305,46 +304,42 @@ describe('Custom tests', () => {
         refreshToken: 'refresh_token',
       },
     });
-    const customTokens = { access_token: 'TOKEN', refresh_token: 'REFRESH_TOKEN'}
-    expect(loader.getTokensObject(customTokens)).toMatchObject(ctx.TOKEN);
+    const customTokens = { access_token: 'TOKEN', refresh_token: 'REFRESH_TOKEN' };
+    expect(client.getTokensObject(customTokens)).toMatchObject(ctx.TOKEN);
   });
 });
 
 describe('Does not have refresh token url', () => {
-  beforeEach(() => {
-    const client = axios.create();
-    ctx.mock = new MockAdapter(client);
+  test('Emit Unauthorized when 401', async () => {
+    const httpClient = axios.create();
+    const mock = new MockAdapter(httpClient);
 
     const token = new Token(ctx.TOKEN);
 
-    ctx.loader = new Loader({
+    ctx.client = new Client({
       token,
       urls: {
         login: '/auth/login',
       },
       server: {
         prefix: '',
-        timeout: 5,
+        timeout: 50,
       },
-      client,
+      httpClient,
     });
-  });
-
-  test('Emit Unauthorized when 401', async () => {
-    const { mock, loader } = ctx;
 
     mock
       .onGet('/users')
       .reply(401);
 
     let isUnauthorized = false;
-    loader.on('Unauthorized', () => {
+    ctx.client.on('Unauthorized', () => {
       isUnauthorized = true;
     });
-    await loader.get('/users');
+    await ctx.client.get('/users');
 
     expect(isUnauthorized).toBeTruthy();
     expect(mock.history.post.length).toBe(0);
     expect(mock.history.get.length).toBe(1);
   });
-});  
+});

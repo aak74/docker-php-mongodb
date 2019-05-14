@@ -1,29 +1,29 @@
 class Model {
-  constructor({ loader, baseUrl, schema }) {
-    this.loader = loader;
+  constructor({ client, baseUrl, schema }) {
+    this.client = client;
     this.baseUrl = baseUrl;
     this.schema = schema;
   }
 
   getList() {
-    return this.loader.get(this.baseUrl);
+    return this.client.get(this.baseUrl);
   }
 
   getOne(id) {
-    return this.loader.get(`${this.baseUrl}/${id}`);
+    return this.client.get(`${this.baseUrl}/${id}`);
   }
 
   add(data) {
-    return this.loader.post(`${this.baseUrl}`, { data });
+    return this.client.post(`${this.baseUrl}`, { data });
   }
 
   save(data) {
     // eslint-disable-next-line no-underscore-dangle
-    return this.loader.post(`${this.baseUrl}/${data._id}`, { data });
+    return this.client.post(`${this.baseUrl}/${data._id}`, { data });
   }
 
   delete(id) {
-    return this.loader.request('delete', `${this.baseUrl}/${id}`);
+    return this.client.request('delete', `${this.baseUrl}/${id}`);
   }
 
   getSchema() {

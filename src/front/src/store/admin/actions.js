@@ -5,7 +5,7 @@ import mockExtraMenuItem from '../../mock/admin/extraMenuItem';
 import mockLeftMenu from '../../mock/admin/leftMenu';
 import container from '../../services/Container';
 
-const loader = container.resolve('loader');
+const client = container.resolve('client');
 
 const loadEntitiesFromMock = ({ commit }) => {
   commit('LOADED_ALL', {
@@ -16,7 +16,7 @@ const loadEntitiesFromMock = ({ commit }) => {
 };
 
 const loadEntitiesFromBackend = ({ commit }) => {
-  loader.get('admin/all/')
+  client.get('admin/all/')
     .then(data => {
       commit('LOADED_ALL', data);
     });
@@ -42,7 +42,7 @@ const loadAll = store => {
  */
 const loadEntity = (store, { entityName }) => {
   // console.log('loadEntity', store.state, payload);
-  loader.getData('get', entity.getApiPathByEntityName(store.state, entityName))
+  client.getData('get', entity.getApiPathByEntityName(store.state, entityName))
     .then(data => {
       // console.log('resolve', data);
       store.commit('LOADED_ENTITY', { data, entityName });
@@ -51,7 +51,7 @@ const loadEntity = (store, { entityName }) => {
 
 const checkToken = ({ commit }) => {
   // console.log('checkToken 0');
-  loader.get('auth/checkToken')
+  client.get('auth/checkToken')
     .then(user => {
       // console.log('checkToken', user);
       if (!user) {
@@ -69,7 +69,7 @@ const checkToken = ({ commit }) => {
 };
 
 const login = ({ commit, state }, credentials) => {
-  loader.login(credentials, state.user.isRemember)
+  client.login(credentials, state.user.isRemember)
     .then(() => {
       commit('LOGIN_SUCCESS', credentials.login);
     })
@@ -80,7 +80,7 @@ const login = ({ commit, state }, credentials) => {
 };
 
 const logout = ({ commit }) => {
-  loader.logout();
+  client.logout();
   commit('LOGOUT');
 };
 
@@ -92,8 +92,8 @@ export default {
   logout,
   setListeners({ commit }) {
     // console.log('setListeners');
-    loader.on('refreshToken', user => {
-      // console.log('loader.on refreshToken');
+    client.on('refreshToken', user => {
+      // console.log('client.on refreshToken');
       commit('TOKEN_REFRESHED', user);
     });
   },

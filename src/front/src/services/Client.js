@@ -6,14 +6,14 @@ function stringify(data) {
   return Object.keys(data).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(data[k])}`).join('&');
 }
 
-class Loader extends EventEmitter {
+class Client extends EventEmitter {
   constructor({
-    token, urls, server, client, tokenNames,
+    token, urls, server, httpClient, tokenNames,
   }) {
     super();
 
     this.token = token;
-    this.client = client || axios.create();
+    this.client = httpClient || axios.create();
     this.urls = urls || {
       login: 'auth/login',
       refreshToken: 'auth/refreshToken',
@@ -205,4 +205,4 @@ class Loader extends EventEmitter {
   }
 }
 
-export default Loader;
+export default Client;
