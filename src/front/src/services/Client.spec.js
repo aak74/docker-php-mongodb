@@ -159,7 +159,7 @@ describe('General tests', () => {
   test('Correctly fails request when got non-401 error', async () => {
     const { mock, client } = ctx;
     mock.onGet('/users').reply(404);
-    await expect(client.get('users')).rejects.toThrow('Request failed with status code 404');
+    await expect(client.get('users')).rejects.toThrowError('Request failed with status code 404');
   });
 
   test('Refresh token with refreshToken in header', async () => {

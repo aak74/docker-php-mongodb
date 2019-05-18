@@ -49,7 +49,7 @@ class Client extends EventEmitter {
     // console.log('api login', params);
     return new Promise(async resolve => {
       const data = await this.post(this.urls.login, params);
-      console.log('login data', data);
+      // console.log('login data', data);
       this.setNeedToSave(needToSave);
       this.updateTokens(this.getTokensObject(data));
       resolve(data);
@@ -88,43 +88,48 @@ class Client extends EventEmitter {
     return this.request('get', uri, config, cb);
   }
 
-  async request(method, uri, config, cb) {
-    this.validateRequest(method, uri);
+  request(method, uri, config, cb) {
+    const self = this;
+    return new Promise(async (resolve, reject) => {
+      self.validateRequest(method, uri);
 
-    const params = this.getParams(method, uri, config);
+      const params = self.getParams(method, uri, config);
 
-    let response = null;
-    try {
-      response = await this.client.request(params);
-    } catch (error) {
-      // console.log('request error', error, this.token);
-      if (!error.response || (error.response.status !== 401)) {
-        throw error;
+      let response = null;
+      try {
+        response = await self.client.request(params);
+      } catch (error) {
+        // console.log('request error', error, self.token);
+        if (!error.response || (error.response.status !== 401)) {
+          return reject(error);
+        }
+
+        if (!self.urls.refreshToken || !self.token.refreshToken) {
+          self.emit('Unauthorized');
+          return resolve();
+        }
+
+        self.addRequestToQueue({
+          method, uri, config, cb,
+        });
+        await self.getRefreshToken();
+        return resolve();
       }
+      console.log({ response });
 
-      if (!this.urls.refreshToken || !this.token.refreshToken) {
-        this.emit('Unauthorized');
-        return false;
+      if (response) {
+        // console.log(1);
+
+        // if (response.data.status && response.data.status !== 'ok') {
+        //   console.log(2);
+        //   return resolve();
+        // }
+        // console.log(3);
+        return resolve(response.data.data ? response.data.data : response.data);
       }
-
-      this.addRequestToQueue({
-        method, uri, config, cb,
-      });
-      await this.getRefreshToken();
-      return false;
-    }
-    // console.log({ response });
-
-    if (response) {
-      if (response.data.status && response.data.status !== 'ok') {
-        return false;
-      }
-
-      return response.data.data
-        ? response.data.data
-        : response.data;
-    }
-    return false;
+      // console.log(4);
+      return resolve();
+    });
   }
 
   validateRequest(method, uri) {
@@ -187,7 +192,7 @@ class Client extends EventEmitter {
     try {
       data = await this.post(this.urls.refreshToken);
     } catch (error) {
-      console.log('getRefreshToken error', error);
+      // console.log('getRefreshToken error', error);
       return;
     }
     this.updateTokens(data);
