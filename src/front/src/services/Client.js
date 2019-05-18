@@ -28,7 +28,7 @@ class Client extends EventEmitter {
       refreshToken: 'refreshToken',
     };
 
-    this.requests = [];
+    // this.requests = [];
   }
 
   /**
@@ -109,13 +109,17 @@ class Client extends EventEmitter {
           return resolve();
         }
 
-        self.addRequestToQueue({
-          method, uri, config, cb,
+        // self.addRequestToQueue({
+        //   method, uri, config, cb,
+        // });
+        this.on('refreshToken', async () => {
+          const result = await self.request(method, uri, config, cb);
+          resolve(result);
         });
-        await self.getRefreshToken();
-        return resolve();
+        self.getRefreshToken();
+        return null;
       }
-      console.log({ response });
+      // console.log({ response });
 
       if (response) {
         // console.log(1);
@@ -173,9 +177,9 @@ class Client extends EventEmitter {
     return params;
   }
 
-  addRequestToQueue(request) {
-    this.requests.push(request);
-  }
+  // addRequestToQueue(request) {
+  //   this.requests.push(request);
+  // }
 
   async getRefreshToken() {
     if (this.refreshRequest) {
@@ -196,18 +200,17 @@ class Client extends EventEmitter {
       return;
     }
     this.updateTokens(data);
-    this.executeRequests();
+    // this.executeRequests();
     this.refreshRequest = false;
     this.emit('refreshToken', data.user);
   }
-
-  executeRequests() {
-    let request = null;
-    // eslint-disable-next-line no-cond-assign
-    while (request = this.requests.shift()) {
-      this.request(request.method, request.uri, request.config, request.cb);
-    }
-  }
+  // executeRequests() {
+  //   let request = null;
+  //   // eslint-disable-next-line no-cond-assign
+  //   while (request = this.requests.shift()) {
+  //     this.request(request.method, request.uri, request.config, request.cb);
+  //   }
+  // }
 }
 
 export default Client;

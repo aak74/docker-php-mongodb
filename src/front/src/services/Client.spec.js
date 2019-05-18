@@ -109,7 +109,7 @@ describe('General tests', () => {
 
   test('Correctly retries request when got 401 with new token', async () => {
     const { mock, client } = ctx;
-
+    const RESPONSE = [{ name: 'Vasya' }, { name: 'Petya' }];
     mock
       .onPost(ctx.urls.refreshToken)
       .replyOnce(200, ctx.REFRESH_RESPONSE);
@@ -121,13 +121,14 @@ describe('General tests', () => {
       }
 
       if (auth === `Bearer ${ctx.REFRESH_RESPONSE.data.token}`) {
-        return [200, []];
+        return [200, RESPONSE];
       }
       return [401];
     });
 
-    await client.get('/users');
+    const result = await client.get('/users');
 
+    expect(result).toMatchObject(RESPONSE);
     expect(mock.history.post.length).toBe(1);
     expect(mock.history.get.length).toBe(2);
     expect(mock.history.get[1].headers.Authorization).toBe(`Bearer ${ctx.REFRESH_RESPONSE.data.token}`);
