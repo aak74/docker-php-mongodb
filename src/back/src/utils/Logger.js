@@ -102,33 +102,41 @@ class Log {
     });
   }
 
-  error(e) {
-    if (e.message) {
-      console.log('err', e);
+  error() {
+    const err = (arguments.length > 1)
+      ? arguments[1]
+      : arguments[0];
+
+    const title = (arguments.length > 1)
+      ? arguments[0]
+      : undefined;
+
+    if (err.message) {
+      console.log('err', title, err);
     } else {
-      this.log('error', e);
+      this.log('error', [title, err]);
     }
     // console.trace();
   }
 
   info(msg, context) {
-    this.log('info', msg, context);
+    this.log('info', [msg, context]);
   }
 
   debug(msg, context) {
-    this.log('debug', msg, context);
+    this.log('debug', [msg, context]);
   }
 
   warn(msg, context) {
-    this.log('warn', msg, context);
+    this.log('warn', [msg, context]);
   }
 
   verbose(msg, context) {
-    this.log('verbose', msg, context);
+    this.log('verbose', [msg, context]);
   }
 
   silly(msg, context) {
-    this.log('silly', msg, context);
+    this.log('silly', [msg, context]);
   }
 
   /**
@@ -154,9 +162,3 @@ class Log {
 }
 
 module.exports = Log;
-// ([
-//   // '#AUTHENTICATION#',
-//   '#NOTIFIER#',
-//   '#QUEUE#',
-//   '#REDIS#',
-// ]);
