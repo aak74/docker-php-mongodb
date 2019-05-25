@@ -1,4 +1,4 @@
-FROM node:8-alpine
+FROM node:10-alpine
 LABEL maintainer="Andrew Kopylov <aa74ko@gmail.com>"
 
 RUN apk add --no-cache curl
