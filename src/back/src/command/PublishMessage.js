@@ -1,5 +1,3 @@
-'use strict';
-
 class PublishMessage {
   constructor({ logger, queue }) {
     this.logger = logger;

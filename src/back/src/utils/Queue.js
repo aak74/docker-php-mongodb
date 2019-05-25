@@ -1,5 +1,5 @@
 const amqp = require('amqplib');
-const {EventEmitter} = require('events');
+const { EventEmitter } = require('events');
 
 const config = require('../config');
 
@@ -49,7 +49,7 @@ class Queue extends EventEmitter {
   error(type, err) {
     console.log('err', err);
     // console.log('err', err.stack());
-    
+
     this.logger.error(`#RABBIT# ${type} error %j`, err.toString());
   }
 
@@ -64,22 +64,22 @@ class Queue extends EventEmitter {
   async subscribeOnQueues(queueName) {
     try {
       await this.assertQueue(queueName);
-      await this.channel.consume(queueName, async (msg) => {
+      await this.channel.consume(queueName, async msg => {
         this.emitConsume(msg);
-      }, {noAck: false});
+      }, { noAck: false });
     } catch (err) {
       this.error('subscribe', err);
     }
   }
 
   emitConsume(msg) {
-    this.emit(`consume`, msg);
+    this.emit('consume', msg);
   }
 
   getLastResult() {
     return this.lastResult;
   }
-  
+
 
   async publish(msg, queue) {
     try {

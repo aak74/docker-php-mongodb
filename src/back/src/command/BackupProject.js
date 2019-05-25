@@ -1,5 +1,3 @@
-'use strict';
-
 class BackupProject {
   constructor({ logger, projectModel, queue }) {
     this.logger = logger;
@@ -14,14 +12,14 @@ class BackupProject {
     }
     try {
       console.log('backup', project);
-      
+
       this.queue.publish(
         {
-          id: params._id, 
+          id: params._id,
           name: project.name,
           ssh: project.ssh,
         },
-        'backup'
+        'backup',
       );
     } catch (error) {
       throw new Error('Backup error');

@@ -1,5 +1,3 @@
-'use strict';
-
 class unblocked {
   constructor({
     logger,

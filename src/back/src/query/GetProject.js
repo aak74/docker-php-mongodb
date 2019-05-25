@@ -1,5 +1,3 @@
-'use strict';
-
 class GetProject {
   constructor({ logger, projectModel }) {
     this.logger = logger;

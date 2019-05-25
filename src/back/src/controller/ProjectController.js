@@ -1,6 +1,4 @@
-'use strict';
-
-class  ProjectModel {
+class ProjectModel {
   constructor({
     getProjects,
     getProject,
@@ -23,30 +21,28 @@ class  ProjectModel {
     return this.getProjects.get(filter);
   }
 
-  async get(params) { 
-    return await this.getProject.get(params);
+  get(params) {
+    return this.getProject.get(params);
   }
 
-  async update(filter, update) {
-    return await this.updateProject.execute(filter, update);
+  update(filter, update) {
+    return this.updateProject.execute(filter, update);
   }
 
-  async create(params) {
-    return await this.createProject.execute(params);
+  create(params) {
+    return this.createProject.execute(params);
   }
 
-  async delete(params) {
-    console.log('ctrl', params);
-    
-    return await this.deleteProject.execute(params);
+  delete(params) {
+    return this.deleteProject.execute(params);
   }
 
-  async backup(params) {
-    return await this.backupProject.execute(params);
+  backup(params) {
+    return this.backupProject.execute(params);
   }
 
-  async updateStatus(params) {
-    return await this.updateStatusCommand.execute(params);
+  updateStatus(params) {
+    return this.updateStatusCommand.execute(params);
   }
 }
 

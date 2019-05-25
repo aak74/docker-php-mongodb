@@ -1,5 +1,3 @@
-'use strict';
-
 class BaseController {
   constructor() {
     this.commands = [];
@@ -7,18 +5,16 @@ class BaseController {
   }
 
   registerCommands(commands) {
-    for (const commandName in commands) {
-      if (commands.hasOwnProperty(commandName)) {
-        this.registerCommand(commandName, commands[commandName]);
-      }
+    const keys = Object.keys(commands);
+    for (let i = 0; i < keys.length; i += 1) {
+      this.registerCommand(keys[i], commands[keys[i]]);
     }
   }
 
   registerQueries(queries) {
-    for (const queryName in queries) {
-      if (queries.hasOwnProperty(queryName)) {
-        this.registerQuery(queryName, queries[queryName]);
-      }
+    const keys = Object.keys(queries);
+    for (let i = 0; i < keys.length; i += 1) {
+      this.registerQuery(keys[i], queries[keys[i]]);
     }
   }
 
@@ -30,16 +26,15 @@ class BaseController {
     this.queries[queryName] = query;
   }
 
-  async get(queryName, params) {
+  get(queryName, params) {
     // console.log('get', queryName, params, this.queries[queryName]);
-    return await this.queries[queryName].get(params);
+    return this.queries[queryName].get(params);
   }
 
-  async execute(commandName, params) {
+  execute(commandName, params) {
     // console.log('get', commandName, params, this.queries[commandName]);
-    return await this.commands[commandName].execute(params);
+    return this.commands[commandName].execute(params);
   }
-
 }
 
 module.exports = BaseController;

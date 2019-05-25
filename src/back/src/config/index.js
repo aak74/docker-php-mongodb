@@ -7,8 +7,8 @@ module.exports = {
   },
   rabbit: {
     queues: {
-      'backup': {},
-      'backuped': {},
+      backup: {},
+      backuped: {},
     },
   },
-}
+};

@@ -1,5 +1,3 @@
-'use strict';
-
 class GetUsers {
   constructor({
     logger,
@@ -14,10 +12,10 @@ class GetUsers {
   async get(params) {
     const result = await this.userModel.getList(params);
     result.forEach(element => {
-       element.password="";
-       element.type='user';
+      element.password = '';
+      element.type = 'user';
     });
-    return result
+    return result;
   }
 }
 

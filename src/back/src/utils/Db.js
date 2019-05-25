@@ -1,5 +1,3 @@
-'use strict';
-
 const { MongoClient, ObjectID } = require('mongodb');
 const config = require('../config');
 
@@ -10,7 +8,7 @@ const config = require('../config');
  * Факт падения БД можно найти в логе.
  */
 class Db {
-  constructor ({logger}) {
+  constructor({ logger }) {
     this.logger = logger;
     this.db = null;
     this.client = null;
@@ -29,7 +27,7 @@ class Db {
         connectTimeoutMS: config.db.timeout || 1500,
         reconnectInterval: config.db.timeout || 1500,
         reconnectTries: 1,
-        useNewUrlParser: true
+        useNewUrlParser: true,
       };
       this.client = await MongoClient.connect(config.db.url, options);
       this.client.on('close', () => {
@@ -52,18 +50,19 @@ class Db {
       return true;
     }
     await this.connect();
-    // return false;
+    return true;
   }
 
   async close() {
-    await this.client.close((err) => {
+    await this.client.close(err => {
       this.db = null;
       this.logger.info('Connection to MongoDB server was closed');
+      this.logger.error(err);
     });
   }
 
   async addToCollection(collection, data) {
-    console.log(collection,'====', data);
+    console.log(collection, '====', data);
     const status = await this.check();
     if (!status) {
       return false;
@@ -73,11 +72,10 @@ class Db {
         Object.assign({
           created: Date.now(),
         },
-        data,
-        ),
+        data),
       ).then(() => {
         // this.logger.debug('DB adding success');
-      }).catch((err) => {
+      }).catch(err => {
         console.log('DB adding error CATCH 0', err.stack);
       });
     } catch (err) {
@@ -91,7 +89,8 @@ class Db {
   removeCollection(collection) {
     return this.db.collection(collection).drop();
   }
-  
+
+  // eslint-disable-next-line class-methods-use-this
   objectId(str) {
     return new ObjectID(str);
   }

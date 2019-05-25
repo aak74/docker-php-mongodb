@@ -1,5 +1,3 @@
-'use strict';
-
 class CreateProject {
   constructor({
     logger,
@@ -13,7 +11,7 @@ class CreateProject {
 
   async execute(params) {
     this.logger.debug('CreateProject', params);
-    const result = await this.projectModel.insertOne(params);
+    await this.projectModel.insertOne(params);
     this.logger.debug('CreateProject 2', params);
     this.publishMessage.execute({ queue: 'projectCreated', msg: params });
     return true;

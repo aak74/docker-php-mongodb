@@ -1,10 +1,9 @@
-'use strict';
-
-const Model = require('./Model')
+/* eslint-disable no-underscore-dangle */
+const Model = require('./Model');
 
 class UserModel extends Model {
   constructor({ db }) {
-    super({ db, collectionName: 'users' })
+    super({ db, collectionName: 'users' });
   }
 
   async delete(id) {
@@ -19,15 +18,15 @@ class UserModel extends Model {
 
   async blocked(id) {
     const update = {
-      blocked:true,
+      blocked: true,
     };
-     //console.log('findOneAndUpdate', filter, update);
+    // console.log('findOneAndUpdate', filter, update);
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
         this.getFilter(id), {
-          $set: update
-        }, 
+          $set: update,
+        },
       )
       .catch(err => {
         console.log(err);
@@ -37,15 +36,15 @@ class UserModel extends Model {
 
   async unblocked(id) {
     const update = {
-      blocked:false,
+      blocked: false,
     };
-     //console.log('findOneAndUpdate', filter, update);
+    // console.log('findOneAndUpdate', filter, update);
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
         this.getFilter(id), {
-          $set: update
-        }, 
+          $set: update,
+        },
       )
       .catch(err => {
         console.log(err);
@@ -64,17 +63,16 @@ class UserModel extends Model {
     const result = this.db.get()
       .collection('users')
       .findOne(params);
-    
+
     return result;
   }
 
   getFilter(filter) {
-    if (filter && filter['_id']) {
-      filter['_id'] = this.db.objectId(filter['_id']);
+    if (filter && filter._id) {
+      filter._id = this.db.objectId(filter._id);
     }
     return filter;
   }
 }
 
 module.exports = UserModel;
-

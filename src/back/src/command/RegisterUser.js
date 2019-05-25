@@ -1,5 +1,3 @@
-'use strict';
-
 class RegisterUser {
   constructor({
     logger,
@@ -13,7 +11,7 @@ class RegisterUser {
 
   async execute(params) {
     const result = await this.userModel.findOne(params);
-    if (!result){
+    if (!result) {
       try {
         await this.userModel.insertOne(params);
       } catch (err) {

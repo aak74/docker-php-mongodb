@@ -1,12 +1,13 @@
 const { transports, format, createLogger } = require('winston');
+
 const { printf } = format;
 const colors = require('colors/safe');
 const util = require('util');
 
 class Log {
-  constructor({excludes}) {
-    this.excludes = false;
-    // this.excludes = excludes;
+  constructor({ excludes }) {
+    // this.excludes = false;
+    this.excludes = excludes;
 
     colors.setTheme({
       silly: 'rainbow',
@@ -18,7 +19,7 @@ class Log {
       help: 'cyan',
       warn: 'yellow',
       debug: 'blue',
-      error: 'red'
+      error: 'red',
     });
 
     this.logger = createLogger({
@@ -36,6 +37,7 @@ class Log {
     });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   formatDate(date) {
     const d = new Date(date);
     const dateObject = {
@@ -48,33 +50,34 @@ class Log {
       milliseconds: d.getMilliseconds().toString(),
     };
 
-    Object.entries(dateObject).forEach((item) => {
+    Object.entries(dateObject).forEach(item => {
       switch (item[0]) {
         case 'year':
           break;
         case 'milliseconds':
-          while(item[1].toString().length < 3) {
+          while (item[1].toString().length < 3) {
             item[1] = `0${item[1]}`;
           }
           break;
         default:
-          while(item[1].toString().length < 2) {
+          while (item[1].toString().length < 2) {
             item[1] = `0${item[1]}`;
           }
           break;
       }
+      // eslint-disable-next-line prefer-destructuring
       dateObject[item[0]] = item[1];
     });
 
     return `${dateObject.year}-${dateObject.month}-${dateObject.day} ${dateObject.hours}:${dateObject.minutes}:${dateObject.seconds}:${dateObject.milliseconds}`;
-  };
+  }
 
   uniFormat(colorized) {
     return printf(info => {
       const rest = JSON.stringify(Object.assign({}, info, {
         level: undefined,
         message: undefined,
-        splat: undefined
+        splat: undefined,
       }));
 
       const processType = process.env.PROCESS_TYPE;
@@ -97,7 +100,7 @@ class Log {
 
       return msg;
     });
-  };
+  }
 
   error(e) {
     if (e.message) {
@@ -130,9 +133,9 @@ class Log {
 
   /**
    * Логгирование с учетом исключаемых элементов
-   * @param {*} level 
-   * @param {*} msg 
-   * @param {*} context 
+   * @param {*} level
+   * @param {*} msg
+   * @param {*} context
    */
   log(level, msg, context) {
     if (!msg.includes) {
@@ -145,7 +148,7 @@ class Log {
         this.logger.log(level, msg, context);
       }
       return;
-    } 
+    }
     this.logger.log(level, msg, context);
   }
 }

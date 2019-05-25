@@ -1,5 +1,3 @@
-'use strict';
-
 class Model {
   constructor({ db, collectionName }) {
     this.db = db;
@@ -10,8 +8,8 @@ class Model {
     return this.find(filter, projection).toArray();
   }
 
-  async getObject(filter, projection) {
-    return await this.findOne(filter, projection);
+  getObject(filter, projection) {
+    return this.findOne(filter, projection);
   }
 
   find(filter, projection) {
@@ -33,15 +31,15 @@ class Model {
 
   async findOneAndUpdate(filter, update, params) {
     console.log('findOneAndUpdate', filter, update, params);
-    
-    delete(update._id);
+
+    delete (update._id);
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
         this.getFilter(filter), {
-          $set: update
-        }, 
-        params
+          $set: update,
+        },
+        params,
       )
       .catch(err => {
         console.log(err);
@@ -54,9 +52,9 @@ class Model {
       .collection(this.collectionName)
       .findOneAndUpdate(
         this.getFilter(filter), {
-          $set: update
-        }, 
-        params
+          $set: update,
+        },
+        params,
       )
       .catch(err => {
         console.log('findOneAndInsert error', err);
@@ -81,13 +79,13 @@ class Model {
       .catch(err => {
         console.log(err);
       });
-    if (result.result.n===0){return false}
-    return true
+    if (result.result.n === 0) { return false; }
+    return true;
   }
 
   getFilter(filter) {
-    if (filter && filter['_id']) {
-      filter['_id'] = this.db.objectId(filter['_id']);
+    if (filter && filter._id) {
+      filter._id = this.db.objectId(filter._id);
     }
     return filter;
   }

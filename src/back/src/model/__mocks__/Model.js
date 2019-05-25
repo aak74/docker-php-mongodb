@@ -1,9 +1,9 @@
-'use strict';
-
+/* eslint-disable class-methods-use-this */
 class Model {
   constructor({ logger }) {
     this.logger = logger;
   }
+
   getList() {
     return [];
   }
@@ -11,6 +11,7 @@ class Model {
   getObject() {
     return this.getList()[0];
   }
+
   find() {
     return {};
   }
@@ -20,7 +21,7 @@ class Model {
   }
 
   findOneAndUpdate() {
-   //this.logger.debug('findOneAndUpdate mock', arguments);
+    // this.logger.debug('findOneAndUpdate mock', arguments);
     return true;
   }
 

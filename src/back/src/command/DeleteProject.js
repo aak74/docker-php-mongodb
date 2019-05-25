@@ -1,8 +1,6 @@
-'use strict';
-
 class DeleteProject {
-  constructor({ 
-    logger, 
+  constructor({
+    logger,
     projectModel,
     publishMessage,
   }) {

@@ -1,5 +1,3 @@
-'use strict';
-
 const BaseController = require('./BaseController');
 
 class UserController extends BaseController {
@@ -9,10 +7,8 @@ class UserController extends BaseController {
     deleteUser,
     blocked,
     unblocked,
-    checkCredentials
+    checkCredentials,
   }) {
-    // this.authUser = authUser;
-    console.log('UserController', arguments[0]);
     super();
     this.registerCommands({
       registerUser,
@@ -21,34 +17,34 @@ class UserController extends BaseController {
       blocked,
       unblocked,
     });
- 
+
     this.registerQueries({
-      checkCredentials
+      checkCredentials,
     });
   }
 
-  async usersGet(params) {
-    return await this.get('getUsers', params);
+  usersGet(params) {
+    return this.get('getUsers', params);
   }
 
-  async delete(id) {
-    return await this.execute('delete', id);
+  delete(id) {
+    return this.execute('delete', id);
   }
 
-  async block(id) {
-    return await this.execute('blocked', id);
+  block(id) {
+    return this.execute('blocked', id);
   }
 
-  async unblock(id) {
-    return await this.execute('unblocked', id);
+  unblock(id) {
+    return this.execute('unblocked', id);
   }
 
-  async checkCredentials(params) {
-    return await this.get('checkCredentials', params);
+  checkCredentials(params) {
+    return this.get('checkCredentials', params);
   }
 
-  async register(params) {
-    return await this.execute('registerUser', params);
+  register(params) {
+    return this.execute('registerUser', params);
   }
 }
 

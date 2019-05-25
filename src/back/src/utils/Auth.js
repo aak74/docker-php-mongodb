@@ -1,4 +1,4 @@
-'use strict';
+/* eslint-disable no-underscore-dangle */
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const passportJWT = require('passport-jwt');
@@ -29,7 +29,7 @@ class Auth {
         // exp: Math.floor(Date.now() / 1000) + (60 * 60),
         data: payload,
       },
-      this.options.secretOrKey
+      this.options.secretOrKey,
     );
   }
 
@@ -39,20 +39,20 @@ class Auth {
         exp: Math.floor(Date.now() / 1000) + this.tokenTTL.refreshToken,
         data: payload,
       },
-      this.options.secretOrKey
+      this.options.secretOrKey,
     );
   }
 
   newStrategy() {
     const strategy = new passportJWT.Strategy(
-      this.options, 
+      this.options,
       (payload, cb) => {
         const user = {
           id: payload.data._id || payload.data.id,
           login: payload.data.login,
         };
         cb(null, user);
-      }
+      },
     );
     passport.use(strategy);
   }
@@ -61,6 +61,7 @@ class Auth {
     this.authenticate(req, res, next);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   passport() {
     return passport;
   }

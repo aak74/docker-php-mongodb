@@ -1,6 +1,4 @@
-'use strict';
-
-class  HistoryController {
+class HistoryController {
   constructor({
     addToHistory,
     getHistory,
@@ -8,15 +6,14 @@ class  HistoryController {
     this.AddToHistory = addToHistory;
     this.GetHistory = getHistory;
   }
-  async addToHistory(history) {
-    return await this.AddToHistory.execute(history);
+
+  addToHistory(history) {
+    return this.AddToHistory.execute(history);
   }
 
-  async getHistory(projectId) {
-    return await this.GetHistory.get(projectId);
-    //
+  getHistory(projectId) {
+    return this.GetHistory.get(projectId);
   }
-
 }
 
 module.exports = HistoryController;

@@ -1,5 +1,3 @@
-'use strict';
-
 class History {
   constructor({ db, collectionName }) {
     this.db = db;
@@ -7,77 +5,73 @@ class History {
   }
 
   async Insert(filter, update, params) {
-    console
-    filter={
-      id: filter.id
-      }
+    const realFilter = {
+      id: filter.id,
+    };
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
-        filter, {
+        realFilter, {
           $push: {
             history: {
-             ...update
+              ...update,
             },
           },
-        }, 
-        params
+        },
+        params,
       )
       .catch(err => {
         console.log(err);
       });
-      if(result.value == null){
-          const resultInsert = await this.db.get()
-            .collection(this.collectionName)
-            .insertOne(filter)
-            .catch(err => {
-              console.log(err);
-            });
-          return resultInsert;
-        
-      }
+    if (result.value == null) {
+      const resultInsert = await this.db.get()
+        .collection(this.collectionName)
+        .insertOne(filter)
+        .catch(err => {
+          console.log(err);
+        });
+      return resultInsert;
+    }
     return result;
   }
 
   async InsertBackup(filter, update, params) {
     console.log(111);
-    filter={
-      id: filter.id
-      }
-      console.log(filter, update);
+    const realFilter = {
+      id: filter.id,
+    };
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOneAndUpdate(
-        filter, {
+        realFilter, {
           $push: {
             historyBackup: {
-             ...update
+              ...update,
             },
           },
-        }, 
-        params
+        },
+        params,
       )
       .catch(err => {
         console.log(err);
       });
-      if(result.value == null){
-          const resultInsert = await this.db.get()
-            .collection(this.collectionName)
-            .insertOne(filter)
-            .catch(err => {
-              console.log(err);
-            });
-          return resultInsert;
-        
-      }
+    if (result.value == null) {
+      const resultInsert = await this.db.get()
+        .collection(this.collectionName)
+        .insertOne(filter)
+        .catch(err => {
+          console.log(err);
+        });
+      return resultInsert;
+    }
     return result;
   }
 
-  async get(filter, projection) {
+  async get(filter) {
     const result = await this.db.get()
       .collection(this.collectionName)
       .findOne(filter);
-      //console.log('result=>',result);
+      // console.log('result=>',result);
     return result;
   }
 }

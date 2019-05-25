@@ -1,5 +1,3 @@
-'use strict';
-
 class CheckCredentials {
   constructor({
     logger,
@@ -15,7 +13,7 @@ class CheckCredentials {
     if (!result) {
       return false;
     }
-    delete(result.password);
+    delete (result.password);
     return result;
   }
 }
