@@ -57,8 +57,8 @@ class Auth {
     passport.use(strategy);
   }
 
-  auth(req, res, next) {
-    this.authenticate(req, res, next);
+  authMiddleware() {
+    return this.authenticate;
   }
 
   // eslint-disable-next-line class-methods-use-this

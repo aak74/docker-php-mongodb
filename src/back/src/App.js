@@ -1,8 +1,8 @@
 class App {
-  constructor({ logger, db, router }) {
+  constructor({ logger, db, rootRouter }) {
     this.logger = logger;
     this.db = db;
-    this.router = router;
+    this.router = rootRouter;
   }
 
   run() {
