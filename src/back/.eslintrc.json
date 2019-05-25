@@ -1,7 +1,0 @@
-{
-  "extends": "airbnb-base",
-  "rules": {
-    "func-names": 0,
-    "no-shadow": [2, {"allow": ["err", "req", "res", "collection"]}]
-  }
-}
