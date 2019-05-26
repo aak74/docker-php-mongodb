@@ -4,6 +4,7 @@
     :fields="fields"
     :buttons="buttons"
     @emit="emit"
+    @change="change"
   />
 </template>
 
@@ -43,7 +44,13 @@ export default {
 
   methods: {
     emit(event) {
+      console.log('ProjectForm.emit', event);
+
       this.$emit('emit', event);
+    },
+
+    change(event) {
+      this.$emit('change', event);
     },
   },
 };

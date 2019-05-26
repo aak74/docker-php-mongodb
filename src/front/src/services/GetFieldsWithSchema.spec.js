@@ -35,7 +35,7 @@ test('Mix data with schema', () => {
   ]);
 });
 
-test('Mix groupped data with schema', () => {
+describe('Mix groupped data with schema', () => {
   const SCHEMA = [
     {
       model: 'ssh',
@@ -54,22 +54,45 @@ test('Mix groupped data with schema', () => {
     },
   ];
 
-  const result = getFields(SCHEMA, { host: 'hostname' });
-  expect(result).toMatchObject([{
-    model: 'ssh',
-    label: 'SSH',
-    type: 'group',
-    value: undefined,
-    fields: [
-      {
-        value: 'hostname',
-        model: 'host',
-        label: 'Host',
-      }, {
-        value: undefined,
-        model: 'port',
-        label: 'Port',
-      },
-    ],
-  }]);
+  test('Data exists', () => {
+    const result = getFields(SCHEMA, { ssh: { host: 'hostname' } });
+    expect(result).toMatchObject([{
+      model: 'ssh',
+      label: 'SSH',
+      type: 'group',
+      value: undefined,
+      fields: [
+        {
+          value: 'hostname',
+          model: 'host',
+          label: 'Host',
+        }, {
+          value: undefined,
+          model: 'port',
+          label: 'Port',
+        },
+      ],
+    }]);
+  });
+
+  test('Data doesn`t exists', () => {
+    const result = getFields(SCHEMA);
+    expect(result).toMatchObject([{
+      model: 'ssh',
+      label: 'SSH',
+      type: 'group',
+      value: undefined,
+      fields: [
+        {
+          value: undefined,
+          model: 'host',
+          label: 'Host',
+        }, {
+          value: undefined,
+          model: 'port',
+          label: 'Port',
+        },
+      ],
+    }]);
+  });
 });

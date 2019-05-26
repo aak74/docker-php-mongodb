@@ -9,11 +9,13 @@
 
 <script>
 export default {
+  name: 'FormButton',
   props: [
     'button',
   ],
   methods: {
     click(event) {
+      console.log('FormButton.click', event);
       this.$emit('click', event.target.parentNode.dataset.emit);
     },
   },

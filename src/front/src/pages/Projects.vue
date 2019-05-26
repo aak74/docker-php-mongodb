@@ -56,6 +56,7 @@
         <project-form
           :title="dialog.title"
           @emit="emit"
+          @change="change"
         />
       </v-dialog>
     </v-container>
@@ -124,6 +125,7 @@ export default {
     },
 
     save(data) {
+      // debugger;
       const fullData = Object.assign({}, this.$store.state.current.data, data);
       this.$store.dispatch('saveProject', fullData);
     },
@@ -133,12 +135,18 @@ export default {
     },
 
     emit(event) {
-      console.log('actions emit', event);
-      this.dialog.show = false;
+      console.log('Projects emit', event);
       if (event.name === 'save') {
         this.save(event.data);
       }
-      this.$store.commit('CLEAR_CURRENT');
+      if ((event.name === 'save') || (event.name === 'close')) {
+        this.dialog.show = false;
+        this.$store.commit('CLEAR_CURRENT');
+      }
+    },
+
+    change(event) {
+      console.log('Projects.change', event);
     },
   },
 

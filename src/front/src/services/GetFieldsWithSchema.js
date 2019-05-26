@@ -4,20 +4,26 @@
  * @param {Oject} data
  */
 function getFieldsWithSchema(schema, data) {
-  if (!schema || !data) {
+  if (!schema) {
     throw new Error('Bad parameters');
   }
   if (!Array.isArray(schema)) {
     throw new Error('Parameter schema must be an array');
   }
-  // console.log(schema, data);
+  // console.log(1, schema, data);
 
   const result = schema.reduce((carry, item) => {
-    // console.log(item, data[item.model]);
+    const value = (data && data[item.model])
+      ? data[item.model]
+      : undefined;
+
+    // console.log(2, item, value);
     if (item.fields) {
-      item.fields = getFieldsWithSchema(item.fields, data);
+      item.fields = getFieldsWithSchema(item.fields, value);
+      carry.push(Object.assign({}, item, { value: undefined }));
+    } else {
+      carry.push(Object.assign({}, item, { value }));
     }
-    carry.push(Object.assign({}, item, { value: data[item.model] }));
     return carry;
   }, []);
   return result;

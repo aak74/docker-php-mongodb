@@ -29,6 +29,7 @@ import FormCheckbox from './FormCheckbox.vue';
 import FormGroup from './FormGroup.vue';
 
 export default {
+  name: 'UniForm',
   props: [
     'title',
     'fields',
@@ -47,12 +48,23 @@ export default {
   },
   methods: {
     emit(name) {
+      console.log('UniForm.emit', name);
       this.$emit('emit', { name, data: this.current });
     },
 
     change(field) {
-      this.current[field.model] = field.value;
-      console.log('change', field, this.current);
+      console.log('UniForm.change', field);
+
+      if (field.parent) {
+        if (!this.current[field.parent]) {
+          this.current[field.parent] = {};
+        }
+        this.current[field.parent][field.model] = field.value;
+      } else {
+        this.current[field.model] = field.value;
+      }
+      console.log('UniForm.change 2', field, this.current);
+      this.emit('change');
     },
   },
 };

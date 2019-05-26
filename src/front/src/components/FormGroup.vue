@@ -7,7 +7,7 @@
         :key="_field.model"
         :is="'form-' + _field.type"
         :field="_field"
-        @change="$emit('change', field)"
+        @change="change"
       />
     </v-card-text>
   </v-card>
@@ -27,6 +27,14 @@ export default {
     FormButton,
     FormInput,
     FormCheckbox,
+  },
+
+  methods: {
+    change(field) {
+      console.log('FormGroup.change', field, this.$props.field.model);
+      // this.$emit('change', { fieldName: field.model, value: field.value })
+      this.$emit('change', Object.assign({ parent: this.$props.field.model }, field));
+    },
   },
 };
 </script>
