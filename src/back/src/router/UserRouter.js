@@ -20,7 +20,7 @@ class UserRouter {
 
   // eslint-disable-next-line class-methods-use-this
   route(router) {
-    router.get('/', async (req, res) => {
+    router.get('/', authMiddleware, async (req, res) => {
       res.send('1');
 
       // if (isAdmin(req.user.id)) {
@@ -31,7 +31,7 @@ class UserRouter {
       // }
     });
 
-    router.get('/isAdmin', async (req, res) => {
+    router.get('/isAdmin', authMiddleware, async (req, res) => {
       res.send({ isAdmin: true });
 
 
@@ -47,7 +47,7 @@ class UserRouter {
       res.send({ status: 'ok', data: result.login });
     });
 
-    router.delete('/:id', async (req, res) => {
+    router.delete('/:id', authMiddleware, async (req, res) => {
       if (isAdmin(req.user.id)) {
         const result = await self.userController.delete({
           _id: req.params.id,
@@ -58,7 +58,7 @@ class UserRouter {
       }
     });
 
-    router.post('/block/:id', async (req, res) => {
+    router.post('/block/:id', authMiddleware, async (req, res) => {
       if (isAdmin(req.user.id)) {
         const result = await self.userController.block({
           _id: req.params.id,
