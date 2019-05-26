@@ -57,17 +57,13 @@ class ProjectRouter {
       });
     });
 
-    router.get('/historyprojects/:key', async (req, res) => {
-      if (req.params.key !== security) {
-        res.send({ message: 'private page' });
-        return;
-      }
-      const data = await self.projectController.getList();
-      res.send({
-        status: 'ok',
-        data,
+    router.post('/', authMiddleware, bodyParser.json(), async (req, res) => {
+      console.log('createProject');
 
-      });
+      const data = req.body;
+      data.userId = req.user.id;
+      await self.projectController.create(data);
+      res.send({ status: 'ok' });
     });
 
     router.post('/:id', authMiddleware, bodyParser.json(), async (req, res) => {
@@ -81,31 +77,24 @@ class ProjectRouter {
 
       const result = await self.projectController.delete({ _id: req.params.id });
 
-      // console.log('delete', result);
       if (result) {
-        // self.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно удален'});
         res.send({ status: 'ok' });
         return;
       }
-      // self.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' не удален'});
+
       res.send({ status: 'error' });
     });
 
-    router.post('/', authMiddleware, bodyParser.json(), async (req, res) => {
-      // self.io.sockets.in(req.user.login).emit('message', {msg: 'Проект '+req.body.name+' успешно создан'});
-      console.log('createProject');
+    router.get('/history', async (req, res) => {
+      const data = await self.projectController.getList();
+      res.send({
+        status: 'ok',
+        data,
 
-      const data = req.body;
-      data.userId = req.user.id;
-      await self.projectController.create(data);
-      res.send({ status: 'ok' });
+      });
     });
 
-    // router.post('/backup/:id/Queue/:user/:ProjectName/:key', async (req, res) => {
-    //   if (req.params.key != security){
-    //     res.send({message: 'private page'});
-    //     return
-    //   }
+    // router.post('/:id/backup/history', async (req, res) => {
     //   console.log(req.params.key)
     //   const data={
     //     '_id': req.params.id,
@@ -121,7 +110,6 @@ class ProjectRouter {
       '/:id/backup',
       authMiddleware,
       async (req, res) => {
-        self.io.sockets.in(req.user.login).emit('message', { msg: 'Проект поставлен на бэкап' });
         try {
           const result = await self.projectController.backup({
             _id: req.params.id,
@@ -138,17 +126,13 @@ class ProjectRouter {
       },
     );
 
-    // router.post('/:id/status/:key', async (req, res) => {
-    //   if (req.params.key != security){
-    //     res.send({message: 'private page'});
-    //     return
-    //   }
+    // router.post('/:id/status', async (req, res) => {
     //   const result = await self.historyController.sendHistory(req.body);
     //   const resultUpdate = await self.projectController.updateStatus(req.body);
     //   res.send({ status: 'ok' });
     // });
 
-    // router.get('//users' , async (req, res) => {
+    // router.get('/users' , async (req, res) => {
     //   const result = await self.historyController.sendHistory(req.body);
     //   const resultUpdate = await self.projectController.updateStatus(req.body);
     //   res.send({ status: 'ok' });
