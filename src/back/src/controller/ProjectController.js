@@ -1,4 +1,4 @@
-class ProjectModel {
+class ProjectController {
   constructor({
     getProjects,
     getProject,
@@ -46,4 +46,4 @@ class ProjectModel {
   }
 }
 
-module.exports = ProjectModel;
+module.exports = ProjectController;
