@@ -120,23 +120,23 @@ class Log {
   }
 
   info(msg, context) {
-    this.log('info', [msg, context]);
+    this.log('info', msg, context);
   }
 
   debug(msg, context) {
-    this.log('debug', [msg, context]);
+    this.log('debug', msg, context);
   }
 
   warn(msg, context) {
-    this.log('warn', [msg, context]);
+    this.log('warn', msg, context);
   }
 
   verbose(msg, context) {
-    this.log('verbose', [msg, context]);
+    this.log('verbose', msg, context);
   }
 
   silly(msg, context) {
-    this.log('silly', [msg, context]);
+    this.log('silly', msg, context);
   }
 
   /**
