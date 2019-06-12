@@ -1,142 +1,93 @@
-const bodyParser = require('body-parser');
+const Router = require('./Router');
 
-let authMiddleware;
-let self;
-
-class ProjectRouter {
-  constructor({
-    logger,
-    auth,
-    projectController,
-  }) {
-    this.logger = logger;
-    this.projectController = projectController;
-    this.auth = auth;
-    authMiddleware = auth.authMiddleware();
-    self = this;
+class ProjectRouter extends Router {
+  constructor(injector) {
+    super();
+    this.logger = injector.logger;
+    this.projectController = injector.projectController;
+    this.auth = injector.auth;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   route(router) {
-    router.get('/', authMiddleware, async (req, res) => {
-      // self.logger.debug('/', req.user);
+    router.get('/', async (req, res) => {
       if (!req.user.id) {
-        res.status(404).send({ status: 'ok', data: [] });
+        this.sendError(res, 404, 'Projects not found');
         return;
       }
-      let data;
       try {
-        data = await self.projectController.getList({ userId: req.user.id });
+        const data = await this.projectController.getList({ userId: req.user.id });
+        this.send200(res, data);
       } catch (err) {
-        self.logger.error(['err', err]);
-        res.status(500).send({ status: 'error' });
-        return;
+        this.logger.error(['err', err]);
+        this.send500(res, err);
       }
-      res.send({
-        status: 'ok',
-        data,
-      });
     });
 
-    router.get('/:id', authMiddleware, async (req, res) => {
+    router.get('/:id', async (req, res) => {
       console.log('projects/id', req.params, req.user);
 
-      const data = await self.projectController.get({
+      const data = await this.projectController.get({
         _id: req.params.id,
         userId: req.user.id,
       });
 
-      // const History = await self.historyController.getHistory({
+      // const History = await this.historyController.getHistory({
       //   id: req.params.id
       // });
       // data.history = History.history;
       // data.backup= History.historyBackup;
-      res.send({
-        status: 'ok',
-        data,
-      });
+      this.send200(res, data);
     });
 
-    router.post('/', authMiddleware, bodyParser.json(), async (req, res) => {
-      console.log('createProject');
-
-      const data = req.body;
-      data.userId = req.user.id;
-      await self.projectController.create(data);
-      res.send({ status: 'ok' });
-    });
-
-    router.post('/:id', authMiddleware, bodyParser.json(), async (req, res) => {
-      console.log('updateProject');
-      await self.projectController.update({ _id: req.params.id }, req.body);
-      res.send({ status: 'ok' });
-    });
-
-    router.delete('/:id', authMiddleware, bodyParser.json(), async (req, res) => {
-      console.log('/:id', req.query, req.params);
-
-      const result = await self.projectController.delete({ _id: req.params.id });
-
-      if (result) {
-        res.send({ status: 'ok' });
-        return;
+    router.post('/', async (req, res) => {
+      try {
+        const data = req.body;
+        data.userId = req.user.id;
+        await this.projectController.create(data);
+        this.send200(res);
+      } catch (err) {
+        this.send500(res, err);
       }
-
-      res.send({ status: 'error' });
     });
 
-    router.get('/history', async (req, res) => {
-      const data = await self.projectController.getList();
-      res.send({
-        status: 'ok',
-        data,
-
-      });
+    router.post('/:id', async (req, res) => {
+      try {
+        await this.projectController.update({ _id: req.params.id }, req.body);
+        this.send200(res);
+      } catch (err) {
+        this.send500(res, err);
+      }
     });
 
-    // router.post('/:id/backup/history', async (req, res) => {
-    //   console.log(req.params.key)
-    //   const data={
-    //     '_id': req.params.id,
-    //     time: new Date(),
-    //   };
-    //   const resultUpdate = await self.historyController.sendHistory(data);
-    //   //const resultUpdate = await self.projectController.updateStatus(data);
-    //   self.io.sockets.in(req.params.user).emit('message', {msg: 'Бекап проекта '+req.params.ProjectName+' успешно завершен'});
-    //   return true
-    // });
+    router.delete('/:id', async (req, res) => {
+      try {
+        const data = await this.projectController.delete({ _id: req.params.id });
+        this.send200(res, data);
+      } catch (err) {
+        this.send500(res, err);
+      }
+    });
 
-    router.get(
-      '/:id/backup',
-      authMiddleware,
-      async (req, res) => {
-        try {
-          const result = await self.projectController.backup({
-            _id: req.params.id,
-            userId: req.user.id,
-          });
-          if (result) {
-            res.send({ status: 'ok' });
-            return;
-          }
-          res.send({ status: 'error', message: 'Unknown Error' });
-        } catch (error) {
-          res.send({ status: 'error', message: error.message });
-        }
-      },
-    );
+    router.get('/history', async (_, res) => {
+      try {
+        const data = await this.projectController.getList();
+        this.send200(res, data);
+      } catch (err) {
+        this.send500(res, err);
+      }
+    });
 
-    // router.post('/:id/status', async (req, res) => {
-    //   const result = await self.historyController.sendHistory(req.body);
-    //   const resultUpdate = await self.projectController.updateStatus(req.body);
-    //   res.send({ status: 'ok' });
-    // });
-
-    // router.get('/users' , async (req, res) => {
-    //   const result = await self.historyController.sendHistory(req.body);
-    //   const resultUpdate = await self.projectController.updateStatus(req.body);
-    //   res.send({ status: 'ok' });
-    // });
+    router.get('/:id/backup', async (req, res) => {
+      try {
+        const data = await this.projectController.backup({
+          _id: req.params.id,
+          userId: req.user.id,
+        });
+        this.send200(res, data);
+      } catch (err) {
+        this.send500(res, err);
+      }
+    });
   }
 }
 

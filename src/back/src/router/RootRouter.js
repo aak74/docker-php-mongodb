@@ -1,41 +1,45 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 require('../utils/RouterGroup.js');
 
-class Router {
-  constructor({
-    logger,
-    config,
-    authRouter,
-    projectRouter,
-    userRouter,
-  }) {
-    this.logger = logger;
-    this.config = config;
+let authMiddleware;
+
+class RootRouter {
+  constructor(injector) {
+    this.logger = injector.logger;
+    this.config = injector.config;
 
     this.app = express();
-    this.authRouter = authRouter;
-    this.projectRouter = projectRouter;
-    this.userRouter = userRouter;
+    this.authRouter = injector.authRouter;
+    this.projectRouter = injector.projectRouter;
+    this.userRouter = injector.userRouter;
+    authMiddleware = injector.auth.authMiddleware();
   }
 
   async run() {
-    const self = this;
-    this.app.group('/auth', this.authRouter.route);
-    this.app.group('/user', this.userRouter.route);
-    this.app.group('/projects', this.projectRouter.route);
+    this.app.group('/auth', [bodyParser.json(), this.logMiddleware()], this.authRouter.getRoute());
+    this.app.group('/user', [authMiddleware, bodyParser.json(), this.logMiddleware()], this.userRouter.getRoute());
+    this.app.group('/projects', [authMiddleware, bodyParser.json(), this.logMiddleware()], this.projectRouter.getRoute());
 
     this.app.listen(this.config.port, err => {
       if (err) {
-        self.logger.error(['Server error', err]);
+        this.logger.error(['Server error', err]);
         return;
       }
-      self.logger.info(`Server is listening on ${this.config.port}`);
+      this.logger.info(`Server is listening on ${this.config.port}`);
     });
 
     this.app.get('/status', (_, res) => {
       res.status(200).send('OK');
     });
   }
+
+  logMiddleware() {
+    return (req, _, next) => {
+      this.logger.info(req.url, req.body);
+      next();
+    };
+  }
 }
 
-module.exports = Router;
+module.exports = RootRouter;

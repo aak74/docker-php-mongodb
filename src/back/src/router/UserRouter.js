@@ -1,82 +1,71 @@
-const bodyParser = require('body-parser');
+const Router = require('./Router');
 
 const isAdmin = () => true;
 
-let authMiddleware;
-let self;
+function adminMiddleware(req, _, next) {
+  if (!isAdmin(req.user.id)) {
+    throw new Error('Forbidden');
+  }
+  next();
+}
 
-class UserRouter {
-  constructor({
-    logger,
-    auth,
-    userController,
-  }) {
-    this.logger = logger;
-    this.userController = userController;
-    this.auth = auth;
-    authMiddleware = auth.authMiddleware();
-    self = this;
+class UserRouter extends Router {
+  constructor(injector) {
+    super();
+    this.logger = injector.logger;
+    this.userController = injector.userController;
+    this.auth = injector.auth;
   }
 
   // eslint-disable-next-line class-methods-use-this
   route(router) {
-    router.get('/', authMiddleware, async (req, res) => {
-      res.send('1');
-
-      // if (isAdmin(req.user.id)) {
-      //   const result = await self.userController.usersGet(req.body);
-      //   res.send(result);
-      // } else {
-      //   res.send({ message: 'Sorry this is private page' });
-      // }
+    router.get('/', async (_, res) => {
+      this.sendError(res, 403, 'Forbidden');
     });
 
-    router.get('/isAdmin', authMiddleware, async (req, res) => {
+    router.get('/isAdmin', async (_, res) => {
       res.send({ isAdmin: true });
-
-
-      // if (isAdmin(req.user.id)) {
-      //   res.send({ isAdmin: true });
-      // } else {
-      //   res.send({ isAdmin: false });
-      // }
     });
 
-    router.post('/register', bodyParser.json(), async (req, res) => {
-      const result = await self.userController.register(req.body);
-      res.send({ status: 'ok', data: result.login });
-    });
-
-    router.delete('/:id', authMiddleware, async (req, res) => {
-      if (isAdmin(req.user.id)) {
-        const result = await self.userController.delete({
-          _id: req.params.id,
-        });
-        res.send({ status: result, id: req.params.id });
-      } else {
-        res.send({ status: 'fail', id: req.params.id });
+    router.post('/register', async (req, res) => {
+      try {
+        const result = await this.userController.register(req.body);
+        res.send({ status: 'ok', data: result.login });
+      } catch (err) {
+        this.send500(res, err);
       }
     });
 
-    router.post('/block/:id', authMiddleware, async (req, res) => {
-      if (isAdmin(req.user.id)) {
-        const result = await self.userController.block({
+    router.delete('/:id', adminMiddleware, async (req, res) => {
+      try {
+        const data = await this.userController.delete({
           _id: req.params.id,
         });
-        res.send({ status: result, id: req.params.id });
-      } else {
-        res.send({ status: 'fail', id: req.params.id });
+        this.send200(res, data);
+      } catch (err) {
+        this.send500(res, err);
       }
     });
 
-    router.post('/unblock/:id', async (req, res) => {
-      if (isAdmin(req.user.id)) {
-        const result = await self.userController.unblock({
+    router.post('/block/:id', adminMiddleware, async (req, res) => {
+      try {
+        const data = await this.userController.block({
           _id: req.params.id,
         });
-        res.send({ status: result, id: req.params.id });
-      } else {
-        res.send({ status: 'fail', id: req.params.id });
+        this.send200(res, data);
+      } catch (err) {
+        this.send500(res, err);
+      }
+    });
+
+    router.post('/unblock/:id', adminMiddleware, async (req, res) => {
+      try {
+        const data = await this.userController.unblock({
+          _id: req.params.id,
+        });
+        this.send200(res, data);
+      } catch (err) {
+        this.send500(res, err);
       }
     });
   }
