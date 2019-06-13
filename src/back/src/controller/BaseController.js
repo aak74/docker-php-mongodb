@@ -1,38 +1,55 @@
 class BaseController {
-  constructor() {
+  constructor(injector) {
+    this.injector = injector;
     this.commands = [];
     this.queries = [];
   }
 
   registerCommands(commands) {
-    const keys = Object.keys(commands);
-    for (let i = 0; i < keys.length; i += 1) {
-      this.registerCommand(keys[i], commands[keys[i]]);
-    }
+    commands.forEach(commandName => {
+      this.registerCommand(commandName);
+    });
   }
 
   registerQueries(queries) {
-    const keys = Object.keys(queries);
-    for (let i = 0; i < keys.length; i += 1) {
-      this.registerQuery(keys[i], queries[keys[i]]);
-    }
+    queries.forEach(queryName => {
+      this.registerQuery(queryName);
+    });
   }
 
-  registerCommand(commandName, command) {
+  registerCommand(commandName) {
+    if (!this.injector[commandName]) {
+      throw new Error(`Command ${commandName} doesn't exists`);
+    }
+    const command = this.injector[commandName];
+    if (!command.execute || typeof command.execute !== 'function') {
+      throw new Error(`Command ${commandName} doesn't have an execute method`);
+    }
     this.commands[commandName] = command;
   }
 
-  registerQuery(queryName, query) {
+  registerQuery(queryName) {
+    if (!this.injector[queryName]) {
+      throw new Error(`Query ${queryName} doesn't exists`);
+    }
+    const query = this.injector[queryName];
+    if (!query.get || typeof query.get !== 'function') {
+      throw new Error(`Query ${queryName} doesn't have a get method`);
+    }
     this.queries[queryName] = query;
   }
 
   get(queryName, params) {
-    // console.log('get', queryName, params, this.queries[queryName]);
+    if (!this.queries[queryName] || typeof this.queries[queryName].get !== 'function') {
+      throw new Error(`Query ${queryName} doesn't registered`);
+    }
     return this.queries[queryName].get(params);
   }
 
   execute(commandName, params) {
-    // console.log('get', commandName, params, this.queries[commandName]);
+    if (!this.commands[commandName] || typeof this.commands[commandName].execute !== 'function') {
+      throw new Error(`Command ${commandName} doesn't registered`);
+    }
     return this.commands[commandName].execute(params);
   }
 }

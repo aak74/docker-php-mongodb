@@ -16,15 +16,15 @@ ioc.register({
 
 const container = ioc.loadModules([
   'App.js',
-  'utils/*.js',
-  'model/*.js',
-  'controller/*.js',
-  'query/*.js',
-  'command/*.js',
-  'router/*.js',
-  // 'model/__mocks__/*.js',
-  // 'query/__mocks__/*.js',
-  // 'command/__mocks__/*.js',
+  'utils/!(*.spec)*.js',
+  'model/!(*.spec)*.js',
+  'controller/!(*.spec)*.js',
+  'query/!(*.spec)*.js',
+  'command/!(*.spec)*.js',
+  'router/!(*.spec)*.js',
+  // 'model/__mocks__/!(*.spec)*.js',
+  // 'query/__mocks__/!(*.spec)*.js',
+  // 'command/__mocks__/!(*.spec)*.js',
 ], {
   resolverOptions: {
     lifetime: Lifetime.SINGLETON,

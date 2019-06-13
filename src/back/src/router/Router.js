@@ -1,10 +1,10 @@
 class Router {
-  execute(func) {
-    return this[func].bind(this);
+  constructor(controller) {
+    this.controller = controller;
   }
 
   getRoute() {
-    return this.execute('route');
+    return this.route.bind(this);
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -24,6 +24,16 @@ class Router {
   // eslint-disable-next-line class-methods-use-this
   sendError(res, statusCode, message) {
     res.status(statusCode).send({ status: 'error', message });
+  }
+
+  get(queryName, params) {
+    console.log('get', queryName, params);
+
+    return this.controller.get(queryName, params);
+  }
+
+  execute(commandName, params) {
+    return this.controller.execute(commandName, params);
   }
 }
 
