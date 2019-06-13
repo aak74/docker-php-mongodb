@@ -1,12 +1,6 @@
 class unblocked {
-  constructor({
-    logger,
-    userModel,
-    publishMessage,
-  }) {
-    this.logger = logger;
+  constructor({ userModel }) {
     this.userModel = userModel;
-    this.publishMessage = publishMessage;
   }
 
   async execute(id) {

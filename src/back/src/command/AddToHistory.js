@@ -1,12 +1,6 @@
 class AddToHistory {
-  constructor({
-    logger,
-    historyModel,
-    publishMessage,
-  }) {
-    this.logger = logger;
+  constructor({ historyModel }) {
     this.historyModel = historyModel;
-    this.publishMessage = publishMessage;
   }
 
   async execute(params) {

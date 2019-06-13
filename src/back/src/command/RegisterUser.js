@@ -2,11 +2,9 @@ class RegisterUser {
   constructor({
     logger,
     userModel,
-    publishMessage,
   }) {
     this.logger = logger;
     this.userModel = userModel;
-    this.publishMessage = publishMessage;
   }
 
   async execute(params) {

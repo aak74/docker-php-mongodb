@@ -1,12 +1,6 @@
 class DeleteProject {
-  constructor({
-    logger,
-    projectModel,
-    publishMessage,
-  }) {
-    this.logger = logger;
+  constructor({ projectModel }) {
     this.projectModel = projectModel;
-    this.publishMessage = publishMessage;
   }
 
   async execute(filter) {

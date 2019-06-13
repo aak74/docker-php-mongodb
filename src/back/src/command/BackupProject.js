@@ -1,6 +1,5 @@
 class BackupProject {
-  constructor({ logger, projectModel, queue }) {
-    this.logger = logger;
+  constructor({ projectModel, queue }) {
     this.projectModel = projectModel;
     this.queue = queue;
   }

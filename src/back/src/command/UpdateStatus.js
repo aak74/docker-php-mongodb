@@ -1,8 +1,6 @@
 class UpdateStatus {
-  constructor({ logger, projectModel }) {
-    this.logger = logger;
+  constructor({ projectModel }) {
     this.projectModel = projectModel;
-    // this.addToHistory = addToHistory;
   }
 
   async execute(params) {

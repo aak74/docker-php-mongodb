@@ -10,27 +10,19 @@ function adminMiddleware(req, _, next) {
 }
 
 class UserRouter extends Router {
-  constructor(injector) {
-    super();
-    this.logger = injector.logger;
-    this.userController = injector.userController;
-    this.auth = injector.auth;
+  constructor({ userController }) {
+    super(userController);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   route(router) {
     router.get('/', async (_, res) => {
       this.sendError(res, 403, 'Forbidden');
     });
 
-    router.get('/isAdmin', async (_, res) => {
-      res.send({ isAdmin: true });
-    });
-
     router.post('/register', async (req, res) => {
       try {
-        const result = await this.userController.register(req.body);
-        res.send({ status: 'ok', data: result.login });
+        const data = await this.execute('register', req.body);
+        this.send200(res, data.login);
       } catch (err) {
         this.send500(res, err);
       }
@@ -38,7 +30,7 @@ class UserRouter extends Router {
 
     router.delete('/:id', adminMiddleware, async (req, res) => {
       try {
-        const data = await this.userController.delete({
+        const data = await this.execute('delete', {
           _id: req.params.id,
         });
         this.send200(res, data);
@@ -47,9 +39,9 @@ class UserRouter extends Router {
       }
     });
 
-    router.post('/block/:id', adminMiddleware, async (req, res) => {
+    router.post('/:id/block', adminMiddleware, async (req, res) => {
       try {
-        const data = await this.userController.block({
+        const data = await this.execute('block', {
           _id: req.params.id,
         });
         this.send200(res, data);
@@ -58,9 +50,9 @@ class UserRouter extends Router {
       }
     });
 
-    router.post('/unblock/:id', adminMiddleware, async (req, res) => {
+    router.post('/:id/unblock', adminMiddleware, async (req, res) => {
       try {
-        const data = await this.userController.unblock({
+        const data = await this.execute('unblock', {
           _id: req.params.id,
         });
         this.send200(res, data);

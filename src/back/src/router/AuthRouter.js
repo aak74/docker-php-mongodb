@@ -2,7 +2,7 @@ const Router = require('./Router');
 
 class AuthRouter extends Router {
   constructor(injector) {
-    super();
+    super(injector.userController);
     this.logger = injector.logger;
     this.auth = injector.auth;
     this.userController = injector.userController;
@@ -32,7 +32,7 @@ class AuthRouter extends Router {
         return;
       }
       try {
-        const user = await this.userController.checkCredentials({
+        const user = await this.get('checkCredentials', {
           login: req.body.login,
           password: req.body.password,
         });
@@ -52,7 +52,6 @@ class AuthRouter extends Router {
     });
 
     router.post('/refreshToken', async (req, res) => {
-      this.logger.debug('refreshToken', req.user);
       if (!req.user) {
         this.sendError(res, 404, 'User not found');
         return;

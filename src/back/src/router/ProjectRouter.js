@@ -1,11 +1,8 @@
 const Router = require('./Router');
 
 class ProjectRouter extends Router {
-  constructor(injector) {
-    super();
-    this.logger = injector.logger;
-    this.projectController = injector.projectController;
-    this.auth = injector.auth;
+  constructor({ projectController }) {
+    super(projectController);
   }
 
   route(router) {
@@ -15,10 +12,10 @@ class ProjectRouter extends Router {
         return;
       }
       try {
-        const data = await this.projectController.getList({ userId: req.user.id });
+        console.log(this.get);
+        const data = await this.get('getProjects', { userId: req.user.id });
         this.send200(res, data);
       } catch (err) {
-        this.logger.error(['err', err]);
         this.send500(res, err);
       }
     });
@@ -26,7 +23,7 @@ class ProjectRouter extends Router {
     router.get('/:id', async (req, res) => {
       console.log('projects/id', req.params, req.user);
 
-      const data = await this.projectController.get({
+      const data = await this.get('getProject', {
         _id: req.params.id,
         userId: req.user.id,
       });
@@ -43,7 +40,7 @@ class ProjectRouter extends Router {
       try {
         const data = req.body;
         data.userId = req.user.id;
-        await this.projectController.create(data);
+        await this.execute('createProject', data);
         this.send200(res);
       } catch (err) {
         this.send500(res, err);
@@ -52,7 +49,7 @@ class ProjectRouter extends Router {
 
     router.post('/:id', async (req, res) => {
       try {
-        await this.projectController.update({ _id: req.params.id }, req.body);
+        await this.execute('updateProject', { _id: req.params.id }, req.body);
         this.send200(res);
       } catch (err) {
         this.send500(res, err);
@@ -61,16 +58,7 @@ class ProjectRouter extends Router {
 
     router.delete('/:id', async (req, res) => {
       try {
-        const data = await this.projectController.delete({ _id: req.params.id });
-        this.send200(res, data);
-      } catch (err) {
-        this.send500(res, err);
-      }
-    });
-
-    router.get('/history', async (_, res) => {
-      try {
-        const data = await this.projectController.getList();
+        const data = await this.execute('deleteProject', { _id: req.params.id });
         this.send200(res, data);
       } catch (err) {
         this.send500(res, err);
@@ -79,7 +67,7 @@ class ProjectRouter extends Router {
 
     router.get('/:id/backup', async (req, res) => {
       try {
-        const data = await this.projectController.backup({
+        const data = await this.execute('backupProject', {
           _id: req.params.id,
           userId: req.user.id,
         });

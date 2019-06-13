@@ -1,10 +1,8 @@
 class UpdateProject {
   constructor({
-    logger,
     projectModel,
     publishMessage,
   }) {
-    this.logger = logger;
     this.projectModel = projectModel;
     this.publishMessage = publishMessage;
   }
