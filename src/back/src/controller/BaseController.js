@@ -1,3 +1,13 @@
+function getKeyAndName(name) {
+  let key = name;
+  if (typeof name === 'object') {
+    [key] = Object.keys(name);
+    // eslint-disable-next-line no-param-reassign
+    name = name[key];
+  }
+  return { key, name };
+}
+
 class BaseController {
   constructor(injector) {
     this.injector = injector;
@@ -18,25 +28,27 @@ class BaseController {
   }
 
   registerCommand(commandName) {
-    if (!this.injector[commandName]) {
-      throw new Error(`Command ${commandName} doesn't exists`);
+    const { key, name } = getKeyAndName(commandName);
+    if (!this.injector[name]) {
+      throw new Error(`Command ${name} doesn't exists`);
     }
-    const command = this.injector[commandName];
+    const command = this.injector[name];
     if (!command.execute || typeof command.execute !== 'function') {
-      throw new Error(`Command ${commandName} doesn't have an execute method`);
+      throw new Error(`Command ${name} doesn't have an execute method`);
     }
-    this.commands[commandName] = command;
+    this.commands[key] = command;
   }
 
   registerQuery(queryName) {
-    if (!this.injector[queryName]) {
-      throw new Error(`Query ${queryName} doesn't exists`);
+    const { key, name } = getKeyAndName(queryName);
+    if (!this.injector[name]) {
+      throw new Error(`Query ${name} doesn't exists`);
     }
-    const query = this.injector[queryName];
+    const query = this.injector[name];
     if (!query.get || typeof query.get !== 'function') {
-      throw new Error(`Query ${queryName} doesn't have a get method`);
+      throw new Error(`Query ${name} doesn't have a get method`);
     }
-    this.queries[queryName] = query;
+    this.queries[key] = query;
   }
 
   get(queryName, params) {

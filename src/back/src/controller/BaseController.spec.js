@@ -80,3 +80,17 @@ test('Should call execute method of registered command', () => {
   ctrl.registerCommand('increment');
   expect(ctrl.execute('increment', 100)).toEqual(101);
 });
+
+test('Should register query as new name', () => {
+  ctrl.registerQuery({ getNew: 'getPlusOne' });
+  expect(ctrl.queries).toMatchObject({
+    getNew: { id: 1 },
+  });
+});
+
+test('Should register command as new name', () => {
+  ctrl.registerCommand({ inc: 'increment' });
+  expect(ctrl.commands).toMatchObject({
+    inc: { id: 1 },
+  });
+});
