@@ -1,10 +1,11 @@
-const { asClass, asValue, Lifetime } = require('awilix');
+const { asValue, Lifetime } = require('awilix');
 const axios = require('axios');
 
 const config = require('./config');
 
 const IoC = require('./IoC');
-const ioc = new IoC;
+
+const ioc = new IoC();
 
 ioc.register({
   excludes: asValue([]),
@@ -21,8 +22,8 @@ const container = ioc.loadModules([
   // 'model/__mocks__/*.js',
 ], {
   resolverOptions: {
-    lifetime: Lifetime.SINGLETON
-  }
+    lifetime: Lifetime.SINGLETON,
+  },
 });
 
 module.exports = container;

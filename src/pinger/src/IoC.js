@@ -2,22 +2,20 @@ const awilix = require('awilix');
 const path = require('path');
 
 class IoC {
-  constructor () {
+  constructor() {
     this.container = awilix.createContainer();
   }
 
-  loadModules (glob, opts) {
-    opts = Object.assign({
+  loadModules(glob, opts) {
+    this.container.loadModules(glob, Object.assign({
       formatName: 'camelCase',
       injectionMode: awilix.InjectionMode.PROXY,
       cwd: path.resolve(__dirname, ''),
-    }, opts);
-
-    this.container.loadModules(glob, opts);
+    }, opts));
     return this.container;
   }
 
-  register (obj) {
+  register(obj) {
     this.container.register(obj);
   }
 }

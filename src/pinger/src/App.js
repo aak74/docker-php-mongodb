@@ -1,5 +1,3 @@
-'use strict';
-
 class App {
   constructor({
     logger,
@@ -44,6 +42,7 @@ class App {
     // params._id = id;
     this.updateStatuses.putProjectToQueue(params);
   }
+
   requestQueue(msg) {
     // params._id = id;
     this.updateStatuses.sendRequestQueue(msg);
