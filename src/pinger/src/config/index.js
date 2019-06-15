@@ -1,8 +1,8 @@
 module.exports = {
   queues: {
-    'projectCreated': {},
-    'projectUpdated': {},
-    'projectDeleted': {},
-    'backup': {},
+    projectCreated: {},
+    projectUpdated: {},
+    projectDeleted: {},
+    backup: {},
   },
-}
+};

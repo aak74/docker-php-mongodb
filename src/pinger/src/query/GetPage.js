@@ -1,4 +1,4 @@
-'use strict';
+
 
 class GetPage {
   constructor({ logger, pageModel }) {
@@ -8,7 +8,7 @@ class GetPage {
 
   /**
    * Возвращает информацию о загруженной странице
-   * @param {String} url 
+   * @param {String} url
    */
   get(url) {
     // console.log('GetPage get', url);

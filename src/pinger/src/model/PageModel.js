@@ -1,39 +1,37 @@
-'use strict';
+function getUrl(url) {
+  if (url && url.substr(0, 4) === 'http') {
+    return url;
+  }
+  return `http://${url}`;
+}
 
 class PageModel {
   constructor({
     logger,
-    httpClient,
+    client,
   }) {
     this.logger = logger;
-    this.httpClient = httpClient;
+    this.client = client;
   }
 
   /**
    * Загружает страницу и возвращает информацию о загруженной странице
-   * @param {String} url 
+   * @param {String} url
    * @todo Сделать фильтр на допустимое доменное имя
    */
   async getObject(url) {
-    // console.log('get', url);
-    
+    // this.logger.info('PageModel.getObject', url);
+
     const start = Date.now();
     try {
-      var result = await this.httpClient.get(this.getUrl(url))
-        .then(res => {
-          // this.logger.debug(`${url} | ${res.status} | ${Date.now() - start}`);
-          return {
-            status: res.status,
-            statusText: res.statusText,
-            contentLength: res.headers['content-length'] || res.data.length,
-            time: Date.now() - start,
-          };
-        // })
-        // .catch(err => {
-        });
+      const response = await this.client.get(getUrl(url));
+      return {
+        status: response.status,
+        statusText: response.statusText,
+        contentLength: response.headers['content-length'] || response.data.length,
+        time: Date.now() - start,
+      };
     } catch (err) {
-      // console.log('catch err', err);
-      // this.logger.debug('err', err);
       const time = Date.now() - start;
       const contentLength = 0;
       if (err.errno) {
@@ -41,25 +39,16 @@ class PageModel {
           status: err.errno,
           statusText: err.code,
           contentLength,
-          time
+          time,
         };
       }
       return {
         status: err.response.status,
         statusText: err.response.statusText,
         contentLength,
-        time
+        time,
       };
     }
-      
-    return result;
-  }
-
-  getUrl(url) {
-    if (url && url.substr(0, 4) === 'http') {
-      return url;
-    }
-    return `http://${url}`;
   }
 }
 

@@ -1,11 +1,7 @@
-'use strict';
-
 class RequestQueue {
   constructor({
-    logger,
     projectModel,
   }) {
-    this.logger = logger;
     this.projectModel = projectModel;
   }
 
