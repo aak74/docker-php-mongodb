@@ -10,6 +10,7 @@ const ioc = new IoC();
 ioc.register({
   excludes: asValue([]),
   config: asValue(config),
+  token: asValue(process.env.TOKEN),
   httpClient: asValue(axios),
 });
 

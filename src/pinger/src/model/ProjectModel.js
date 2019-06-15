@@ -1,47 +1,41 @@
-
-const security = 'ArealIdea';
 class ProjectModel {
   constructor({
     logger,
-    httpClient,
+    client,
+    token,
   }) {
     this.logger = logger;
-    this.httpClient = httpClient;
+    this.client = client;
+    this.token = token;
   }
 
   async getList() {
     try {
       console.log('1');
-      var result = await this.httpClient.get(`http://backend:3000/historyprojects/${security}`)
-        .then(res => res.data.data);
+      const { data } = await this.client.get({
+        url: 'http://backend:3000/services/projects',
+        // Authorization: 1,
+        Authorization: this.token,
+      });
+      return data.data;
     } catch (err) {
       console.log('catch err', err);
-    }
-    return result;
-  }
-
-  async requestQueue(msg) {
-    console.log(msg.login);
-    try {
-      const result = await this.httpClient.post(`http://backend:3000/backup/${msg.id}/Queue/${msg.login}/${msg.name}/${security}`)
-        .then(res => 'success')
-        .catch(err => {
-        });
-    } catch (err) {
+      throw err;
     }
   }
 
-  async update(status) {
+  async update(project) {
     try {
-      var result = await this.httpClient.post(`http://backend:3000/projects/${status._id}/status/${security}`, status)
-        .then(res => res.data.data)
-        .catch(err => {
-          console.log('http catch err', err);
-        });
+      const { data } = await this.client.post({
+        url: `http://backend:3000/projects/pinger/${project._id}`,
+        data: project,
+        Authorization: this.token,
+      });
+      return data.data;
     } catch (err) {
       console.log('catch err', err);
+      throw err;
     }
-    return result;
   }
 }
 

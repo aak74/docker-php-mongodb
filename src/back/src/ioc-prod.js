@@ -11,6 +11,7 @@ ioc.register({
   excludes: asValue([]),
   tokenTTL: asValue({ token: 3600, refreshToken: 3600 * 24 * 30 }),
   config: asValue(config),
+  token: asValue(process.env.TOKEN),
   httpClient: asValue(axios),
 });
 

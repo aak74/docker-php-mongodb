@@ -21,6 +21,7 @@ services:
     ports:
       - 5858:5858      
     environment:
+      TOKEN: ${TOKEN}
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}
       RABBITMQ_VHOST: ${RABBITMQ_VHOST}
@@ -37,6 +38,7 @@ services:
     # ports:
     #   - 5858:5858      
     environment:
+      TOKEN: ${TOKEN}
       RABBITMQ_USER: ${RABBITMQ_USER}
       RABBITMQ_PASS: ${RABBITMQ_PASS}
       RABBITMQ_VHOST: ${RABBITMQ_VHOST}
